@@ -42,7 +42,7 @@ import { generateId } from '../../shared/utils/common.utils';
   standalone: true,
   imports: [CommonModule],
   template: `
-    @if (open()) {
+    @if (_open()) {
       <div
         class="dialog-backdrop"
         [class]="backdropClass()"

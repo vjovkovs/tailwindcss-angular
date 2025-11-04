@@ -91,6 +91,12 @@ export class ExampleComponent {
       const formData = this.userForm.getRawValue();
       console.log('Form submitted:', formData);
       // Here you would normally use TanStack Mutation to create the user
+      /// Create the user Locally adding to mock data for demonstration
+      const newUser: User = {
+        id: this.mockUsers.length + 1,
+        ...formData,
+      };
+      this.mockUsers.push(newUser);
       this.closeDialog();
     }
   }

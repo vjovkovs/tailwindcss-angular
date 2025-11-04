@@ -81,7 +81,7 @@ export class PopoverComponent {
     if (value) {
       this.show();
     } else {
-      this.hide();
+      this.close();
     }
   }
   get open(): boolean {
