@@ -1,0 +1,463 @@
+# Dynamic Forms Guide
+
+This guide covers the **Dynamic Form** component that automatically generates forms from Zod schemas.
+
+## Overview
+
+The Dynamic Form component uses **Zod schema introspection** to automatically generate fully-validated forms without writing repetitive boilerplate code.
+
+### Benefits
+
+1. **Less Code**: Define your schema once, get a complete form
+2. **Type Safety**: Full TypeScript support from schema to submission
+3. **Consistent UI**: All forms follow the same styling patterns
+4. **Automatic Validation**: Zod validates at runtime
+5. **Rapid Development**: Build forms in minutes, not hours
+
+## Basic Usage
+
+### Step 1: Define Your Zod Schema
+
+```typescript
+import { z } from 'zod';
+
+const userSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Invalid email address'),
+  age: z.number().min(18, 'Must be at least 18'),
+  role: z.enum(['Admin', 'User', 'Guest']),
+});
+
+type UserFormData = z.infer<typeof userSchema>;
+```
+
+### Step 2: Create Form Configuration
+
+```typescript
+import { DynamicFormConfig } from './shared/components/dynamic-form';
+
+const formConfig: DynamicFormConfig<typeof userSchema.shape> = {
+  schema: userSchema,
+  submitLabel: 'Save User',
+  showCancel: true,
+};
+```
+
+### Step 3: Use the Component
+
+```html
+<app-dynamic-form
+  [config]="formConfig"
+  (formSubmit)="onSubmit($event)"
+  (formCancel)="onCancel()"
+/>
+```
+
+### Step 4: Handle Submission
+
+```typescript
+onSubmit(data: UserFormData): void {
+  // data is fully typed!
+  console.log(data.name);  // string
+  console.log(data.email); // string
+  console.log(data.age);   // number
+  console.log(data.role);  // 'Admin' | 'User' | 'Guest'
+}
+```
+
+## Supported Field Types
+
+The dynamic form automatically infers field types from your Zod schema:
+
+| Zod Type | Rendered As | Example |
+|----------|-------------|---------|
+| `z.string()` | Text input | `<input type="text">` |
+| `z.string().email()` | Email input | `<input type="email">` |
+| `z.number()` | Number input | `<input type="number">` |
+| `z.boolean()` | Checkbox | `<input type="checkbox">` |
+| `z.enum([...])` | Select dropdown | `<select>` |
+
+## Adding Labels and Hints
+
+Use Zod's `.describe()` method to add labels and hints:
+
+```typescript
+const schema = z.object({
+  // Format: "Label|Hint"
+  email: z.string().email().describe('Email Address|We will never share your email'),
+
+  // Just label (no hint)
+  name: z.string().describe('Full Name'),
+});
+```
+
+The dynamic form will parse this and display:
+- **Label**: "Email Address" (bold)
+- **Hint**: "We will never share your email" (gray, small text below input)
+
+## Customizing Fields
+
+You can override auto-generated field configurations:
+
+```typescript
+const formConfig: DynamicFormConfig<typeof schema.shape> = {
+  schema: userSchema,
+  fields: {
+    email: {
+      placeholder: 'john@example.com',
+      hint: 'Custom hint text',
+    },
+    role: {
+      placeholder: 'Select a role',
+    },
+  },
+};
+```
+
+## Validation
+
+### Automatic Validation
+
+Validation is automatic based on your Zod schema:
+
+```typescript
+const schema = z.object({
+  email: z.string().email('Invalid email'),       // Email format validation
+  password: z.string().min(8, 'Too short'),       // Min length validation
+  age: z.number().min(18).max(100),               // Range validation
+  username: z.string().regex(/^[a-z0-9]+$/),      // Pattern validation
+});
+```
+
+### Validation Constraints
+
+The dynamic form recognizes these Zod constraints:
+
+- `min()` / `max()` - For strings (minLength/maxLength) and numbers (min/max)
+- `email()` - Changes input type to email
+- `optional()` - Makes field non-required
+- Custom error messages in Zod are automatically displayed
+
+## Pre-filling Data (Edit Mode)
+
+Pass initial data to pre-fill the form:
+
+```typescript
+const existingUser = {
+  name: 'John Doe',
+  email: 'john@example.com',
+  age: 30,
+  role: 'Admin' as const,
+};
+```
+
+```html
+<app-dynamic-form
+  [config]="formConfig"
+  [initialData]="existingUser"
+  (formSubmit)="onUpdate($event)"
+/>
+```
+
+## Loading States
+
+Show a loading spinner during async operations:
+
+```html
+<app-dynamic-form
+  [config]="formConfig"
+  [loading]="isSaving"
+  (formSubmit)="onSubmit($event)"
+/>
+```
+
+When `loading` is true:
+- Form fields are disabled
+- Submit button shows spinner
+- Form cannot be submitted
+
+## Complete Example: User CRUD
+
+```typescript
+import { Component, signal } from '@angular/core';
+import { z } from 'zod';
+import { DynamicFormComponent, DynamicFormConfig } from './shared/components/dynamic-form';
+
+// Schema
+const userSchema = z.object({
+  name: z.string().min(1).describe('Full Name|Enter the user\'s full name'),
+  email: z.string().email().describe('Email Address'),
+  role: z.enum(['Admin', 'User', 'Guest']).describe('Role|Select user permissions'),
+});
+
+type UserFormData = z.infer<typeof userSchema>;
+
+@Component({
+  selector: 'app-user-form',
+  standalone: true,
+  imports: [DynamicFormComponent],
+  template: `
+    <div class="max-w-md mx-auto mt-8">
+      <h2 class="text-2xl font-bold mb-4">
+        {{ editMode() ? 'Edit User' : 'Create User' }}
+      </h2>
+
+      <app-dynamic-form
+        [config]="formConfig"
+        [initialData]="editMode() ? currentUser() : undefined"
+        [loading]="isSaving()"
+        (formSubmit)="onSubmit($event)"
+        (formCancel)="onCancel()"
+      />
+    </div>
+  `,
+})
+export class UserFormComponent {
+  editMode = signal(false);
+  currentUser = signal<UserFormData | null>(null);
+  isSaving = signal(false);
+
+  formConfig: DynamicFormConfig<typeof userSchema.shape> = {
+    schema: userSchema,
+    fields: {
+      role: {
+        placeholder: 'Choose a role',
+      },
+    },
+    submitLabel: 'Save User',
+  };
+
+  onSubmit(data: UserFormData): void {
+    this.isSaving.set(true);
+
+    // Simulate API call
+    setTimeout(() => {
+      console.log('User saved:', data);
+      this.isSaving.set(false);
+    }, 1000);
+  }
+
+  onCancel(): void {
+    console.log('Form cancelled');
+  }
+}
+```
+
+## API Reference
+
+### DynamicFormComponent Inputs
+
+| Input | Type | Default | Description |
+|-------|------|---------|-------------|
+| `config` | `DynamicFormConfig` | **Required** | Form configuration with schema |
+| `initialData` | `Partial<T>` | `undefined` | Pre-fill data for edit mode |
+| `loading` | `boolean` | `false` | Show loading state |
+
+### DynamicFormComponent Outputs
+
+| Output | Type | Description |
+|--------|------|-------------|
+| `formSubmit` | `EventEmitter<T>` | Emits when form is submitted with valid data |
+| `formCancel` | `EventEmitter<void>` | Emits when cancel button is clicked |
+
+### DynamicFormConfig
+
+```typescript
+interface DynamicFormConfig<T> {
+  schema: z.ZodObject<T>;
+  fields?: Partial<Record<keyof T, Partial<FieldConfig>>>;
+  submitLabel?: string;
+  showCancel?: boolean;
+  cancelLabel?: string;
+}
+```
+
+### FieldConfig
+
+```typescript
+interface FieldConfig {
+  name: string;
+  type: 'text' | 'email' | 'number' | 'select' | 'checkbox' | 'textarea';
+  label: string;
+  required: boolean;
+  placeholder?: string;
+  hint?: string;
+  options?: Array<{ value: string; label: string }>;
+  min?: number;
+  max?: number;
+  minLength?: number;
+  maxLength?: number;
+  defaultValue?: any;
+}
+```
+
+## Comparison: Manual vs Dynamic Forms
+
+### Manual Form (Before)
+
+```typescript
+// 1. Define schema
+const schema = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+  role: z.enum(['Admin', 'User']),
+});
+
+// 2. Create FormGroup
+const form = new FormGroup({
+  name: new FormControl('', Validators.required),
+  email: new FormControl('', [Validators.required, Validators.email]),
+  role: new FormControl('', Validators.required),
+});
+
+// 3. Write template (50+ lines)
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div>
+    <label>Name</label>
+    <input formControlName="name" />
+    @if (form.get('name')?.invalid) {
+      <span>{{ getError('name') }}</span>
+    }
+  </div>
+  <!-- Repeat for each field... -->
+</form>
+```
+
+**Total: ~100 lines of code**
+
+### Dynamic Form (After)
+
+```typescript
+const schema = z.object({
+  name: z.string().min(1).describe('Name'),
+  email: z.string().email().describe('Email'),
+  role: z.enum(['Admin', 'User']).describe('Role'),
+});
+
+const config = { schema, submitLabel: 'Save' };
+```
+
+```html
+<app-dynamic-form
+  [config]="config"
+  (formSubmit)="onSubmit($event)"
+/>
+```
+
+**Total: ~15 lines of code** ✨
+
+## Advanced: Custom Field Rendering
+
+*(Coming in Phase 2)*
+
+Future enhancements will include:
+- Custom field templates
+- Nested objects
+- Array fields (add/remove items)
+- Multi-step forms
+- Conditional fields
+
+## Best Practices
+
+1. **Use `.describe()` for User-Friendly Labels**
+   ```typescript
+   // Bad
+   firstName: z.string()
+
+   // Good
+   firstName: z.string().describe('First Name|Enter your legal first name')
+   ```
+
+2. **Provide Specific Error Messages**
+   ```typescript
+   // Bad
+   age: z.number()
+
+   // Good
+   age: z.number()
+     .min(18, 'You must be at least 18 years old')
+     .max(120, 'Please enter a valid age')
+   ```
+
+3. **Use Enums for Select Fields**
+   ```typescript
+   // The dynamic form automatically creates a dropdown
+   role: z.enum(['Admin', 'Editor', 'Viewer'])
+   ```
+
+4. **Customize When Needed**
+   ```typescript
+   fields: {
+     password: {
+       hint: 'Must be at least 8 characters with 1 uppercase and 1 number',
+     },
+   }
+   ```
+
+## Integration with TanStack Query
+
+Dynamic forms work perfectly with TanStack Query mutations:
+
+```typescript
+const createUserMutation = injectMutation(() => ({
+  mutationFn: (userData: UserFormData) =>
+    apiService.post('/users', userData),
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['users'] });
+  },
+}));
+
+onSubmit(data: UserFormData): void {
+  this.createUserMutation.mutate(data);
+}
+```
+
+```html
+<app-dynamic-form
+  [config]="formConfig"
+  [loading]="createUserMutation.isPending()"
+  (formSubmit)="onSubmit($event)"
+/>
+```
+
+## Troubleshooting
+
+### Fields Not Showing
+
+Ensure your schema is properly typed:
+```typescript
+// Wrong
+const schema: any = z.object({...});
+
+// Correct
+const schema = z.object({...});
+```
+
+### Type Errors
+
+Make sure to use `z.infer` for type safety:
+```typescript
+type FormData = z.infer<typeof schema>;
+
+onSubmit(data: FormData): void {
+  // data is now fully typed
+}
+```
+
+### Validation Not Working
+
+Check that your validators are in the schema:
+```typescript
+// Wrong - validators outside schema
+const schema = z.object({ email: z.string() });
+form.get('email')?.addValidators(Validators.email);
+
+// Correct - validators in schema
+const schema = z.object({ email: z.string().email() });
+```
+
+## See Also
+
+- [Forms and Validation Guide](./FORMS_VALIDATION.md)
+- [UI Components Guide](./UI_COMPONENTS.md)
+- [Zod Documentation](https://zod.dev/)

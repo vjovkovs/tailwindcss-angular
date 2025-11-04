@@ -6,6 +6,33 @@
       <p class="mt-1 text-sm text-gray-600">
         Example feature demonstrating TanStack Query with optimistic updates, Mutations, Typed Forms, and Zod validation
       </p>
+      <div class="mt-2 flex items-center gap-2">
+        <span class="text-xs text-gray-500">Form Mode:</span>
+        <button
+          (click)="toggleFormMode()"
+          class="text-xs px-3 py-1 rounded-full border transition-colors"
+          [class.bg-primary-100]="!useDynamicForm()"
+          [class.text-primary-700]="!useDynamicForm()"
+          [class.border-primary-300]="!useDynamicForm()"
+          [class.bg-gray-100]="useDynamicForm()"
+          [class.text-gray-600]="useDynamicForm()"
+          [class.border-gray-300]="useDynamicForm()"
+        >
+          Manual
+        </button>
+        <button
+          (click)="toggleFormMode()"
+          class="text-xs px-3 py-1 rounded-full border transition-colors"
+          [class.bg-primary-100]="useDynamicForm()"
+          [class.text-primary-700]="useDynamicForm()"
+          [class.border-primary-300]="useDynamicForm()"
+          [class.bg-gray-100]="!useDynamicForm()"
+          [class.text-gray-600]="!useDynamicForm()"
+          [class.border-gray-300]="!useDynamicForm()"
+        >
+          Dynamic
+        </button>
+      </div>
     </div>
     <button
       (click)="openAddDialog()"
@@ -93,9 +120,25 @@
     <div class="p-6">
       <h2 dialog-title class="text-xl font-semibold text-gray-900 mb-4">
         {{ isEditMode() ? 'Edit User' : 'Add New User' }}
+        <span class="text-sm font-normal text-gray-500 ml-2">
+          ({{ useDynamicForm() ? 'Dynamic' : 'Manual' }} Form)
+        </span>
       </h2>
 
-      <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <!-- Dynamic Form -->
+      @if (useDynamicForm()) {
+        <app-dynamic-form
+          [config]="dynamicFormConfig"
+          [initialData]="dynamicFormInitialData"
+          [loading]="isSaving"
+          (formSubmit)="onDynamicFormSubmit($event)"
+          (formCancel)="closeDialog()"
+        />
+      }
+
+      <!-- Manual Form -->
+      @if (!useDynamicForm()) {
+        <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-4">
         <!-- Name Field -->
         <div>
           <label for="name" class="block text-sm font-medium text-gray-700">
@@ -181,6 +224,7 @@
           </button>
         </div>
       </form>
+      }
     </div>
   </app-dialog>
 </div>

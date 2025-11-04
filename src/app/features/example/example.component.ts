@@ -4,6 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { injectQuery, injectMutation, injectQueryClient } from '@tanstack/angular-query-experimental';
 import { ApiService } from '../../core/http/api.service';
 import { DialogComponent, DialogTitleDirective, DialogActionsDirective } from '../../ui/dialog';
+import { DynamicFormComponent, DynamicFormConfig } from '../../shared/components/dynamic-form';
 import { zodValidator } from '../../shared/utils/form.utils';
 import { emailSchema, requiredStringSchema } from '../../shared/validators/schemas';
 import { z } from 'zod';
@@ -14,7 +15,7 @@ import { of, delay } from 'rxjs';
  * Demonstrates:
  * - TanStack Query for data fetching with optimistic updates
  * - TanStack Mutations for create/update operations
- * - Typed Forms with Zod validation
+ * - Typed Forms with Zod validation (Manual & Dynamic)
  * - Dialog component usage
  * - Tailwind CSS styling
  */
@@ -29,11 +30,11 @@ const userSchema = z.object({
 
 type User = z.infer<typeof userSchema>;
 
-// Form schema
+// Form schema with descriptions for dynamic form
 const userFormSchema = z.object({
-  name: requiredStringSchema,
-  email: emailSchema,
-  role: requiredStringSchema,
+  name: requiredStringSchema.describe('Full Name|Enter the user\'s full name'),
+  email: emailSchema.describe('Email Address|We\'ll never share your email'),
+  role: z.enum(['Admin', 'User', 'Guest']).describe('Role|Select the user\'s role'),
 });
 
 type UserFormData = z.infer<typeof userFormSchema>;
@@ -54,6 +55,7 @@ let mockUsersStore: User[] = [
     DialogComponent,
     DialogTitleDirective,
     DialogActionsDirective,
+    DynamicFormComponent,
   ],
   templateUrl: './example.component.html',
   styleUrl: './example.component.css',
@@ -67,6 +69,21 @@ export class ExampleComponent {
   // Track editing state
   protected readonly editingUser = signal<User | null>(null);
   protected readonly isEditMode = signal(false);
+
+  // Form mode toggle (manual vs dynamic)
+  protected readonly useDynamicForm = signal(false);
+
+  // Dynamic form configuration
+  protected readonly dynamicFormConfig: DynamicFormConfig<typeof userFormSchema.shape> = {
+    schema: userFormSchema,
+    fields: {
+      role: {
+        placeholder: 'Choose a role',
+      },
+    },
+    submitLabel: 'Save User',
+    showCancel: true,
+  };
 
   /**
    * TanStack Query for fetching users
@@ -188,15 +205,15 @@ export class ExampleComponent {
 
   // Typed form with Zod validation
   protected readonly userForm = new FormGroup({
-    name: new FormControl('', {
+    name: new FormControl<string>('', {
       validators: [Validators.required, zodValidator(userFormSchema.shape.name)],
       nonNullable: true,
     }),
-    email: new FormControl('', {
+    email: new FormControl<string>('', {
       validators: [Validators.required, zodValidator(userFormSchema.shape.email)],
       nonNullable: true,
     }),
-    role: new FormControl('', {
+    role: new FormControl<'Admin' | 'User' | 'Guest' | ''>('', {
       validators: [Validators.required, zodValidator(userFormSchema.shape.role)],
       nonNullable: true,
     }),
@@ -223,7 +240,7 @@ export class ExampleComponent {
     this.userForm.patchValue({
       name: user.name,
       email: user.email,
-      role: user.role,
+      role: user.role as 'Admin' | 'User' | 'Guest',
     });
 
     this.dialogOpen.set(true);
@@ -244,7 +261,12 @@ export class ExampleComponent {
    */
   onSubmit(): void {
     if (this.userForm.valid) {
-      const formData = this.userForm.getRawValue();
+      const rawValue = this.userForm.getRawValue();
+      const formData: UserFormData = {
+        name: rawValue.name,
+        email: rawValue.email,
+        role: rawValue.role as 'Admin' | 'User' | 'Guest',
+      };
 
       if (this.isEditMode() && this.editingUser()) {
         // Update existing user
@@ -278,5 +300,41 @@ export class ExampleComponent {
    */
   protected get isSaving(): boolean {
     return this.createUserMutation.isPending() || this.updateUserMutation.isPending();
+  }
+
+  /**
+   * Handle dynamic form submission
+   */
+  onDynamicFormSubmit(formData: UserFormData): void {
+    if (this.isEditMode() && this.editingUser()) {
+      // Update existing user
+      this.updateUserMutation.mutate({
+        id: this.editingUser()!.id,
+        data: formData,
+      });
+    } else {
+      // Create new user
+      this.createUserMutation.mutate(formData);
+    }
+  }
+
+  /**
+   * Toggle between manual and dynamic form
+   */
+  toggleFormMode(): void {
+    this.useDynamicForm.update(v => !v);
+  }
+
+  /**
+   * Get initial data for dynamic form
+   */
+  get dynamicFormInitialData(): Partial<UserFormData> | undefined {
+    return this.isEditMode() && this.editingUser()
+      ? {
+          name: this.editingUser()!.name,
+          email: this.editingUser()!.email,
+          role: this.editingUser()!.role as 'Admin' | 'User' | 'Guest',
+        }
+      : undefined;
   }
 }

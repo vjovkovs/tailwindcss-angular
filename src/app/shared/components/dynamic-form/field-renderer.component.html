@@ -1,0 +1,162 @@
+<div class="field-wrapper">
+  <!-- Text Input -->
+  @if (field.type === 'text') {
+    <div>
+      <label [for]="field.name" class="block text-sm font-medium text-gray-700">
+        {{ field.label }}
+        @if (field.required) {
+          <span class="text-error">*</span>
+        }
+      </label>
+      <input
+        type="text"
+        [id]="field.name"
+        [formControl]="control"
+        [placeholder]="field.placeholder || ''"
+        [attr.minlength]="field.minLength"
+        [attr.maxlength]="field.maxLength"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm px-3 py-2 border"
+        [class.border-error]="hasError()"
+      />
+      @if (field.hint && !hasError()) {
+        <p class="mt-1 text-xs text-gray-500">{{ field.hint }}</p>
+      }
+      @if (hasError()) {
+        <p class="mt-1 text-sm text-error">{{ getErrorMessage() }}</p>
+      }
+    </div>
+  }
+
+  <!-- Email Input -->
+  @if (field.type === 'email') {
+    <div>
+      <label [for]="field.name" class="block text-sm font-medium text-gray-700">
+        {{ field.label }}
+        @if (field.required) {
+          <span class="text-error">*</span>
+        }
+      </label>
+      <input
+        type="email"
+        [id]="field.name"
+        [formControl]="control"
+        [placeholder]="field.placeholder || ''"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm px-3 py-2 border"
+        [class.border-error]="hasError()"
+      />
+      @if (field.hint && !hasError()) {
+        <p class="mt-1 text-xs text-gray-500">{{ field.hint }}</p>
+      }
+      @if (hasError()) {
+        <p class="mt-1 text-sm text-error">{{ getErrorMessage() }}</p>
+      }
+    </div>
+  }
+
+  <!-- Number Input -->
+  @if (field.type === 'number') {
+    <div>
+      <label [for]="field.name" class="block text-sm font-medium text-gray-700">
+        {{ field.label }}
+        @if (field.required) {
+          <span class="text-error">*</span>
+        }
+      </label>
+      <input
+        type="number"
+        [id]="field.name"
+        [formControl]="control"
+        [placeholder]="field.placeholder || ''"
+        [attr.min]="field.min"
+        [attr.max]="field.max"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm px-3 py-2 border"
+        [class.border-error]="hasError()"
+      />
+      @if (field.hint && !hasError()) {
+        <p class="mt-1 text-xs text-gray-500">{{ field.hint }}</p>
+      }
+      @if (hasError()) {
+        <p class="mt-1 text-sm text-error">{{ getErrorMessage() }}</p>
+      }
+    </div>
+  }
+
+  <!-- Select Dropdown -->
+  @if (field.type === 'select') {
+    <div>
+      <label [for]="field.name" class="block text-sm font-medium text-gray-700">
+        {{ field.label }}
+        @if (field.required) {
+          <span class="text-error">*</span>
+        }
+      </label>
+      <select
+        [id]="field.name"
+        [formControl]="control"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm px-3 py-2 border"
+        [class.border-error]="hasError()"
+      >
+        <option value="">{{ field.placeholder || 'Select an option' }}</option>
+        @for (option of field.options; track option.value) {
+          <option [value]="option.value">{{ option.label }}</option>
+        }
+      </select>
+      @if (field.hint && !hasError()) {
+        <p class="mt-1 text-xs text-gray-500">{{ field.hint }}</p>
+      }
+      @if (hasError()) {
+        <p class="mt-1 text-sm text-error">{{ getErrorMessage() }}</p>
+      }
+    </div>
+  }
+
+  <!-- Checkbox -->
+  @if (field.type === 'checkbox') {
+    <div class="flex items-start">
+      <div class="flex items-center h-5">
+        <input
+          type="checkbox"
+          [id]="field.name"
+          [formControl]="control"
+          class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+        />
+      </div>
+      <div class="ml-3 text-sm">
+        <label [for]="field.name" class="font-medium text-gray-700">
+          {{ field.label }}
+        </label>
+        @if (field.hint) {
+          <p class="text-gray-500">{{ field.hint }}</p>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Textarea -->
+  @if (field.type === 'textarea') {
+    <div>
+      <label [for]="field.name" class="block text-sm font-medium text-gray-700">
+        {{ field.label }}
+        @if (field.required) {
+          <span class="text-error">*</span>
+        }
+      </label>
+      <textarea
+        [id]="field.name"
+        [formControl]="control"
+        [placeholder]="field.placeholder || ''"
+        [attr.minlength]="field.minLength"
+        [attr.maxlength]="field.maxLength"
+        rows="3"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm px-3 py-2 border"
+        [class.border-error]="hasError()"
+      ></textarea>
+      @if (field.hint && !hasError()) {
+        <p class="mt-1 text-xs text-gray-500">{{ field.hint }}</p>
+      }
+      @if (hasError()) {
+        <p class="mt-1 text-sm text-error">{{ getErrorMessage() }}</p>
+      }
+    </div>
+  }
+</div>
