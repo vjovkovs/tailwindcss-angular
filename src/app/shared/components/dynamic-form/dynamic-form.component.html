@@ -1,39 +1,247 @@
-<form [formGroup]="formGroup" (ngSubmit)="onSubmit()" class="space-y-4">
-  <!-- Render all fields -->
-  @for (field of fields(); track field.name) {
-    <app-field-renderer
-      [field]="field"
-      [control]="getControl(field.name)"
-    />
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+  <!-- Phase 3: Multi-step form progress -->
+  @if (isMultiStep()) {
+    <div class="mb-6">
+      <!-- Step indicators -->
+      <div class="flex items-center justify-between">
+        @for (step of config.steps; track step.id; let i = $index) {
+          <div class="flex items-center" [class.flex-1]="i < config.steps!.length - 1">
+            <div class="flex flex-col items-center">
+              <div
+                class="flex items-center justify-center w-10 h-10 rounded-full border-2 transition-colors"
+                [class.bg-primary-600]="i < currentStep()"
+                [class.border-primary-600]="i <= currentStep()"
+                [class.text-white]="i < currentStep()"
+                [class.bg-white]="i === currentStep()"
+                [class.text-primary-600]="i === currentStep()"
+                [class.border-gray-300]="i > currentStep()"
+                [class.text-gray-400]="i > currentStep()"
+              >
+                @if (i < currentStep()) {
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  </svg>
+                } @else {
+                  {{ i + 1 }}
+                }
+              </div>
+              <div class="mt-2 text-center">
+                <p class="text-sm font-medium" [class.text-primary-600]="i === currentStep()" [class.text-gray-500]="i !== currentStep()">
+                  {{ step.title }}
+                </p>
+                @if (step.description) {
+                  <p class="text-xs text-gray-500 max-w-xs">{{ step.description }}</p>
+                }
+              </div>
+            </div>
+            @if (i < config.steps!.length - 1) {
+              <div class="flex-1 h-0.5 mx-2" [class.bg-primary-600]="i < currentStep()" [class.bg-gray-300]="i >= currentStep()"></div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Field groups or regular layout -->
+  @if (hasGroups()) {
+    <!-- Phase 3: Grouped fields -->
+    @for (group of config.groups; track group.id) {
+      <div class="mb-6 border border-gray-200 rounded-lg overflow-hidden">
+        <div
+          class="px-4 py-3 bg-gray-50 border-b border-gray-200 flex items-center justify-between cursor-pointer"
+          [class.cursor-pointer]="group.collapsible"
+          (click)="group.collapsible ? toggleGroup(group.id) : null"
+        >
+          <div class="flex items-center gap-2">
+            @if (group.icon) {
+              <span class="text-gray-600">{{ group.icon }}</span>
+            }
+            <h3 class="text-sm font-semibold text-gray-900">{{ group.title }}</h3>
+          </div>
+          @if (group.collapsible) {
+            <svg
+              class="w-5 h-5 text-gray-500 transition-transform"
+              [class.rotate-180]="!isGroupCollapsed(group.id)"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          }
+        </div>
+        @if (!isGroupCollapsed(group.id)) {
+          <div class="p-4" [ngClass]="getFieldContainerClass()">
+            @for (field of getFieldsByGroup(group.id); track field.name) {
+              @if (isFieldVisible(field)) {
+                <div [ngClass]="getFieldGridClass(field)">
+                  @if (field.type === 'array') {
+                    <app-array-field-renderer
+                      [field]="field"
+                      [formArray]="getFormArray(field.name)"
+                    />
+                  } @else if (field.type === 'object') {
+                    <div class="space-y-3 p-4 border border-gray-200 rounded-md bg-gray-50">
+                      <h3 class="text-sm font-medium text-gray-900">{{ field.label }}</h3>
+                      @if (field.hint) {
+                        <p class="text-xs text-gray-500 -mt-2">{{ field.hint }}</p>
+                      }
+                      <div class="space-y-3">
+                        @for (nestedField of field.fields; track nestedField.name) {
+                          <app-field-renderer
+                            [field]="nestedField"
+                            [control]="getNestedControl(field.name, nestedField.name)"
+                          />
+                        }
+                      </div>
+                    </div>
+                  } @else {
+                    <app-field-renderer
+                      [field]="field"
+                      [control]="getControl(field.name)"
+                    />
+                  }
+                </div>
+              }
+            }
+          </div>
+        }
+        @if (group.description && !isGroupCollapsed(group.id)) {
+          <div class="px-4 pb-3 text-xs text-gray-500">
+            {{ group.description }}
+          </div>
+        }
+      </div>
+    }
+  } @else {
+    <!-- Regular layout (no groups) -->
+    <div [ngClass]="getFieldContainerClass()">
+      @for (field of getVisibleFieldsForCurrentStep(); track field.name) {
+        @if (isFieldVisible(field)) {
+          <div [ngClass]="getFieldGridClass(field)">
+            @if (field.type === 'array') {
+              <app-array-field-renderer
+                [field]="field"
+                [formArray]="getFormArray(field.name)"
+              />
+            } @else if (field.type === 'object') {
+              <div class="space-y-3 p-4 border border-gray-200 rounded-md bg-gray-50">
+                <h3 class="text-sm font-medium text-gray-900">{{ field.label }}</h3>
+                @if (field.hint) {
+                  <p class="text-xs text-gray-500 -mt-2">{{ field.hint }}</p>
+                }
+                <div class="space-y-3">
+                  @for (nestedField of field.fields; track nestedField.name) {
+                    <app-field-renderer
+                      [field]="nestedField"
+                      [control]="getNestedControl(field.name, nestedField.name)"
+                    />
+                  }
+                </div>
+              </div>
+            } @else {
+              <app-field-renderer
+                [field]="field"
+                [control]="getControl(field.name)"
+              />
+            }
+          </div>
+        }
+      }
+    </div>
   }
 
   <!-- Form Actions -->
-  <div class="flex gap-3 justify-end pt-4 mt-6 border-t border-gray-200">
-    @if (showCancel) {
-      <button
-        type="button"
-        (click)="onCancel()"
-        [disabled]="loading"
-        class="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {{ cancelLabel }}
-      </button>
-    }
-
-    <button
-      type="submit"
-      [disabled]="formGroup.invalid || loading"
-      class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-primary-600 border border-transparent rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
-    >
-      @if (loading) {
-        <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        Saving...
-      } @else {
-        {{ submitLabel }}
+  @if (isMultiStep()) {
+    <!-- Multi-step navigation -->
+    <div class="flex gap-3 justify-between pt-4 mt-6 border-t border-gray-200">
+      <div>
+        @if (currentStep() > 0) {
+          <button
+            type="button"
+            (click)="previousStep()"
+            [disabled]="loading"
+            class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back
+          </button>
+        }
+      </div>
+      <div class="flex gap-3">
+        @if (showCancel) {
+          <button
+            type="button"
+            (click)="onCancel()"
+            [disabled]="loading"
+            class="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {{ cancelLabel }}
+          </button>
+        }
+        @if (isLastStep()) {
+          <button
+            type="submit"
+            [disabled]="formGroup.invalid || loading"
+            class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-primary-600 border border-transparent rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            @if (loading) {
+              <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Saving...
+            } @else {
+              {{ submitLabel }}
+            }
+          </button>
+        } @else {
+          <button
+            type="button"
+            (click)="nextStep()"
+            [disabled]="!canProceedToNextStep() || loading"
+            class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-primary-600 border border-transparent rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Next
+            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        }
+      </div>
+    </div>
+  } @else {
+    <!-- Regular form actions -->
+    <div class="flex gap-3 justify-end pt-4 mt-6 border-t border-gray-200">
+      @if (showCancel) {
+        <button
+          type="button"
+          (click)="onCancel()"
+          [disabled]="loading"
+          class="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {{ cancelLabel }}
+        </button>
       }
-    </button>
-  </div>
+
+      <button
+        type="submit"
+        [disabled]="formGroup.invalid || loading"
+        class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-primary-600 border border-transparent rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        @if (loading) {
+          <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Saving...
+        } @else {
+          {{ submitLabel }}
+        }
+      </button>
+    </div>
+  }
 </form>

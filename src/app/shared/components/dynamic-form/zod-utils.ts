@@ -41,6 +41,47 @@ function extractFieldConfig(name: string, zodType: z.ZodTypeAny): FieldConfig {
     innerType = zodType.unwrap();
   }
 
+  // Phase 2: Handle nested objects
+  if (innerType instanceof z.ZodObject) {
+    config.schema = innerType;
+    config.fields = extractFieldsFromSchema(innerType, {});
+  }
+
+  // Phase 2: Handle arrays
+  if (innerType instanceof z.ZodArray) {
+    const itemType = (innerType as any)._def.type;
+    config.itemSchema = itemType;
+
+    // If array items are objects, extract their field configs
+    if (itemType instanceof z.ZodObject) {
+      config.itemFields = {
+        name: 'item',
+        type: 'object',
+        label: 'Item',
+        required: true,
+        schema: itemType,
+        fields: extractFieldsFromSchema(itemType, {}),
+      };
+    } else {
+      // For primitive arrays, create a simple field config
+      config.itemFields = {
+        name: 'item',
+        type: inferFieldType(itemType),
+        label: 'Item',
+        required: true,
+      };
+    }
+
+    // Extract array constraints
+    const checks = (innerType as any)._def._def?.minLength || (innerType as any)._def._def?.maxLength;
+    if ((innerType as any)._def.minLength) {
+      config.minItems = (innerType as any)._def.minLength.value;
+    }
+    if ((innerType as any)._def.maxLength) {
+      config.maxItems = (innerType as any)._def.maxLength.value;
+    }
+  }
+
   // Extract validation constraints
   if (innerType instanceof z.ZodString) {
     const checks = (innerType as any)._def.checks || [];
@@ -107,12 +148,46 @@ function inferFieldType(zodType: z.ZodTypeAny): FieldType {
     innerType = zodType.unwrap();
   }
 
+  // Phase 2: Check for nested objects
+  if (innerType instanceof z.ZodObject) {
+    return 'object';
+  }
+
+  // Phase 2: Check for arrays
+  if (innerType instanceof z.ZodArray) {
+    return 'array';
+  }
+
   if (innerType instanceof z.ZodString) {
     const checks = (innerType as any)._def.checks || [];
 
-    // Check for email validation
+    // Check for specific string formats
     if (checks.some((c: any) => c.kind === 'email')) {
       return 'email';
+    }
+    if (checks.some((c: any) => c.kind === 'url')) {
+      return 'url';
+    }
+    if (checks.some((c: any) => c.kind === 'datetime')) {
+      return 'datetime-local';
+    }
+
+    // Check description for field type hints
+    const description = (zodType as any)._def.description || '';
+    if (description.toLowerCase().includes('password')) {
+      return 'password';
+    }
+    if (description.toLowerCase().includes('phone') || description.toLowerCase().includes('tel')) {
+      return 'tel';
+    }
+    if (description.toLowerCase().includes('date')) {
+      return 'date';
+    }
+    if (description.toLowerCase().includes('time')) {
+      return 'time';
+    }
+    if (description.toLowerCase().includes('textarea') || description.toLowerCase().includes('multiline')) {
+      return 'textarea';
     }
 
     return 'text';
@@ -128,6 +203,10 @@ function inferFieldType(zodType: z.ZodTypeAny): FieldType {
 
   if (innerType instanceof z.ZodEnum) {
     return 'select';
+  }
+
+  if (innerType instanceof z.ZodDate) {
+    return 'date';
   }
 
   // Default to text
@@ -168,4 +247,51 @@ export function createZodValidator(zodType: z.ZodTypeAny) {
     });
     return errors;
   };
+}
+
+/**
+ * Evaluates a field condition against form values
+ * Phase 2: Conditional field visibility
+ */
+export function evaluateCondition(
+  condition: { field: string; operator: string; value?: any } | undefined,
+  formValues: Record<string, any>
+): boolean {
+  if (!condition) {
+    return true; // No condition means always visible
+  }
+
+  const fieldValue = formValues[condition.field];
+
+  switch (condition.operator) {
+    case 'equals':
+      return fieldValue === condition.value;
+
+    case 'notEquals':
+      return fieldValue !== condition.value;
+
+    case 'contains':
+      if (typeof fieldValue === 'string') {
+        return fieldValue.includes(condition.value);
+      }
+      if (Array.isArray(fieldValue)) {
+        return fieldValue.includes(condition.value);
+      }
+      return false;
+
+    case 'greaterThan':
+      return fieldValue > condition.value;
+
+    case 'lessThan':
+      return fieldValue < condition.value;
+
+    case 'truthy':
+      return !!fieldValue;
+
+    case 'falsy':
+      return !fieldValue;
+
+    default:
+      return true;
+  }
 }
