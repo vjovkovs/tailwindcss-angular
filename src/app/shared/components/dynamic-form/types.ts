@@ -52,6 +52,13 @@ export interface FieldConfig {
 
   // Phase 2: Custom rendering
   customTemplate?: TemplateRef<any>;
+
+  // Phase 3: Grid layout
+  colSpan?: number; // Number of columns to span in grid layout (1-12)
+  rowSpan?: number; // Number of rows to span in grid layout
+
+  // Phase 3: Field grouping
+  group?: string; // Group identifier for field organization
 }
 
 /**
@@ -67,6 +74,30 @@ export interface FieldCondition {
 }
 
 /**
+ * Phase 3: Field group configuration
+ */
+export interface FieldGroup {
+  id: string;
+  title: string;
+  description?: string;
+  collapsible?: boolean;
+  collapsed?: boolean;
+  icon?: string;
+}
+
+/**
+ * Phase 3: Multi-step form configuration
+ */
+export interface FormStep {
+  id: string;
+  title: string;
+  description?: string;
+  fields: string[]; // Field names that belong to this step
+  icon?: string;
+  validate?: boolean; // Validate step before proceeding (default: true)
+}
+
+/**
  * Configuration for the dynamic form
  */
 export interface DynamicFormConfig<T extends z.ZodRawShape> {
@@ -78,5 +109,12 @@ export interface DynamicFormConfig<T extends z.ZodRawShape> {
 
   // Phase 2: Layout options
   layout?: 'vertical' | 'horizontal' | 'grid';
-  columns?: number; // For grid layout
+  columns?: number; // For grid layout (default: 2)
+
+  // Phase 3: Field groups
+  groups?: FieldGroup[];
+
+  // Phase 3: Multi-step wizard
+  steps?: FormStep[];
+  showStepProgress?: boolean; // Show progress indicator (default: true)
 }

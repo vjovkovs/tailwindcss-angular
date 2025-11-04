@@ -587,6 +587,182 @@ const config: DynamicFormConfig<typeof employeeSchema.shape> = {
 
 Visit the **Phase 2 Demo** at `/phase2` to see all advanced features in action with a complete employee registration form.
 
+## Phase 3: Layouts, Groups & Multi-Step Forms
+
+Phase 3 introduces powerful organization and navigation features:
+
+### Grid Layouts
+
+Create responsive grid layouts with customizable columns:
+
+```typescript
+const config: DynamicFormConfig<typeof schema.shape> = {
+  schema,
+  layout: 'grid',
+  columns: 3, // 3-column grid
+  fields: {
+    email: { colSpan: 3 }, // Full width
+    firstName: { colSpan: 1 }, // Default: 1 column
+    lastName: { colSpan: 1 },
+    city: { colSpan: 2 }, // Spans 2 columns
+  },
+};
+```
+
+**Supported Layouts:**
+- `vertical` (default) - Stack fields vertically
+- `horizontal` - Arrange fields in a flex row
+- `grid` - Responsive grid with customizable columns
+
+**Column Spanning:**
+- Use `colSpan` to control field width in grid layout
+- Values from 1-12 (following Tailwind's grid system)
+- Automatically responsive (single column on mobile)
+
+### Field Groups
+
+Organize fields into collapsible sections:
+
+```typescript
+const config: DynamicFormConfig<typeof schema.shape> = {
+  schema,
+  fields: {
+    firstName: { group: 'personal' },
+    lastName: { group: 'personal' },
+    email: { group: 'personal' },
+
+    street: { group: 'address' },
+    city: { group: 'address' },
+    state: { group: 'address' },
+  },
+  groups: [
+    {
+      id: 'personal',
+      title: '👤 Personal Information',
+      description: 'Your basic contact details',
+      collapsible: true,
+      collapsed: false, // Initially expanded
+    },
+    {
+      id: 'address',
+      title: '🏠 Address',
+      description: 'Where can we reach you?',
+      collapsible: true,
+      collapsed: true, // Initially collapsed
+    },
+  ],
+};
+```
+
+**Group Features:**
+- Visual separation with borders
+- Optional icons for better UX
+- Collapsible sections (click header to toggle)
+- Group descriptions
+- Can combine with grid layout
+
+### Multi-Step Wizard Forms
+
+Break long forms into manageable steps:
+
+```typescript
+const config: DynamicFormConfig<typeof schema.shape> = {
+  schema,
+  steps: [
+    {
+      id: 'step1',
+      title: 'Personal Info',
+      description: 'Tell us about yourself',
+      fields: ['firstName', 'lastName', 'email'],
+      icon: '👤',
+      validate: true, // Validate before proceeding (default)
+    },
+    {
+      id: 'step2',
+      title: 'Address',
+      description: 'Where do you live?',
+      fields: ['street', 'city', 'state', 'zipCode'],
+      icon: '🏠',
+    },
+    {
+      id: 'step3',
+      title: 'Account',
+      description: 'Create your account',
+      fields: ['username', 'password'],
+      icon: '🔐',
+    },
+  ],
+  showStepProgress: true, // Show progress indicator
+};
+```
+
+**Wizard Features:**
+- Progress indicator with step numbers
+- Step titles and descriptions
+- Back/Next navigation buttons
+- Per-step validation before proceeding
+- Checkmark icons for completed steps
+- Submit button appears on last step only
+- Optional icons for each step
+
+**Step Validation:**
+- Set `validate: false` to allow proceeding without validation
+- Default is `true` - validates all fields in current step
+- Invalid fields are marked as touched when user tries to proceed
+
+### Complete Phase 3 Example
+
+```typescript
+const schema = z.object({
+  // Personal
+  firstName: z.string().min(1).describe('First Name'),
+  lastName: z.string().min(1).describe('Last Name'),
+  email: z.string().email().describe('Email'),
+
+  // Address
+  street: z.string().describe('Street'),
+  city: z.string().describe('City'),
+  state: z.string().describe('State'),
+
+  // Account
+  username: z.string().min(3).describe('Username'),
+  password: z.string().min(8).describe('Password|password'),
+});
+
+// Multi-step with grid layout
+const config: DynamicFormConfig<typeof schema.shape> = {
+  schema,
+  layout: 'grid',
+  columns: 2,
+  steps: [
+    {
+      id: 'personal',
+      title: 'Personal Info',
+      fields: ['firstName', 'lastName', 'email'],
+    },
+    {
+      id: 'address',
+      title: 'Address',
+      fields: ['street', 'city', 'state'],
+    },
+    {
+      id: 'account',
+      title: 'Account',
+      fields: ['username', 'password'],
+    },
+  ],
+  fields: {
+    email: { colSpan: 2 }, // Full width in grid
+  },
+};
+```
+
+**Live Demos:**
+- Visit `/phase3` to see all Phase 3 features
+- Try the multi-step wizard
+- Experiment with grid layouts
+- Test collapsible field groups
+
 ## Best Practices
 
 1. **Use `.describe()` for User-Friendly Labels**

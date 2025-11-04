@@ -43,8 +43,15 @@ export class DynamicFormComponent<T extends z.ZodRawShape> implements OnInit {
   formGroup!: FormGroup;
   fields = signal<FieldConfig[]>([]);
 
+  // Phase 3: Multi-step form state
+  currentStep = signal(0);
+
+  // Phase 3: Collapsed groups state
+  private collapsedGroups = signal<Set<string>>(new Set());
+
   ngOnInit(): void {
     this.initializeForm();
+    this.initializeGroupsState();
   }
 
   /**
@@ -271,5 +278,168 @@ export class DynamicFormComponent<T extends z.ZodRawShape> implements OnInit {
    */
   get showCancel(): boolean {
     return this.config.showCancel !== false;
+  }
+
+  // ==================== Phase 3: Multi-Step Form Methods ====================
+
+  /**
+   * Phase 3: Initialize groups state (collapsed/expanded)
+   */
+  private initializeGroupsState(): void {
+    if (this.config.groups) {
+      const collapsed = new Set<string>();
+      this.config.groups.forEach(group => {
+        if (group.collapsed) {
+          collapsed.add(group.id);
+        }
+      });
+      this.collapsedGroups.set(collapsed);
+    }
+  }
+
+  /**
+   * Phase 3: Check if form is multi-step
+   */
+  isMultiStep(): boolean {
+    return !!this.config.steps && this.config.steps.length > 0;
+  }
+
+  /**
+   * Phase 3: Check if current step is the last step
+   */
+  isLastStep(): boolean {
+    return this.currentStep() === (this.config.steps?.length ?? 0) - 1;
+  }
+
+  /**
+   * Phase 3: Move to next step
+   */
+  nextStep(): void {
+    if (!this.isLastStep() && this.canProceedToNextStep()) {
+      this.currentStep.update(step => step + 1);
+    }
+  }
+
+  /**
+   * Phase 3: Move to previous step
+   */
+  previousStep(): void {
+    if (this.currentStep() > 0) {
+      this.currentStep.update(step => step - 1);
+    }
+  }
+
+  /**
+   * Phase 3: Check if user can proceed to next step
+   */
+  canProceedToNextStep(): boolean {
+    const step = this.config.steps?.[this.currentStep()];
+    if (!step || step.validate === false) {
+      return true;
+    }
+
+    // Check if all fields in current step are valid
+    const stepFields = step.fields;
+    for (const fieldName of stepFields) {
+      const control = this.formGroup.get(fieldName);
+      if (control && control.invalid) {
+        control.markAsTouched();
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * Phase 3: Get visible fields for current step
+   */
+  getVisibleFieldsForCurrentStep(): FieldConfig[] {
+    if (!this.isMultiStep()) {
+      return this.fields();
+    }
+
+    const step = this.config.steps?.[this.currentStep()];
+    if (!step) {
+      return this.fields();
+    }
+
+    return this.fields().filter(field => step.fields.includes(field.name));
+  }
+
+  // ==================== Phase 3: Field Groups Methods ====================
+
+  /**
+   * Phase 3: Check if form has field groups
+   */
+  hasGroups(): boolean {
+    return !!this.config.groups && this.config.groups.length > 0;
+  }
+
+  /**
+   * Phase 3: Get fields by group ID
+   */
+  getFieldsByGroup(groupId: string): FieldConfig[] {
+    return this.fields().filter(field => field.group === groupId);
+  }
+
+  /**
+   * Phase 3: Check if a group is collapsed
+   */
+  isGroupCollapsed(groupId: string): boolean {
+    return this.collapsedGroups().has(groupId);
+  }
+
+  /**
+   * Phase 3: Toggle group collapsed state
+   */
+  toggleGroup(groupId: string): void {
+    this.collapsedGroups.update(groups => {
+      const newGroups = new Set(groups);
+      if (newGroups.has(groupId)) {
+        newGroups.delete(groupId);
+      } else {
+        newGroups.add(groupId);
+      }
+      return newGroups;
+    });
+  }
+
+  // ==================== Phase 3: Grid Layout Methods ====================
+
+  /**
+   * Phase 3: Get CSS class for field container based on layout
+   */
+  getFieldContainerClass(): string {
+    const layout = this.config.layout || 'vertical';
+    const columns = this.config.columns || 2;
+
+    if (layout === 'grid') {
+      return `grid gap-4 grid-cols-1 md:grid-cols-${columns}`;
+    }
+
+    if (layout === 'horizontal') {
+      return 'flex flex-wrap gap-4';
+    }
+
+    // vertical (default)
+    return 'space-y-4';
+  }
+
+  /**
+   * Phase 3: Get CSS class for individual field in grid layout
+   */
+  getFieldGridClass(field: FieldConfig): string {
+    const layout = this.config.layout || 'vertical';
+
+    if (layout === 'grid' && field.colSpan) {
+      return `col-span-${field.colSpan}`;
+    }
+
+    if (layout === 'horizontal') {
+      return 'flex-1 min-w-[200px]';
+    }
+
+    return '';
   }
 }
