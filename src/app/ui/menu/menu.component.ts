@@ -87,7 +87,7 @@ export class MenuComponent implements AfterContentInit {
     if (value) {
       this.show();
     } else {
-      this.hide();
+      this.close();
     }
   }
   get open(): boolean {

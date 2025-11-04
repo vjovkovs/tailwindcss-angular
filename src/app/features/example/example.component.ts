@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ApiService } from '../../core/http/api.service';
-import { DialogComponent, DialogTitleDirective, DialogContentDirective, DialogActionsDirective } from '../../ui/dialog';
+import { DialogComponent, DialogTitleDirective, DialogActionsDirective } from '../../ui/dialog';
 import { zodValidator } from '../../shared/utils/form.utils';
 import { emailSchema, requiredStringSchema } from '../../shared/validators/schemas';
 import { z } from 'zod';
@@ -44,7 +44,6 @@ type UserFormData = z.infer<typeof userFormSchema>;
     ReactiveFormsModule,
     DialogComponent,
     DialogTitleDirective,
-    DialogContentDirective,
     DialogActionsDirective,
   ],
   templateUrl: './example.component.html',

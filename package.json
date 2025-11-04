@@ -50,6 +50,7 @@
     "@angular/build": "^20.3.8",
     "@angular/cli": "^20.3.8",
     "@angular/compiler-cli": "^20.3.0",
+    "@angular/platform-browser-dynamic": "^20.3.9",
     "@axe-core/playwright": "^4.11.0",
     "@playwright/test": "^1.56.1",
     "@tailwindcss/postcss": "^4.0.0",
@@ -59,6 +60,7 @@
     "@typescript-eslint/eslint-plugin": "^8.46.3",
     "@typescript-eslint/parser": "^8.46.3",
     "@vitest/ui": "^4.0.6",
+    "autoprefixer": "^10.4.21",
     "eslint": "^9.39.0",
     "jasmine-core": "~5.9.0",
     "jsdom": "^27.1.0",
@@ -67,6 +69,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "postcss": "^8.5.6",
     "tailwindcss": "^4.0.0",
     "typescript": "~5.9.2",
     "vitest": "^4.0.6"
