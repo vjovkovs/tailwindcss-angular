@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "temp-ng": {
+    "angular-tailwind-template": {
       "projectType": "application",
       "schematics": {},
       "root": "",
