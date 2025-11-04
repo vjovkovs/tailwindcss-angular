@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { DynamicFormComponent, DynamicFormConfig, FieldCondition } from '../../shared/components/dynamic-form';
 import { z } from 'zod';
 
@@ -80,26 +81,32 @@ type EmployeeFormData = z.infer<typeof employeeFormSchema>;
 @Component({
   selector: 'app-example-phase2',
   standalone: true,
-  imports: [CommonModule, DynamicFormComponent],
+  imports: [CommonModule, RouterLink, RouterLinkActive, DynamicFormComponent],
   template: `
-    <div class="max-w-4xl mx-auto p-6">
+    <!-- <div class="max-w-4xl mx-auto p-6">
+      <div class="flex gap-2 mb-6 pb-4 border-b border-gray-200"> -->
+    <div class="space-y-6">
       <!-- Navigation -->
-      <div class="flex gap-2 mb-6 pb-4 border-b border-gray-200">
+      <div class="flex gap-2 pb-4 border-b border-gray-200">
         <a
-          href="/"
-          class="text-sm px-3 py-1.5 rounded-md font-medium text-gray-600 hover:bg-gray-100"
+          routerLink="/"
+          routerLinkActive="bg-primary-100 text-primary-700"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="text-sm px-3 py-1.5 rounded-md font-medium text-gray-600 hover:bg-gray-100 transition-colors duration-200"
         >
           Phase 1: Basic Forms
         </a>
         <a
-          href="/phase2"
-          class="text-sm px-3 py-1.5 rounded-md font-medium bg-primary-100 text-primary-700"
+          routerLink="/phase2"
+          routerLinkActive="bg-primary-100 text-primary-700"
+          class="text-sm px-3 py-1.5 rounded-md font-medium text-gray-600 hover:bg-gray-100 transition-colors duration-200"
         >
           Phase 2: Advanced Forms
         </a>
         <a
-          href="/phase3"
-          class="text-sm px-3 py-1.5 rounded-md font-medium text-gray-600 hover:bg-gray-100"
+          routerLink="/phase3"
+          routerLinkActive="bg-primary-100 text-primary-700"
+          class="text-sm px-3 py-1.5 rounded-md font-medium text-gray-600 hover:bg-gray-100 transition-colors duration-200"
         >
           Phase 3: Layouts & Steps
         </a>

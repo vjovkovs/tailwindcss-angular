@@ -1,0 +1,26 @@
+/* Router transition improvements */
+.router-outlet-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Smooth transitions for router-outlet */
+router-outlet + * {
+  transition: opacity 200ms ease-in-out, transform 200ms ease-in-out;
+}
+
+/* Loading state for lazy-loaded components */
+.component-loading {
+  opacity: 0.7;
+  transition: opacity 200ms ease-in-out;
+}
+
+/* Ensure smooth hover transitions on navigation */
+a[routerLink] {
+  transition: all 200ms ease-in-out;
+}
+
+/* Prevent layout shift during route transitions */
+main {
+  min-height: calc(100vh - 140px); /* Adjust based on header height */
+}
