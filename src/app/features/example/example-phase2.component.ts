@@ -97,6 +97,12 @@ type EmployeeFormData = z.infer<typeof employeeFormSchema>;
         >
           Phase 2: Advanced Forms
         </a>
+        <a
+          href="/phase3"
+          class="text-sm px-3 py-1.5 rounded-md font-medium text-gray-600 hover:bg-gray-100"
+        >
+          Phase 3: Layouts & Steps
+        </a>
       </div>
 
       <div class="mb-8">

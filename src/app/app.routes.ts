@@ -11,4 +11,9 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/example/example-phase2.component').then((m) => m.ExamplePhase2Component),
   },
+  {
+    path: 'phase3',
+    loadComponent: () =>
+      import('./features/example/example-phase3.component').then((m) => m.ExamplePhase3Component),
+  },
 ];
