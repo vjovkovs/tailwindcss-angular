@@ -94,8 +94,7 @@ export class ExampleComponent {
     queryFn: () => {
       // Simulate API call with delay
       return of([...mockUsersStore]).pipe(delay(500)).toPromise();
-    },
-    initialData: [],
+    }
   }));
 
   /**
