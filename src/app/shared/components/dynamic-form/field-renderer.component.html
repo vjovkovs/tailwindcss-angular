@@ -159,4 +159,159 @@
       }
     </div>
   }
+
+  <!-- Phase 2: Date Input -->
+  @if (field.type === 'date') {
+    <div>
+      <label [for]="field.name" class="block text-sm font-medium text-gray-700">
+        {{ field.label }}
+        @if (field.required) {
+          <span class="text-error">*</span>
+        }
+      </label>
+      <input
+        type="date"
+        [id]="field.name"
+        [formControl]="control"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm px-3 py-2 border"
+        [class.border-error]="hasError()"
+      />
+      @if (field.hint && !hasError()) {
+        <p class="mt-1 text-xs text-gray-500">{{ field.hint }}</p>
+      }
+      @if (hasError()) {
+        <p class="mt-1 text-sm text-error">{{ getErrorMessage() }}</p>
+      }
+    </div>
+  }
+
+  <!-- Phase 2: Time Input -->
+  @if (field.type === 'time') {
+    <div>
+      <label [for]="field.name" class="block text-sm font-medium text-gray-700">
+        {{ field.label }}
+        @if (field.required) {
+          <span class="text-error">*</span>
+        }
+      </label>
+      <input
+        type="time"
+        [id]="field.name"
+        [formControl]="control"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm px-3 py-2 border"
+        [class.border-error]="hasError()"
+      />
+      @if (field.hint && !hasError()) {
+        <p class="mt-1 text-xs text-gray-500">{{ field.hint }}</p>
+      }
+      @if (hasError()) {
+        <p class="mt-1 text-sm text-error">{{ getErrorMessage() }}</p>
+      }
+    </div>
+  }
+
+  <!-- Phase 2: DateTime Input -->
+  @if (field.type === 'datetime-local') {
+    <div>
+      <label [for]="field.name" class="block text-sm font-medium text-gray-700">
+        {{ field.label }}
+        @if (field.required) {
+          <span class="text-error">*</span>
+        }
+      </label>
+      <input
+        type="datetime-local"
+        [id]="field.name"
+        [formControl]="control"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm px-3 py-2 border"
+        [class.border-error]="hasError()"
+      />
+      @if (field.hint && !hasError()) {
+        <p class="mt-1 text-xs text-gray-500">{{ field.hint }}</p>
+      }
+      @if (hasError()) {
+        <p class="mt-1 text-sm text-error">{{ getErrorMessage() }}</p>
+      }
+    </div>
+  }
+
+  <!-- Phase 2: URL Input -->
+  @if (field.type === 'url') {
+    <div>
+      <label [for]="field.name" class="block text-sm font-medium text-gray-700">
+        {{ field.label }}
+        @if (field.required) {
+          <span class="text-error">*</span>
+        }
+      </label>
+      <input
+        type="url"
+        [id]="field.name"
+        [formControl]="control"
+        [placeholder]="field.placeholder || 'https://example.com'"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm px-3 py-2 border"
+        [class.border-error]="hasError()"
+      />
+      @if (field.hint && !hasError()) {
+        <p class="mt-1 text-xs text-gray-500">{{ field.hint }}</p>
+      }
+      @if (hasError()) {
+        <p class="mt-1 text-sm text-error">{{ getErrorMessage() }}</p>
+      }
+    </div>
+  }
+
+  <!-- Phase 2: Tel Input -->
+  @if (field.type === 'tel') {
+    <div>
+      <label [for]="field.name" class="block text-sm font-medium text-gray-700">
+        {{ field.label }}
+        @if (field.required) {
+          <span class="text-error">*</span>
+        }
+      </label>
+      <input
+        type="tel"
+        [id]="field.name"
+        [formControl]="control"
+        [placeholder]="field.placeholder || ''"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm px-3 py-2 border"
+        [class.border-error]="hasError()"
+      />
+      @if (field.hint && !hasError()) {
+        <p class="mt-1 text-xs text-gray-500">{{ field.hint }}</p>
+      }
+      @if (hasError()) {
+        <p class="mt-1 text-sm text-error">{{ getErrorMessage() }}</p>
+      }
+    </div>
+  }
+
+  <!-- Phase 2: Password Input -->
+  @if (field.type === 'password') {
+    <div>
+      <label [for]="field.name" class="block text-sm font-medium text-gray-700">
+        {{ field.label }}
+        @if (field.required) {
+          <span class="text-error">*</span>
+        }
+      </label>
+      <input
+        type="password"
+        [id]="field.name"
+        [formControl]="control"
+        [placeholder]="field.placeholder || ''"
+        [attr.minlength]="field.minLength"
+        [attr.maxlength]="field.maxLength"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm px-3 py-2 border"
+        [class.border-error]="hasError()"
+      />
+      @if (field.hint && !hasError()) {
+        <p class="mt-1 text-xs text-gray-500">{{ field.hint }}</p>
+      }
+      @if (hasError()) {
+        <p class="mt-1 text-sm text-error">{{ getErrorMessage() }}</p>
+      }
+    </div>
+  }
 </div>

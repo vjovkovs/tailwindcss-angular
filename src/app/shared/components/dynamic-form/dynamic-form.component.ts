@@ -1,10 +1,11 @@
-import { Component, Input, Output, EventEmitter, OnInit, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormGroup, FormControl, FormArray, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
 import { z } from 'zod';
 import { FieldRendererComponent } from './field-renderer.component';
+import { ArrayFieldRendererComponent } from './array-field-renderer.component';
 import { DynamicFormConfig, FieldConfig } from './types';
-import { extractFieldsFromSchema, createZodValidator } from './zod-utils';
+import { extractFieldsFromSchema, createZodValidator, evaluateCondition } from './zod-utils';
 
 /**
  * Dynamic Form Component
@@ -28,7 +29,7 @@ import { extractFieldsFromSchema, createZodValidator } from './zod-utils';
 @Component({
   selector: 'app-dynamic-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FieldRendererComponent],
+  imports: [CommonModule, ReactiveFormsModule, FieldRendererComponent, ArrayFieldRendererComponent],
   templateUrl: './dynamic-form.component.html',
 })
 export class DynamicFormComponent<T extends z.ZodRawShape> implements OnInit {
@@ -58,11 +59,23 @@ export class DynamicFormComponent<T extends z.ZodRawShape> implements OnInit {
     this.fields.set(extractedFields);
 
     // Build FormGroup
-    const formControls: Record<string, FormControl> = {};
+    const formControls: Record<string, AbstractControl> = {};
 
     for (const field of extractedFields) {
       const zodType = this.config.schema.shape[field.name as keyof T];
       const initialValue = this.getInitialValue(field);
+
+      // Phase 2: Handle array fields
+      if (field.type === 'array') {
+        formControls[field.name] = this.createArrayControl(field, initialValue);
+        continue;
+      }
+
+      // Phase 2: Handle nested object fields
+      if (field.type === 'object') {
+        formControls[field.name] = this.createNestedFormGroup(field, initialValue);
+        continue;
+      }
 
       // Create validators
       const validators = [createZodValidator(zodType)];
@@ -82,6 +95,57 @@ export class DynamicFormComponent<T extends z.ZodRawShape> implements OnInit {
   }
 
   /**
+   * Phase 2: Create a FormArray for array fields
+   */
+  private createArrayControl(field: FieldConfig, initialValue: any[]): FormArray {
+    const formArray = new FormArray<any>([]);
+
+    // If we have initial data, populate the array
+    if (Array.isArray(initialValue) && initialValue.length > 0) {
+      for (const item of initialValue) {
+        if (field.itemFields?.type === 'object') {
+          // Create FormGroup for object items
+          formArray.push(this.createNestedFormGroup(field.itemFields, item));
+        } else {
+          // Create FormControl for primitive items
+          const validators = field.itemSchema ? [createZodValidator(field.itemSchema)] : [];
+          formArray.push(new FormControl(item, validators));
+        }
+      }
+    }
+
+    return formArray;
+  }
+
+  /**
+   * Phase 2: Create a FormGroup for nested objects
+   */
+  private createNestedFormGroup(field: FieldConfig, initialValue: any): FormGroup {
+    const formControls: Record<string, FormControl> = {};
+    const fields = field.fields || [];
+
+    for (const nestedField of fields) {
+      const zodType = field.schema?.shape[nestedField.name];
+      const validators = zodType ? [createZodValidator(zodType)] : [];
+
+      if (nestedField.required) {
+        validators.push(Validators.required);
+      }
+
+      const value = initialValue && nestedField.name in initialValue
+        ? initialValue[nestedField.name]
+        : this.getInitialValue(nestedField);
+
+      formControls[nestedField.name] = new FormControl(value, {
+        validators,
+        nonNullable: nestedField.required,
+      });
+    }
+
+    return new FormGroup(formControls);
+  }
+
+  /**
    * Get initial value for a field
    */
   private getInitialValue(field: FieldConfig): any {
@@ -92,6 +156,16 @@ export class DynamicFormComponent<T extends z.ZodRawShape> implements OnInit {
 
     if (field.defaultValue !== undefined) {
       return field.defaultValue;
+    }
+
+    // Phase 2: Handle array defaults
+    if (field.type === 'array') {
+      return [];
+    }
+
+    // Phase 2: Handle object defaults
+    if (field.type === 'object') {
+      return {};
     }
 
     // Type-specific defaults
@@ -107,10 +181,44 @@ export class DynamicFormComponent<T extends z.ZodRawShape> implements OnInit {
   }
 
   /**
+   * Phase 2: Check if a field should be visible based on its condition
+   */
+  isFieldVisible(field: FieldConfig): boolean {
+    if (!field.condition) {
+      return true;
+    }
+
+    const formValues = this.formGroup.getRawValue();
+    return evaluateCondition(field.condition, formValues);
+  }
+
+  /**
    * Get FormControl for a field
    */
   getControl(fieldName: string): FormControl {
     return this.formGroup.get(fieldName) as FormControl;
+  }
+
+  /**
+   * Phase 2: Get FormArray for an array field
+   */
+  getFormArray(fieldName: string): FormArray {
+    return this.formGroup.get(fieldName) as FormArray;
+  }
+
+  /**
+   * Phase 2: Get FormGroup for a nested object field
+   */
+  getNestedFormGroup(fieldName: string): FormGroup {
+    return this.formGroup.get(fieldName) as FormGroup;
+  }
+
+  /**
+   * Phase 2: Get nested control from a FormGroup
+   */
+  getNestedControl(groupName: string, fieldName: string): FormControl {
+    const group = this.getNestedFormGroup(groupName);
+    return group.get(fieldName) as FormControl;
   }
 
   /**

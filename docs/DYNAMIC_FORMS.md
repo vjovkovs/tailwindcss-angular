@@ -69,6 +69,8 @@ onSubmit(data: UserFormData): void {
 
 The dynamic form automatically infers field types from your Zod schema:
 
+### Phase 1 Types
+
 | Zod Type | Rendered As | Example |
 |----------|-------------|---------|
 | `z.string()` | Text input | `<input type="text">` |
@@ -76,6 +78,20 @@ The dynamic form automatically infers field types from your Zod schema:
 | `z.number()` | Number input | `<input type="number">` |
 | `z.boolean()` | Checkbox | `<input type="checkbox">` |
 | `z.enum([...])` | Select dropdown | `<select>` |
+| `z.string().describe('...\|textarea')` | Textarea | `<textarea>` |
+
+### Phase 2 Types
+
+| Zod Type | Rendered As | Example |
+|----------|-------------|---------|
+| `z.string().describe('...\|date')` | Date picker | `<input type="date">` |
+| `z.string().describe('...\|time')` | Time input | `<input type="time">` |
+| `z.string().datetime()` | DateTime picker | `<input type="datetime-local">` |
+| `z.string().url()` | URL input | `<input type="url">` |
+| `z.string().describe('...\|phone')` | Phone input | `<input type="tel">` |
+| `z.string().describe('...\|password')` | Password input | `<input type="password">` |
+| `z.object({...})` | Nested fields | Grouped fields with border |
+| `z.array(...)` | Dynamic list | Add/remove buttons |
 
 ## Adding Labels and Hints
 
@@ -277,7 +293,7 @@ interface DynamicFormConfig<T> {
 ```typescript
 interface FieldConfig {
   name: string;
-  type: 'text' | 'email' | 'number' | 'select' | 'checkbox' | 'textarea';
+  type: FieldType;
   label: string;
   required: boolean;
   placeholder?: string;
@@ -288,6 +304,41 @@ interface FieldConfig {
   minLength?: number;
   maxLength?: number;
   defaultValue?: any;
+
+  // Phase 2: Nested objects
+  schema?: z.ZodObject<any>;
+  fields?: FieldConfig[];
+
+  // Phase 2: Arrays
+  itemSchema?: z.ZodTypeAny;
+  itemFields?: FieldConfig;
+  minItems?: number;
+  maxItems?: number;
+
+  // Phase 2: Conditional visibility
+  condition?: FieldCondition;
+}
+
+type FieldType =
+  | 'text'
+  | 'email'
+  | 'number'
+  | 'select'
+  | 'checkbox'
+  | 'textarea'
+  | 'date'
+  | 'time'
+  | 'datetime-local'
+  | 'url'
+  | 'tel'
+  | 'password'
+  | 'object'
+  | 'array';
+
+interface FieldCondition {
+  field: string;
+  operator: 'equals' | 'notEquals' | 'contains' | 'greaterThan' | 'lessThan' | 'truthy' | 'falsy';
+  value?: any;
 }
 ```
 
@@ -346,16 +397,195 @@ const config = { schema, submitLabel: 'Save' };
 
 **Total: ~15 lines of code** ✨
 
-## Advanced: Custom Field Rendering
+## Phase 2: Advanced Features
 
-*(Coming in Phase 2)*
+Phase 2 adds powerful capabilities for complex forms:
 
-Future enhancements will include:
-- Custom field templates
-- Nested objects
-- Array fields (add/remove items)
-- Multi-step forms
-- Conditional fields
+### Nested Objects
+
+Group related fields into nested objects:
+
+```typescript
+const addressSchema = z.object({
+  street: z.string().describe('Street Address'),
+  city: z.string().describe('City'),
+  state: z.string().describe('State'),
+  zipCode: z.string().describe('ZIP Code'),
+});
+
+const schema = z.object({
+  name: z.string(),
+  email: z.string().email(),
+  address: addressSchema.describe('Address|Your mailing address'),
+});
+```
+
+The dynamic form automatically renders nested objects with visual grouping.
+
+### Array Fields
+
+Create dynamic lists with add/remove functionality:
+
+```typescript
+// Primitive arrays
+const schema = z.object({
+  name: z.string(),
+  skills: z.array(z.string()).min(1).max(10).describe('Skills'),
+  tags: z.array(z.string()).describe('Tags'),
+});
+
+// Object arrays
+const contactSchema = z.object({
+  name: z.string().describe('Contact Name'),
+  phone: z.string().describe('Phone Number'),
+  relationship: z.string().describe('Relationship'),
+});
+
+const schema = z.object({
+  name: z.string(),
+  emergencyContacts: z.array(contactSchema)
+    .min(1)
+    .max(3)
+    .describe('Emergency Contacts|At least one required'),
+});
+```
+
+**Features:**
+- Add/remove buttons
+- Min/max constraints enforcement
+- Supports both primitive and object arrays
+- Visual grouping with borders
+
+### Conditional Fields
+
+Show/hide fields based on other field values:
+
+```typescript
+const schema = z.object({
+  employmentType: z.enum(['Full-Time', 'Part-Time', 'Contract']),
+  salary: z.number().optional(),
+  hourlyRate: z.number().optional(),
+  hasShippingAddress: z.boolean(),
+  shippingAddress: z.object({...}).optional(),
+});
+
+const config: DynamicFormConfig<typeof schema.shape> = {
+  schema,
+  fields: {
+    // Show salary only for Full-Time
+    salary: {
+      condition: {
+        field: 'employmentType',
+        operator: 'equals',
+        value: 'Full-Time',
+      },
+    },
+    // Show hourly rate only for Contract
+    hourlyRate: {
+      condition: {
+        field: 'employmentType',
+        operator: 'equals',
+        value: 'Contract',
+      },
+    },
+    // Show shipping address when checkbox is checked
+    shippingAddress: {
+      condition: {
+        field: 'hasShippingAddress',
+        operator: 'truthy',
+      },
+    },
+  },
+};
+```
+
+**Supported Operators:**
+- `equals` - Exact match
+- `notEquals` - Not equal to value
+- `contains` - String or array contains value
+- `greaterThan` - Numeric comparison
+- `lessThan` - Numeric comparison
+- `truthy` - Field has truthy value
+- `falsy` - Field has falsy value
+
+### Advanced Field Types
+
+Phase 2 adds support for more HTML5 input types:
+
+| Type | Usage | Example |
+|------|-------|---------|
+| `date` | Date picker | `z.string().describe('Birth Date\|date')` |
+| `time` | Time input | `z.string().describe('Meeting Time\|time')` |
+| `datetime-local` | Date and time | `z.string().datetime()` |
+| `url` | URL validation | `z.string().url()` |
+| `tel` | Phone number | `z.string().describe('Phone\|phone')` |
+| `password` | Password input | `z.string().describe('Password\|password')` |
+| `textarea` | Multi-line text | `z.string().describe('Bio\|textarea')` |
+
+**Note:** Field types can be inferred from Zod validators (`.url()`, `.datetime()`) or from description hints.
+
+### Complete Phase 2 Example
+
+```typescript
+const employeeSchema = z.object({
+  // Basic info
+  firstName: z.string().min(1).describe('First Name'),
+  lastName: z.string().min(1).describe('Last Name'),
+  email: z.string().email().describe('Email Address'),
+  phone: z.string().describe('Phone Number|phone'),
+  birthDate: z.string().describe('Birth Date|date'),
+
+  // Employment
+  employmentType: z.enum(['Full-Time', 'Part-Time', 'Contract'])
+    .describe('Employment Type'),
+  salary: z.number().min(0).optional().describe('Annual Salary'),
+
+  // Nested address
+  address: z.object({
+    street: z.string().min(1).describe('Street Address'),
+    city: z.string().min(1).describe('City'),
+    state: z.string().min(2).max(2).describe('State'),
+    zipCode: z.string().min(5).describe('ZIP Code'),
+  }).describe('Home Address'),
+
+  // Arrays
+  skills: z.array(z.string().min(1))
+    .min(1)
+    .max(10)
+    .describe('Skills'),
+
+  emergencyContacts: z.array(
+    z.object({
+      name: z.string().min(1).describe('Contact Name'),
+      phone: z.string().describe('Phone|phone'),
+      relationship: z.string().min(1).describe('Relationship'),
+    })
+  ).min(1).max(3).describe('Emergency Contacts'),
+
+  // Optional fields
+  portfolio: z.string().url().optional().describe('Portfolio|url'),
+  bio: z.string().max(500).optional().describe('Bio|textarea'),
+});
+
+const config: DynamicFormConfig<typeof employeeSchema.shape> = {
+  schema: employeeSchema,
+  fields: {
+    salary: {
+      condition: {
+        field: 'employmentType',
+        operator: 'contains',
+        value: 'Full-Time',
+      },
+    },
+  },
+  submitLabel: 'Register Employee',
+  showCancel: true,
+};
+```
+
+## Live Demo
+
+Visit the **Phase 2 Demo** at `/phase2` to see all advanced features in action with a complete employee registration form.
 
 ## Best Practices
 

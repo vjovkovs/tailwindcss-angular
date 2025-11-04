@@ -1,10 +1,42 @@
 <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" class="space-y-4">
   <!-- Render all fields -->
   @for (field of fields(); track field.name) {
-    <app-field-renderer
-      [field]="field"
-      [control]="getControl(field.name)"
-    />
+    <!-- Phase 2: Conditional visibility -->
+    @if (isFieldVisible(field)) {
+      <!-- Phase 2: Array fields -->
+      @if (field.type === 'array') {
+        <app-array-field-renderer
+          [field]="field"
+          [formArray]="getFormArray(field.name)"
+        />
+      }
+
+      <!-- Phase 2: Nested object fields -->
+      @else if (field.type === 'object') {
+        <div class="space-y-3 p-4 border border-gray-200 rounded-md bg-gray-50">
+          <h3 class="text-sm font-medium text-gray-900">{{ field.label }}</h3>
+          @if (field.hint) {
+            <p class="text-xs text-gray-500 -mt-2">{{ field.hint }}</p>
+          }
+          <div class="space-y-3">
+            @for (nestedField of field.fields; track nestedField.name) {
+              <app-field-renderer
+                [field]="nestedField"
+                [control]="getNestedControl(field.name, nestedField.name)"
+              />
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Regular fields -->
+      @else {
+        <app-field-renderer
+          [field]="field"
+          [control]="getControl(field.name)"
+        />
+      }
+    }
   }
 
   <!-- Form Actions -->
