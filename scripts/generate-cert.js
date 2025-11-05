@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-const sslDir = path.join(__dirname, '..', '.cert');
+const sslDir = path.join(__dirname, '..', '.certs');
 const certPath = path.join(sslDir, 'localhost.crt');
 const keyPath = path.join(sslDir, 'localhost.key');
 

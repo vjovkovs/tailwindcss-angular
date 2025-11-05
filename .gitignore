@@ -17,9 +17,11 @@
 
 
 # Environment files with sensitive data
-/src/environments/*
+/src/environments/environment.ts
+/src/environments/environment.prod.ts
+/src/environments/environment.*.ts
 # Keep template files
-!*.template.ts
+!/src/environments/*.template.ts
 
 # Environment files
 /.env
