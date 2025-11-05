@@ -1,5 +1,6 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { injectQuery, injectMutation, injectQueryClient } from '@tanstack/angular-query-experimental';
 import { ApiService } from '../../core/http/api.service';
@@ -51,6 +52,8 @@ let mockUsersStore: User[] = [
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
+    RouterLinkActive,
     ReactiveFormsModule,
     DialogComponent,
     DialogTitleDirective,
