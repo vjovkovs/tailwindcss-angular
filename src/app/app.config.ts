@@ -1,6 +1,6 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withRouterConfig  } from '@angular/router';
-import { provideHttpClient, withInterceptors
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
   provideAngularQuery,
   QueryClient,

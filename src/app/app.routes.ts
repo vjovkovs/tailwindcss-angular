@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { MsalRedirectComponent } from '@azure/msal-angular';
 
 export const routes: Routes = [
   {
@@ -15,5 +16,10 @@ export const routes: Routes = [
     path: 'phase3',
     loadComponent: () =>
       import('./features/example/example-phase3.component').then((m) => m.ExamplePhase3Component),
+  },
+   {
+    // Needed for handling redirect after login
+    path: 'auth',
+    component: MsalRedirectComponent,
   },
 ];

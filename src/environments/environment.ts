@@ -1,21 +1,24 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000/api',
+  appName: 'NUPIC Document Management',
+  companyName: 'NUPIC',
+  baseUrl: 'https://localhost:5001', // Change this to the address of your backend API if different from frontend address
+  apiUrl: 'https://localhost:5001/api', // Change this to the address of your backend API if different from frontend address
 
   // MSAL Configuration
   msal: {
-    clientId: 'YOUR_CLIENT_ID_HERE', // Azure AD Application (client) ID
-    authority: 'https://login.microsoftonline.com/YOUR_TENANT_ID_HERE', // Azure AD tenant ID or domain
-    redirectUri: 'http://localhost:4200', // Must match Azure AD redirect URI
-    postLogoutRedirectUri: 'http://localhost:4200',
-
+    clientId: '9c097f4f-fe4c-4035-abe9-2b41caaf983c', // This is the ONLY mandatory field that you need to supply.
+    authority: 'https://login.microsoftonline.com/a59f659e-5ea2-4277-9acc-914bdc19f725', // Defaults to "https://login.microsoftonline.com/common"
+    redirectUri: '/auth', // Points to window.location.origin by default. You must register this URI on Azure portal/App Registration.
+    postLogoutRedirectUri: '/', // Points to window.location.origin by default.
+    
     // Scopes for accessing APIs
-    scopes: ['user.read'], // Default scopes for Microsoft Graph
+    scopes: ['User.Read', 'profile', 'email', 'openid'], // Default scopes for Microsoft Graph
 
     // Protected resources (APIs that require authentication)
     protectedResourceMap: new Map<string, string[]>([
-      ['https://graph.microsoft.com/v1.0/me', ['user.read']],
-      ['http://localhost:3000/api', ['api://YOUR_API_CLIENT_ID/access_as_user']], // Your backend API
+      ['https://graph.microsoft.com/v1.0/me', ['User.Read']],
+      ['http://localhost:3000/api', ['api://9c097f4f-fe4c-4035-abe9-2b41caaf983c/access_as_user']], // Your backend API
     ]),
   },
 };
