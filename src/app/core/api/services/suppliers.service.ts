@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PaginatedResponse, PaginationParams, SupplierDetailsResponse } from '../models';
-import { PaginatedResponseSchema, SupplierDetailsResponseSchema } from '../schemas';
+import { PaginatedSupplierResponseSchema, SupplierDetailsResponseSchema } from '../schemas';
 import { BaseApiService } from './base-api.service';
 
 /**
@@ -27,7 +27,7 @@ export class SuppliersService extends BaseApiService {
     const httpParams = this.buildParams(params);
     return this.get(
       this.endpoint,
-      PaginatedResponseSchema(SupplierDetailsResponseSchema),
+      PaginatedSupplierResponseSchema,
       httpParams
     );
   }
@@ -49,7 +49,7 @@ export class SuppliersService extends BaseApiService {
     });
     return this.get(
       `${this.endpoint}/search`,
-      PaginatedResponseSchema(SupplierDetailsResponseSchema),
+      PaginatedSupplierResponseSchema,
       httpParams
     );
   }

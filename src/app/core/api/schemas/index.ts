@@ -107,20 +107,44 @@ export const PaginationParamsSchema = z.object({
 // Supplier Schemas
 // ============================================================================
 
-export const SupplierDetailsResponseSchema = z.object({
-  supplierNumber: z.string(),
-  supplierName: z.string(),
+// Helper to transform raw API supplier data to TypeScript interface
+const transformSupplierData = (data: any) => ({
+  supplierNumber: data.suppNumb,
+  supplierName: data.suppName,
+  city: data.city,
+  state: data.state,
+  contact: data.contact || '',
+  contactEmail: data.contactEmail || '',
+  isActive: data.activeInactive,
+  nupAudit: data.nupAudit || '',
+  auditCount: data.audits?.length || 0,
+  hasContact: !!data.contact && data.contact.trim().length > 0,
+  hasEmail: !!data.contactEmail && data.contactEmail.trim().length > 0,
+  location: `${data.city}, ${data.state}`,
+});
+
+// Raw API response schema matching actual backend field names
+const SupplierDetailsApiResponseSchema = z.object({
+  suppNumb: z.string(),
+  suppName: z.string(),
   city: z.string(),
   state: z.string(),
-  contact: z.string(),
-  contactEmail: z.string().email(),
-  isActive: z.boolean(),
-  nupAudit: z.string(),
-  auditCount: z.number().int().nonnegative(),
-  hasContact: z.boolean(),
-  hasEmail: z.boolean(),
-  location: z.string(),
+  contact: z.string().nullable(),
+  contactEmail: z.string().nullable(),
+  nupAudit: z.string().nullable(),
+  activeInactive: z.boolean(),
+  audits: z.array(z.any()),
 });
+
+// Schema for single supplier with transformation
+export const SupplierDetailsResponseSchema = SupplierDetailsApiResponseSchema.transform(transformSupplierData);
+
+// Schema for paginated supplier response with transformation
+export const PaginatedSupplierResponseSchema = PaginatedResponseSchema(SupplierDetailsApiResponseSchema)
+  .transform((data) => ({
+    ...data,
+    items: data.items.map(transformSupplierData),
+  }));
 
 // ============================================================================
 // File Management Schemas

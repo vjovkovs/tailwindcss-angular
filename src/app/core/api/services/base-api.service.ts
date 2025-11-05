@@ -28,7 +28,7 @@ export class BaseApiService {
    */
   protected get<T>(
     endpoint: string,
-    schema: z.ZodSchema<T>,
+    schema: z.ZodType<T, any, any>,
     params?: HttpParams | { [param: string]: string | string[] }
   ): Observable<T> {
     return this.http
@@ -45,8 +45,8 @@ export class BaseApiService {
   protected post<T, R>(
     endpoint: string,
     body: T,
-    responseSchema: z.ZodSchema<R>,
-    requestSchema?: z.ZodSchema<T>
+    responseSchema: z.ZodType<R, any, any>,
+    requestSchema?: z.ZodType<T, any, any>
   ): Observable<R> {
     const validatedBody = requestSchema ? requestSchema.parse(body) : body;
 
@@ -64,8 +64,8 @@ export class BaseApiService {
   protected put<T, R>(
     endpoint: string,
     body: T,
-    responseSchema: z.ZodSchema<R>,
-    requestSchema?: z.ZodSchema<T>
+    responseSchema: z.ZodType<R, any, any>,
+    requestSchema?: z.ZodType<T, any, any>
   ): Observable<R> {
     const validatedBody = requestSchema ? requestSchema.parse(body) : body;
 
@@ -104,7 +104,7 @@ export class BaseApiService {
   protected uploadFiles<R>(
     endpoint: string,
     files: File[],
-    responseSchema: z.ZodSchema<R>,
+    responseSchema: z.ZodType<R, any, any>,
     additionalData?: Record<string, string | number>
   ): Observable<R> {
     const formData = new FormData();
@@ -139,7 +139,7 @@ export class BaseApiService {
   /**
    * Validate response data against Zod schema
    */
-  private validateResponse<T>(data: unknown, schema: z.ZodSchema<T>): T {
+  private validateResponse<T>(data: unknown, schema: z.ZodType<T, any, any>): T {
     try {
       return schema.parse(data);
     } catch (error) {
