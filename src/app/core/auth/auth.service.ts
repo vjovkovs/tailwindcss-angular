@@ -1,56 +1,207 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+import { MsalService, MsalBroadcastService } from '@azure/msal-angular';
+import {
+  AuthenticationResult,
+  InteractionStatus,
+  PopupRequest,
+  RedirectRequest,
+  EndSessionRequest,
+} from '@azure/msal-browser';
+import { filter, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 /**
- * Auth service placeholder
- * MSAL-ready: Replace with @azure/msal-angular when needed
+ * Auth Service using Microsoft Authentication Library (MSAL)
  *
- * Example MSAL integration:
- * - Install @azure/msal-browser @azure/msal-angular
- * - Configure MSAL in app.config.ts
- * - Replace this service with MsalService
+ * Provides authentication functionality using Azure AD:
+ * - Login (popup or redirect)
+ * - Logout
+ * - Get access tokens
+ * - Check authentication status
+ * - Get user information
  */
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  // Use signal for reactive authentication state
-  private readonly authenticated = signal<boolean>(false);
+  private readonly msalService = inject(MsalService);
+  private readonly msalBroadcastService = inject(MsalBroadcastService);
+  private readonly destroy$ = new Subject<void>();
 
-  /**
-   * Check if user is authenticated
-   */
-  isAuthenticated(): boolean {
-    return this.authenticated();
+  // Reactive authentication state
+  readonly isAuthenticated = signal<boolean>(false);
+  readonly userInfo = signal<any>(null);
+
+  constructor() {
+    this.initializeAuthState();
   }
 
   /**
-   * Get current authentication state as signal
+   * Initialize authentication state by checking MSAL accounts
    */
-  getAuthState() {
-    return this.authenticated.asReadonly();
+  private initializeAuthState(): void {
+    // Check if there are any accounts
+    const accounts = this.msalService.instance.getAllAccounts();
+    this.isAuthenticated.set(accounts.length > 0);
+
+    if (accounts.length > 0) {
+      this.msalService.instance.setActiveAccount(accounts[0]);
+      this.updateUserInfo();
+    }
+
+    // Listen for login success/failure events
+    this.msalBroadcastService.inProgress$
+      .pipe(
+        filter((status: InteractionStatus) => status === InteractionStatus.None),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        const accounts = this.msalService.instance.getAllAccounts();
+        this.isAuthenticated.set(accounts.length > 0);
+
+        if (accounts.length > 0) {
+          this.msalService.instance.setActiveAccount(accounts[0]);
+          this.updateUserInfo();
+        } else {
+          this.userInfo.set(null);
+        }
+      });
   }
 
   /**
-   * Login (placeholder)
+   * Update user information from the active account
    */
-  login(): void {
-    // TODO: Implement MSAL login
-    this.authenticated.set(true);
+  private updateUserInfo(): void {
+    const account = this.msalService.instance.getActiveAccount();
+    if (account) {
+      this.userInfo.set({
+        name: account.name || account.username,
+        username: account.username,
+        email: account.username,
+        ...account.idTokenClaims,
+      });
+    }
   }
 
   /**
-   * Logout (placeholder)
+   * Login using popup
    */
-  logout(): void {
-    // TODO: Implement MSAL logout
-    this.authenticated.set(false);
+  loginPopup(): void {
+    const loginRequest: PopupRequest = {
+      scopes: environment.msal.scopes,
+    };
+
+    this.msalService
+      .loginPopup(loginRequest)
+      .subscribe({
+        next: (result: AuthenticationResult) => {
+          this.msalService.instance.setActiveAccount(result.account);
+          this.isAuthenticated.set(true);
+          this.updateUserInfo();
+        },
+        error: (error) => {
+          console.error('Login failed:', error);
+        },
+      });
   }
 
   /**
-   * Get access token (placeholder)
+   * Login using redirect
    */
-  getAccessToken(): string | null {
-    // TODO: Implement MSAL token acquisition
-    return null;
+  loginRedirect(): void {
+    const loginRequest: RedirectRequest = {
+      scopes: environment.msal.scopes,
+    };
+
+    this.msalService.loginRedirect(loginRequest);
+  }
+
+  /**
+   * Logout using popup
+   */
+  logoutPopup(): void {
+    const account = this.msalService.instance.getActiveAccount();
+    if (account) {
+      const logoutRequest: EndSessionRequest = {
+        account,
+        postLogoutRedirectUri: environment.msal.postLogoutRedirectUri,
+      };
+
+      this.msalService.logoutPopup(logoutRequest).subscribe({
+        next: () => {
+          this.isAuthenticated.set(false);
+          this.userInfo.set(null);
+        },
+        error: (error) => {
+          console.error('Logout failed:', error);
+        },
+      });
+    }
+  }
+
+  /**
+   * Logout using redirect
+   */
+  logoutRedirect(): void {
+    const account = this.msalService.instance.getActiveAccount();
+    if (account) {
+      const logoutRequest: EndSessionRequest = {
+        account,
+        postLogoutRedirectUri: environment.msal.postLogoutRedirectUri,
+      };
+
+      this.msalService.logoutRedirect(logoutRequest);
+    }
+  }
+
+  /**
+   * Get access token for the specified scopes
+   * Tries silent acquisition first, falls back to interactive if needed
+   */
+  async getAccessToken(scopes: string[] = environment.msal.scopes): Promise<string | null> {
+    const account = this.msalService.instance.getActiveAccount();
+    if (!account) {
+      return null;
+    }
+
+    try {
+      // Try silent token acquisition first
+      const result = await this.msalService.instance.acquireTokenSilent({
+        scopes,
+        account,
+      });
+
+      return result.accessToken;
+    } catch (error) {
+      console.warn('Silent token acquisition failed, falling back to interactive:', error);
+
+      // Fall back to interactive acquisition
+      try {
+        const result = await this.msalService.instance.acquireTokenPopup({
+          scopes,
+          account,
+        });
+        return result.accessToken;
+      } catch (interactiveError) {
+        console.error('Interactive token acquisition failed:', interactiveError);
+        return null;
+      }
+    }
+  }
+
+  /**
+   * Get the active account
+   */
+  getActiveAccount() {
+    return this.msalService.instance.getActiveAccount();
+  }
+
+  /**
+   * Cleanup on service destroy
+   */
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

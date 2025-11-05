@@ -1,10 +1,41 @@
 <div class="min-h-screen bg-gray-50">
   <header class="bg-white shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-      <h1 class="text-3xl font-bold text-gray-900">{{ title() }}</h1>
-      <p class="mt-2 text-sm text-gray-600">
-        Production-ready Angular 20 + Tailwind CSS 4 starter
-      </p>
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">{{ title() }}</h1>
+          <p class="mt-2 text-sm text-gray-600">
+            Production-ready Angular 20 + Tailwind CSS 4 + MSAL Auth
+          </p>
+        </div>
+
+        <!-- Auth Status -->
+        <div class="flex items-center gap-4">
+          @if (authService.isAuthenticated()) {
+            <div class="text-right">
+              <p class="text-sm font-medium text-gray-900">
+                {{ authService.userInfo()?.name || 'User' }}
+              </p>
+              <p class="text-xs text-gray-500">
+                {{ authService.userInfo()?.email || '' }}
+              </p>
+            </div>
+            <button
+              (click)="logout()"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            >
+              Sign Out
+            </button>
+          } @else {
+            <button
+              (click)="login()"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+            >
+              Sign In
+            </button>
+          }
+        </div>
+      </div>
     </div>
   </header>
 
