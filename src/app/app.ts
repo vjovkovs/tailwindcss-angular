@@ -20,23 +20,30 @@ export class App implements OnInit, OnDestroy {
   private readonly msalBroadcastService = inject(MsalBroadcastService);
   private readonly destroy$ = new Subject<void>();
 
-  ngOnInit(): void {
-    // Handle redirect promise
-    this.msalService.instance.handleRedirectPromise().then((response) => {
-      if (response) {
-        this.msalService.instance.setActiveAccount(response.account);
-      }
-    });
-
-    // Subscribe to login/logout events
-    this.msalBroadcastService.inProgress$
-      .pipe(
-        filter((status: InteractionStatus) => status === InteractionStatus.None),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(() => {
-        this.checkAndSetActiveAccount();
+  async ngOnInit(): Promise<void> {
+    try {
+      // Ensure MSAL is initialized first
+      await this.msalService.instance.initialize();
+      
+      // Handle redirect promise
+      this.msalService.instance.handleRedirectPromise().then((response) => {
+        if (response) {
+          this.msalService.instance.setActiveAccount(response.account);
+        }
       });
+
+      // Subscribe to login/logout events
+      this.msalBroadcastService.inProgress$
+        .pipe(
+          filter((status: InteractionStatus) => status === InteractionStatus.None),
+          takeUntil(this.destroy$)
+        )
+        .subscribe(() => {
+          this.checkAndSetActiveAccount();
+        });
+    } catch (error) {
+      console.error('Failed to initialize MSAL in app component:', error);
+    }
   }
 
   ngOnDestroy(): void {
@@ -54,8 +61,8 @@ export class App implements OnInit, OnDestroy {
   /**
    * Login using popup
    */
-  login(): void {
-    this.authService.loginPopup();
+  async login(): Promise<void> {
+    await this.authService.loginPopup();
   }
 
   /**

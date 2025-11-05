@@ -40,33 +40,40 @@ export class AuthService {
   /**
    * Initialize authentication state by checking MSAL accounts
    */
-  private initializeAuthState(): void {
-    // Check if there are any accounts
-    const accounts = this.msalService.instance.getAllAccounts();
-    this.isAuthenticated.set(accounts.length > 0);
+  private async initializeAuthState(): Promise<void> {
+    try {
+      // Ensure MSAL is initialized
+      await this.msalService.instance.initialize();
+      
+      // Check if there are any accounts
+      const accounts = this.msalService.instance.getAllAccounts();
+      this.isAuthenticated.set(accounts.length > 0);
 
-    if (accounts.length > 0) {
-      this.msalService.instance.setActiveAccount(accounts[0]);
-      this.updateUserInfo();
+      if (accounts.length > 0) {
+        this.msalService.instance.setActiveAccount(accounts[0]);
+        this.updateUserInfo();
+      }
+
+      // Listen for login success/failure events
+      this.msalBroadcastService.inProgress$
+        .pipe(
+          filter((status: InteractionStatus) => status === InteractionStatus.None),
+          takeUntil(this.destroy$)
+        )
+        .subscribe(() => {
+          const accounts = this.msalService.instance.getAllAccounts();
+          this.isAuthenticated.set(accounts.length > 0);
+
+          if (accounts.length > 0) {
+            this.msalService.instance.setActiveAccount(accounts[0]);
+            this.updateUserInfo();
+          } else {
+            this.userInfo.set(null);
+          }
+        });
+    } catch (error) {
+      console.error('MSAL initialization failed:', error);
     }
-
-    // Listen for login success/failure events
-    this.msalBroadcastService.inProgress$
-      .pipe(
-        filter((status: InteractionStatus) => status === InteractionStatus.None),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(() => {
-        const accounts = this.msalService.instance.getAllAccounts();
-        this.isAuthenticated.set(accounts.length > 0);
-
-        if (accounts.length > 0) {
-          this.msalService.instance.setActiveAccount(accounts[0]);
-          this.updateUserInfo();
-        } else {
-          this.userInfo.set(null);
-        }
-      });
   }
 
   /**
@@ -87,23 +94,30 @@ export class AuthService {
   /**
    * Login using popup
    */
-  loginPopup(): void {
-    const loginRequest: PopupRequest = {
-      scopes: environment.msal.scopes,
-    };
+  async loginPopup(): Promise<void> {
+    try {
+      // Ensure MSAL is initialized before login
+      await this.msalService.instance.initialize();
+      
+      const loginRequest: PopupRequest = {
+        scopes: environment.msal.scopes,
+      };
 
-    this.msalService
-      .loginPopup(loginRequest)
-      .subscribe({
-        next: (result: AuthenticationResult) => {
-          this.msalService.instance.setActiveAccount(result.account);
-          this.isAuthenticated.set(true);
-          this.updateUserInfo();
-        },
-        error: (error) => {
-          console.error('Login failed:', error);
-        },
-      });
+      this.msalService
+        .loginPopup(loginRequest)
+        .subscribe({
+          next: (result: AuthenticationResult) => {
+            this.msalService.instance.setActiveAccount(result.account);
+            this.isAuthenticated.set(true);
+            this.updateUserInfo();
+          },
+          error: (error) => {
+            console.error('Login failed:', error);
+          },
+        });
+    } catch (error) {
+      console.error('MSAL initialization failed during login:', error);
+    }
   }
 
   /**

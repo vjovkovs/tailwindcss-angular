@@ -10,7 +10,7 @@ export const environment = {
     postLogoutRedirectUri: 'https://localhost:4200',
 
     // Scopes for accessing APIs
-    scopes: ['user.read'], // Default scopes for Microsoft Graph
+    scopes: ['User.Read', 'profile', 'email', 'openid'], // Default scopes for Microsoft Graph
 
     // Protected resources (APIs that require authentication)
     protectedResourceMap: new Map<string, string[]>([
