@@ -1,3 +1,5 @@
+*.gitignore
+
 # Angular specific
 /dist/
 /out-tsc
@@ -13,6 +15,11 @@
 /package-lock.json
 /yarn.lock
 
+
+# Environment files with sensitive data
+/src/environments/*
+# Keep template files
+!*.template.ts
 
 # Environment files
 /.env
