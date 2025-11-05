@@ -1,24 +1,40 @@
 export const environment = {
   production: false,
-  appName: 'YOUR_APP_NAME',
+  appName: 'NUPIC Document Manager',
   companyName: 'YOUR_COMPANY_NAME',
-  baseUrl: 'https://localhost:5001', // Change this to the address of your backend API
-  apiUrl: 'https://localhost:5001/api', // Change this to the address of your backend API
+
+  // NUPIC API Configuration
+  baseUrl: 'https://localhost:53928',
+  apiUrl: 'https://localhost:53928/api',
 
   // MSAL Configuration
   msal: {
-    clientId: 'YOUR_CLIENT_ID', // Get from Azure App Registration
-    authority: 'https://login.microsoftonline.com/YOUR_TENANT_ID', // Your Azure AD tenant
+    // Azure AD Application Client ID
+    clientId: '9c097f4f-fe4c-4035-abe9-2b41caaf983c',
+
+    // Azure AD Tenant
+    authority: 'https://login.microsoftonline.com/a59f659e-5ea2-4277-9acc-914bdc19f725',
+
+    // Redirect URIs
     redirectUri: '/auth', // Must be registered in Azure portal
     postLogoutRedirectUri: '/', // Redirect after logout
-    
+
     // Scopes for accessing APIs
-    scopes: ['User.Read', 'profile', 'email', 'openid'],
+    scopes: [
+      'api://9c097f4f-fe4c-4035-abe9-2b41caaf983c/access_as_user',
+      'User.Read',
+      'profile',
+      'email',
+      'openid'
+    ],
 
     // Protected resources (APIs that require authentication)
     protectedResourceMap: new Map<string, string[]>([
+      // Microsoft Graph API
       ['https://graph.microsoft.com/v1.0/me', ['User.Read']],
-      ['http://localhost:3000/api', ['api://YOUR_CLIENT_ID/access_as_user']] // Your backend API
+
+      // NUPIC Document Manager API
+      ['https://localhost:53928/api', ['api://9c097f4f-fe4c-4035-abe9-2b41caaf983c/access_as_user']],
     ]),
   },
 };

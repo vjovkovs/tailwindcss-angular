@@ -22,6 +22,12 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'api-example',
+    loadComponent: () =>
+      import('./features/example/example-api.component').then((m) => m.ExampleApiComponent),
+    canActivate: [authGuard],
+  },
+  {
     // Needed for handling redirect after login
     path: 'auth',
     component: MsalRedirectComponent,
