@@ -24,13 +24,24 @@ export class App implements OnInit, OnDestroy {
     try {
       // Ensure MSAL is initialized first
       await this.msalService.instance.initialize();
-      
-      // Handle redirect promise
-      this.msalService.instance.handleRedirectPromise().then((response) => {
-        if (response) {
-          this.msalService.instance.setActiveAccount(response.account);
+
+      // Handle redirect promise (for redirect-based login flows)
+      const redirectResponse = await this.msalService.instance.handleRedirectPromise();
+      if (redirectResponse) {
+        this.msalService.instance.setActiveAccount(redirectResponse.account);
+        this.authService.isAuthenticated.set(true);
+
+        // Redirect to the originally requested URL if available
+        const returnUrl = sessionStorage.getItem('returnUrl');
+        if (returnUrl) {
+          sessionStorage.removeItem('returnUrl');
+          window.location.href = returnUrl;
         }
-      });
+      } else {
+        // No redirect response, attempt SSO Silent authentication
+        console.log('Attempting SSO Silent authentication...');
+        await this.authService.attemptSsoSilent();
+      }
 
       // Subscribe to login/logout events
       this.msalBroadcastService.inProgress$
@@ -43,6 +54,8 @@ export class App implements OnInit, OnDestroy {
         });
     } catch (error) {
       console.error('Failed to initialize MSAL in app component:', error);
+      // Mark as initialized even on error to prevent infinite loading
+      this.authService.isInitialized.set(true);
     }
   }
 

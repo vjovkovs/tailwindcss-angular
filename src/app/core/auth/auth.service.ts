@@ -6,6 +6,8 @@ import {
   PopupRequest,
   RedirectRequest,
   EndSessionRequest,
+  SsoSilentRequest,
+  AccountInfo,
 } from '@azure/msal-browser';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -15,6 +17,7 @@ import { environment } from '../../../environments/environment';
  * Auth Service using Microsoft Authentication Library (MSAL)
  *
  * Provides authentication functionality using Azure AD:
+ * - SSO Silent authentication (automatically sign in if user has active Microsoft session)
  * - Login (popup or redirect)
  * - Logout
  * - Get access tokens
@@ -32,6 +35,7 @@ export class AuthService {
   // Reactive authentication state
   readonly isAuthenticated = signal<boolean>(false);
   readonly userInfo = signal<any>(null);
+  readonly isInitialized = signal<boolean>(false);
 
   constructor() {
     this.initializeAuthState();
@@ -209,6 +213,61 @@ export class AuthService {
    */
   getActiveAccount() {
     return this.msalService.instance.getActiveAccount();
+  }
+
+  /**
+   * Attempt SSO Silent authentication
+   * This checks if the user has an active session with Microsoft services
+   * and automatically signs them in without interaction
+   *
+   * @returns Promise<boolean> - true if SSO was successful, false otherwise
+   */
+  async attemptSsoSilent(): Promise<boolean> {
+    try {
+      // Ensure MSAL is initialized
+      await this.msalService.instance.initialize();
+
+      // Check if we already have an account
+      const accounts = this.msalService.instance.getAllAccounts();
+      if (accounts.length > 0) {
+        this.msalService.instance.setActiveAccount(accounts[0]);
+        this.isAuthenticated.set(true);
+        this.updateUserInfo();
+        this.isInitialized.set(true);
+        return true;
+      }
+
+      // Attempt SSO silent login
+      const ssoRequest: SsoSilentRequest = {
+        scopes: environment.msal.scopes,
+        loginHint: '', // Can be populated if you know the user's email
+      };
+
+      try {
+        const result: AuthenticationResult = await this.msalService.instance.ssoSilent(ssoRequest);
+
+        if (result && result.account) {
+          this.msalService.instance.setActiveAccount(result.account);
+          this.isAuthenticated.set(true);
+          this.updateUserInfo();
+          this.isInitialized.set(true);
+          console.log('SSO Silent authentication successful');
+          return true;
+        }
+      } catch (ssoError: any) {
+        // SSO Silent failed - this is expected if user has no active session
+        console.log('SSO Silent authentication not available:', ssoError.errorCode || ssoError.message);
+        this.isInitialized.set(true);
+        return false;
+      }
+
+      this.isInitialized.set(true);
+      return false;
+    } catch (error) {
+      console.error('SSO Silent authentication error:', error);
+      this.isInitialized.set(true);
+      return false;
+    }
   }
 
   /**
