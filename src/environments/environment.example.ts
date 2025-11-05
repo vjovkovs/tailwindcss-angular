@@ -4,6 +4,11 @@
  * Copy this file to environment.ts and environment.prod.ts
  * and fill in your Azure AD configuration values.
  *
+ * HTTPS Development Setup:
+ * - Run `npm run ssl:generate` to create local SSL certificates
+ * - Certificates will be stored in .certs/ (gitignored)
+ * - Run `npm run start:https` to use HTTPS for development
+ *
  * Azure AD Setup Instructions:
  * 1. Go to https://portal.azure.com
  * 2. Navigate to "Azure Active Directory" > "App registrations"
@@ -11,13 +16,13 @@
  * 4. Fill in the application details:
  *    - Name: Your application name
  *    - Supported account types: Choose based on your needs
- *    - Redirect URI: http://localhost:4200 (for development)
+ *    - Redirect URI: https://localhost:4200 (for HTTPS development)
  * 5. After registration, note down:
  *    - Application (client) ID -> use as clientId
  *    - Directory (tenant) ID -> use in authority URL
  * 6. Go to "Authentication" and add platform configurations:
  *    - Add "Single-page application" platform
- *    - Add redirect URIs (including localhost for dev)
+ *    - Add redirect URIs: https://localhost:4200 (and your production URL)
  *    - Enable "ID tokens" under Implicit grant and hybrid flows
  * 7. Go to "API permissions" and add required permissions:
  *    - Microsoft Graph > Delegated > User.Read (usually added by default)
@@ -30,7 +35,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000/api',
+  apiUrl: 'https://localhost:3000/api',
 
   // MSAL Configuration
   msal: {
@@ -57,16 +62,16 @@ export const environment = {
     /**
      * Redirect URI after login
      * Must match exactly what's configured in Azure Portal > App Registration > Authentication
-     * For development, use: http://localhost:4200
+     * For development with HTTPS, use: https://localhost:4200
      * For production, use your production URL
      */
-    redirectUri: 'http://localhost:4200',
+    redirectUri: 'https://localhost:4200',
 
     /**
      * Redirect URI after logout
      * Where to send users after they log out
      */
-    postLogoutRedirectUri: 'http://localhost:4200',
+    postLogoutRedirectUri: 'https://localhost:4200',
 
     /**
      * Default scopes to request on login
@@ -99,7 +104,7 @@ export const environment = {
       ['https://graph.microsoft.com/v1.0/me', ['user.read']],
 
       // Your backend API (replace with your actual API URL and scope)
-      ['http://localhost:3000/api', ['api://YOUR_API_CLIENT_ID/access_as_user']],
+      ['https://localhost:3000/api', ['api://YOUR_API_CLIENT_ID/access_as_user']],
     ]),
   },
 };

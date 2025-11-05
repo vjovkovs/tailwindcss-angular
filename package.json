@@ -5,10 +5,9 @@
   "scripts": {
     "ng": "ng",
     "dev": "ng serve",
-    "start": "ng serve", 
-    "start:windows": "ng serve --ssl --ssl-cert \"%APPDATA%\\ASP.NET\\https\\%npm_package_name%.pem\" --ssl-key \"%APPDATA%\\ASP.NET\\https\\%npm_package_name%.key\" --host=localhost",
-    "start:default": "ng serve --ssl --ssl-cert \"$HOME/.aspnet/https/${npm_package_name}.pem\" --ssl-key \"$HOME/.aspnet/https/${npm_package_name}.key\" --host=127.0.0.1",
- 
+    "start": "ng serve",
+    "start:https": "ng serve --ssl --ssl-cert .certs/localhost.pem --ssl-key .certs/localhost.key",
+    "ssl:generate": "node scripts/generate-ssl-cert.js",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "vitest",
