@@ -1,0 +1,19 @@
+/* Data Table Component Styles */
+
+.data-table-container {
+  width: 100%;
+}
+
+/* Smooth transitions for row hover states */
+tbody tr {
+  transition: background-color 0.15s ease-in-out;
+}
+
+/* Custom checkbox styling */
+input[type='checkbox'] {
+  cursor: pointer;
+}
+
+input[type='checkbox']:disabled {
+  cursor: not-allowed;
+}
