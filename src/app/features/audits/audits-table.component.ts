@@ -1,14 +1,15 @@
 /**
- * Audits Table Component
+ * Audits Table Component (TanStack Query)
  *
  * Table view for audits with sorting, filtering, pagination, and search
  * Demonstrates:
+ * - TanStack Query for automatic caching and refetching
  * - New button (redirects to create page)
  * - Edit action (redirects to edit page)
  * - Preview action (opens dialog)
  */
 
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, signal, inject, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -68,14 +69,19 @@ import { AuditsService } from '../../core/api/services/audits.service';
     </div>
   `,
 })
-export class AuditsTableComponent implements OnInit {
+export class AuditsTableComponent {
   private readonly router = inject(Router);
   private readonly auditsService = inject(AuditsService);
 
-  // State
-  audits = signal<AuditResponse[]>([]);
-  loading = signal(false);
-  error = signal<string | null>(null);
+  // TanStack Query for audits data
+  private auditsQuery = this.auditsService.getAllAuditsQuery({ pageNumber: 1, pageSize: 100 });
+
+  // Computed state from query
+  audits = computed(() => this.auditsQuery.data()?.items || []);
+  loading = computed(() => this.auditsQuery.isLoading());
+  error = computed(() => this.auditsQuery.error()?.message || null);
+
+  // Dialog state
   previewDialogOpen = signal(false);
   selectedAudit = signal<AuditResponse | null>(null);
 
@@ -98,29 +104,6 @@ export class AuditsTableComponent implements OnInit {
 
   // Preview fields
   previewFields = signal<PreviewField[]>([]);
-
-  ngOnInit(): void {
-    this.loadAudits();
-  }
-
-  /**
-   * Load audits data
-   */
-  loadAudits(): void {
-    this.loading.set(true);
-    this.error.set(null);
-
-    this.auditsService.getAllAudits({ pageNumber: 1, pageSize: 100 }).subscribe({
-      next: (response: any) => {
-        this.audits.set(response.items);
-        this.loading.set(false);
-      },
-      error: (err: any) => {
-        this.error.set(err.message || 'Failed to load audits');
-        this.loading.set(false);
-      },
-    });
-  }
 
   /**
    * Get table columns

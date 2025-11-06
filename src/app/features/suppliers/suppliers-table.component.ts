@@ -1,15 +1,16 @@
 /**
- * Suppliers Table Component
+ * Suppliers Table Component (TanStack Query)
  *
  * Example usage of DataTableComponent with Suppliers data
  * Demonstrates:
+ * - TanStack Query for automatic caching and refetching
  * - Sorting, filtering, pagination, search
  * - New button (redirects to create page)
  * - Edit action (redirects to edit page)
  * - Preview action (opens dialog)
  */
 
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, signal, inject, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -69,14 +70,19 @@ import { SuppliersService } from '../../core/api/services/suppliers.service';
     </div>
   `,
 })
-export class SuppliersTableComponent implements OnInit {
+export class SuppliersTableComponent {
   private readonly router = inject(Router);
   private readonly suppliersService = inject(SuppliersService);
 
-  // State
-  suppliers = signal<SupplierDetailsResponse[]>([]);
-  loading = signal(false);
-  error = signal<string | null>(null);
+  // TanStack Query for suppliers data
+  private suppliersQuery = this.suppliersService.getSuppliersQuery({ pageNumber: 1, pageSize: 100 });
+
+  // Computed state from query
+  suppliers = computed(() => this.suppliersQuery.data()?.items || []);
+  loading = computed(() => this.suppliersQuery.isLoading());
+  error = computed(() => this.suppliersQuery.error()?.message || null);
+
+  // Dialog state
   previewDialogOpen = signal(false);
   selectedSupplier = signal<SupplierDetailsResponse | null>(null);
 
@@ -113,29 +119,6 @@ export class SuppliersTableComponent implements OnInit {
     { label: 'Has Contact', value: '', format: (v) => (v ? 'Yes' : 'No') },
     { label: 'Has Email', value: '', format: (v) => (v ? 'Yes' : 'No') },
   ]);
-
-  ngOnInit(): void {
-    this.loadSuppliers();
-  }
-
-  /**
-   * Load suppliers data
-   */
-  loadSuppliers(): void {
-    this.loading.set(true);
-    this.error.set(null);
-
-    this.suppliersService.getSuppliers({ pageNumber: 1, pageSize: 100 }).subscribe({
-      next: (response) => {
-        this.suppliers.set(response.items);
-        this.loading.set(false);
-      },
-      error: (err) => {
-        this.error.set(err.message || 'Failed to load suppliers');
-        this.loading.set(false);
-      },
-    });
-  }
 
   /**
    * Get table columns
