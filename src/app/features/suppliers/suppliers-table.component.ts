@@ -93,6 +93,7 @@ export class SuppliersTableComponent implements OnInit {
     showRowNumbers: true,
     emptyStateMessage: 'No suppliers found',
     loadingMessage: 'Loading suppliers...',
+    tableClass: 'table',
     onNew: () => this.onNew(),
     newButtonLabel: 'Add Supplier',
   });
@@ -142,7 +143,7 @@ export class SuppliersTableComponent implements OnInit {
   private getColumns(): TableColumn<SupplierDetailsResponse>[] {
     return [
       {
-        label: 'Supplier #',
+        label: 'Supplier Number',
         field: 'supplierNumber',
         sortable: true,
         width: '120px',
@@ -216,7 +217,7 @@ export class SuppliersTableComponent implements OnInit {
    * Handle new supplier button click - Redirects
    */
   onNew(): void {
-    this.router.navigate(['/suppliers/new']);
+    this.router.navigate(['suppliers/new']);
   }
 
   /**

@@ -6,6 +6,7 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './core/auth/auth.service';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,7 @@ import { AuthService } from './core/auth/auth.service';
   styleUrl: './app.css'
 })
 export class App implements OnInit, OnDestroy {
-  protected readonly title = signal('Angular + Tailwind Template');
+  protected readonly title = signal(environment.appName);
   protected readonly authService = inject(AuthService);
   private readonly msalService = inject(MsalService);
   private readonly msalBroadcastService = inject(MsalBroadcastService);
