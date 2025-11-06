@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { injectQuery, injectMutation, injectQueryClient } from '@tanstack/angular-query-experimental';
 import { z } from 'zod';
 import {
@@ -20,11 +19,13 @@ import {
 import { BaseApiService } from './base-api.service';
 
 /**
- * Audits Service (Hybrid: TanStack Query + Observable)
+ * Audits Service (TanStack Query Exclusive)
  *
- * Provides both Observable-based and TanStack Query methods:
- * - TanStack Query: For components that need automatic caching and refetching
- * - Observable: For one-off operations like form loading and submissions
+ * Uses TanStack Query for all operations:
+ * - Automatic caching and cache invalidation
+ * - Background refetching
+ * - Optimistic updates
+ * - Loading and error states
  */
 @Injectable({
   providedIn: 'root',
@@ -32,90 +33,6 @@ import { BaseApiService } from './base-api.service';
 export class AuditsService extends BaseApiService {
   private readonly endpoint = '/api/Audits';
   private queryClient = injectQueryClient();
-
-  // ============================================================================
-  // Observable Methods (for backward compatibility and one-off operations)
-  // ============================================================================
-
-  /**
-   * Get all audits with pagination (Observable)
-   */
-  getAllAudits(params?: PaginationParams): Observable<PaginatedResponse<AuditResponse>> {
-    const httpParams = this.buildParams(params);
-    return this.get(
-      `${this.endpoint}/GetAll`,
-      PaginatedResponseSchema(AuditResponseSchema),
-      httpParams
-    );
-  }
-
-  /**
-   * Create a new audit (Observable)
-   */
-  createAudit(request: CreateAuditRequest): Observable<AuditResponse> {
-    return this.post(this.endpoint, request, AuditResponseSchema, CreateAuditRequestSchema);
-  }
-
-  /**
-   * Get audit by ID (Observable)
-   */
-  getAuditById(id: number): Observable<AuditResponse> {
-    return this.get(`${this.endpoint}/${id}`, AuditResponseSchema);
-  }
-
-  /**
-   * Update an existing audit (Observable)
-   */
-  updateAudit(id: number, request: UpdateAuditRequest): Observable<AuditResponse> {
-    return this.put(`${this.endpoint}/${id}`, request, AuditResponseSchema, UpdateAuditRequestSchema);
-  }
-
-  /**
-   * Delete an audit (Observable)
-   */
-  deleteAudit(id: number): Observable<void> {
-    return this.delete(`${this.endpoint}/${id}`);
-  }
-
-  /**
-   * Get audit by audit number (Observable)
-   */
-  getAuditByNumber(auditNumber: string): Observable<AuditResponse> {
-    return this.get(`${this.endpoint}/number/${auditNumber}`, AuditResponseSchema);
-  }
-
-  /**
-   * Get audits by supplier number (Observable)
-   */
-  getAuditsBySupplier(
-    supplierNumber: string,
-    params?: PaginationParams
-  ): Observable<PaginatedResponse<AuditResponse>> {
-    const httpParams = this.buildParams(params);
-    return this.get(
-      `${this.endpoint}/supplier/${supplierNumber}`,
-      PaginatedResponseSchema(AuditResponseSchema),
-      httpParams
-    );
-  }
-
-  /**
-   * Approve an audit (Observable)
-   */
-  approveAudit(id: number): Observable<AuditResponse> {
-    return this.post(`${this.endpoint}/${id}/approve`, {}, AuditResponseSchema);
-  }
-
-  /**
-   * Get available audit types (Observable)
-   */
-  getAuditTypes(): Observable<AuditTypeResponse[]> {
-    return this.get(`${this.endpoint}/types`, z.array(AuditTypeResponseSchema));
-  }
-
-  // ============================================================================
-  // TanStack Query Methods (for automatic caching and refetching)
-  // ============================================================================
 
   /**
    * Query for all audits with pagination

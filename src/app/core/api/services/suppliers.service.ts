@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { injectQuery, injectMutation, injectQueryClient } from '@tanstack/angular-query-experimental';
 import { PaginatedResponse, PaginationParams, SupplierDetailsResponse } from '../models';
 import { PaginatedSupplierResponseSchema, SupplierDetailsResponseSchema } from '../schemas';
 import { BaseApiService } from './base-api.service';
 
 /**
- * Suppliers Service (Hybrid: TanStack Query + Observable)
+ * Suppliers Service (TanStack Query Exclusive)
  *
- * Provides both Observable-based and TanStack Query methods:
- * - TanStack Query: For components that need automatic caching and refetching
- * - Observable: For one-off operations like form loading and submissions
+ * Uses TanStack Query for all operations:
+ * - Automatic caching and cache invalidation
+ * - Background refetching
+ * - Optimistic updates
+ * - Loading and error states
  */
 @Injectable({
   providedIn: 'root',
@@ -18,43 +19,6 @@ import { BaseApiService } from './base-api.service';
 export class SuppliersService extends BaseApiService {
   private readonly endpoint = '/api/Suppliers';
   private queryClient = injectQueryClient();
-
-  // ============================================================================
-  // Observable Methods (for backward compatibility and one-off operations)
-  // ============================================================================
-
-  /**
-   * Get all suppliers with pagination (Observable)
-   */
-  getSuppliers(params?: PaginationParams): Observable<PaginatedResponse<SupplierDetailsResponse>> {
-    const httpParams = this.buildParams(params);
-    return this.get(this.endpoint, PaginatedSupplierResponseSchema, httpParams);
-  }
-
-  /**
-   * Get supplier by supplier number (Observable)
-   */
-  getSupplier(supplierNumber: string): Observable<SupplierDetailsResponse> {
-    return this.get(`${this.endpoint}/${supplierNumber}`, SupplierDetailsResponseSchema);
-  }
-
-  /**
-   * Search suppliers (Observable)
-   */
-  searchSuppliers(
-    searchTerm: string,
-    params?: PaginationParams
-  ): Observable<PaginatedResponse<SupplierDetailsResponse>> {
-    const httpParams = this.buildParams({
-      ...params,
-      search: searchTerm,
-    });
-    return this.get(`${this.endpoint}/search`, PaginatedSupplierResponseSchema, httpParams);
-  }
-
-  // ============================================================================
-  // TanStack Query Methods (for automatic caching and refetching)
-  // ============================================================================
 
   /**
    * Query for all suppliers with pagination

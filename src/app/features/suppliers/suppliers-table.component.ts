@@ -44,7 +44,6 @@ import { SuppliersService } from '../../core/api/services/suppliers.service';
         [isOpen]="previewDialogOpen()"
         [title]="'Supplier Details'"
         [fields]="previewFields()"
-        [data]="selectedSupplier()"
         (close)="closePreview()"
       />
 
