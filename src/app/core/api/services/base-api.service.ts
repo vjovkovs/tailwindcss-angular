@@ -205,4 +205,88 @@ export class BaseApiService {
 
     return httpParams;
   }
+
+  // ============================================================================
+  // TanStack Query Helper Methods
+  // ============================================================================
+
+  /**
+   * Convert Observable to Promise for TanStack Query
+   * Use with injectQuery's queryFn
+   *
+   * @example
+   * protected readonly usersQuery = injectQuery(() => ({
+   *   queryKey: ['users'],
+   *   queryFn: () => this.toPromise(this.getUsers())
+   * }));
+   */
+  protected toPromise<T>(observable: Observable<T>): Promise<T> {
+    return observable.toPromise() as Promise<T>;
+  }
+
+  /**
+   * Create a query function for TanStack Query GET requests
+   *
+   * @example
+   * protected readonly usersQuery = injectQuery(() => ({
+   *   queryKey: ['users'],
+   *   queryFn: this.createQueryFn('/api/users', UsersArraySchema)
+   * }));
+   */
+  protected createQueryFn<T>(
+    endpoint: string,
+    schema: z.ZodType<T, any, any>,
+    params?: HttpParams | { [param: string]: string | string[] }
+  ): () => Promise<T> {
+    return () => this.toPromise(this.get(endpoint, schema, params));
+  }
+
+  /**
+   * Create a mutation function for TanStack Query POST requests
+   *
+   * @example
+   * protected readonly createUserMutation = injectMutation(() => ({
+   *   mutationFn: this.createMutationFn('/api/users', UserSchema, CreateUserSchema),
+   *   onSuccess: () => this.queryClient.invalidateQueries({ queryKey: ['users'] })
+   * }));
+   */
+  protected createMutationFn<T, R>(
+    endpoint: string,
+    responseSchema: z.ZodType<R, any, any>,
+    requestSchema?: z.ZodType<T, any, any>
+  ): (data: T) => Promise<R> {
+    return (data: T) => this.toPromise(this.post(endpoint, data, responseSchema, requestSchema));
+  }
+
+  /**
+   * Create an update mutation function for TanStack Query PUT requests
+   *
+   * @example
+   * protected readonly updateUserMutation = injectMutation(() => ({
+   *   mutationFn: this.createUpdateMutationFn('/api/users', UserSchema, UpdateUserSchema),
+   *   onSuccess: () => this.queryClient.invalidateQueries({ queryKey: ['users'] })
+   * }));
+   */
+  protected createUpdateMutationFn<T, R>(
+    endpointFn: (data: T) => string,
+    responseSchema: z.ZodType<R, any, any>,
+    requestSchema?: z.ZodType<T, any, any>
+  ): (data: T) => Promise<R> {
+    return (data: T) => this.toPromise(this.put(endpointFn(data), data, responseSchema, requestSchema));
+  }
+
+  /**
+   * Create a delete mutation function for TanStack Query DELETE requests
+   *
+   * @example
+   * protected readonly deleteUserMutation = injectMutation(() => ({
+   *   mutationFn: this.createDeleteMutationFn((id) => `/api/users/${id}`),
+   *   onSuccess: () => this.queryClient.invalidateQueries({ queryKey: ['users'] })
+   * }));
+   */
+  protected createDeleteMutationFn(
+    endpointFn: (id: string | number) => string
+  ): (id: string | number) => Promise<void> {
+    return (id: string | number) => this.toPromise(this.delete(endpointFn(id)));
+  }
 }
