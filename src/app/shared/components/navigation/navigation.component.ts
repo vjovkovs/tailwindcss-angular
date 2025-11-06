@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 
 export interface NavItem {
   label: string;
@@ -74,10 +75,10 @@ export interface NavItem {
           </ul>
 
           <!-- Divider -->
-          <div class="divider px-4"></div>
+          <!-- <div class="divider px-4"></div> -->
 
           <!-- Settings/User section -->
-          <ul class="menu px-4 py-0">
+          <!-- <ul class="menu px-4 py-0">
             <li>
               <a class="flex items-center gap-3 rounded-lg">
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,7 +96,7 @@ export interface NavItem {
                 <span>Logout</span>
               </a>
             </li>
-          </ul>
+          </ul> -->
         </aside>
       </div>
     </div>
@@ -117,7 +118,7 @@ export interface NavItem {
   `]
 })
 export class NavigationComponent {
-  appTitle = signal('NUPIC Portal');
+  appTitle = signal(environment.companyName);
   appSubtitle = signal('Document Management');
 
   navItems = signal<NavItem[]>([

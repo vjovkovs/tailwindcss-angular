@@ -114,6 +114,9 @@ importers:
       concurrently:
         specifier: ^9.1.0
         version: 9.2.1
+      daisyui:
+        specifier: ^5.4.5
+        version: 5.4.5
       eslint:
         specifier: ^9.39.0
         version: 9.39.1(jiti@2.6.1)
@@ -2259,6 +2262,9 @@ packages:
 
   custom-event@1.0.1:
     resolution: {integrity: sha512-GAj5FOq0Hd+RsCGVJxZuKaIDXDf3h6GQoNEjFgbLLI/trgtavwUbSnZ5pVfg27DVCaWjIohryS0JFwIJyT2cMg==}
+
+  daisyui@5.4.5:
+    resolution: {integrity: sha512-IPA3LESd0i1nC9/K4olTtVPf32G367MnRnd9xeekhS8SmdaXDc0o6L1eqnBGxuhSN7aQM0z7d3bJWNPdYEKMSw==}
 
   data-urls@6.0.0:
     resolution: {integrity: sha512-BnBS08aLUM+DKamupXs3w2tJJoqU+AkaE/+6vQxi/G/DPmIZFJJp9Dkb1kM03AZx8ADehDUZgsNxju3mPXZYIA==}
@@ -6246,6 +6252,8 @@ snapshots:
       css-tree: 3.1.0
 
   custom-event@1.0.1: {}
+
+  daisyui@5.4.5: {}
 
   data-urls@6.0.0:
     dependencies:
