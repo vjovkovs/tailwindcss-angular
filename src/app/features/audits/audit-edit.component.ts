@@ -1,18 +1,19 @@
 /**
- * Audit Edit Component
+ * Audit Edit Component (TanStack Query)
  *
  * Form for creating and editing audits
- * Uses DynamicFormComponent with grid layout
+ * Uses DynamicFormComponent with grid layout and TanStack Query for data fetching
  */
 
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, signal, inject, computed, effect } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { z } from 'zod';
 
 import { DynamicFormComponent, DynamicFormConfig } from '../../shared/components/dynamic-form';
 import { AuditsService } from '../../core/api/services/audits.service';
-import { AuditResponse } from '../../core/api/models';
+import { SuppliersService } from '../../core/api/services/suppliers.service';
+import type { SelectOption } from '../../shared/components/searchable-select';
 
 // Audit form schema (for creation)
 const auditSchema = z.object({
@@ -54,105 +55,156 @@ type AuditUpdateFormData = z.infer<typeof auditUpdateSchema>;
           <button
             type="button"
             (click)="goBack()"
-            class="inline-flex items-center text-gray-600 hover:text-gray-900"
+            class="btn btn-ghost btn-sm gap-2"
           >
-            <svg class="h-5 w-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
             Back to Audits
           </button>
         </div>
-        <h1 class="text-3xl font-bold text-gray-900">
+        <h1 class="text-3xl font-bold text-base-content">
           {{ isEditMode() ? 'Edit Audit' : 'New Audit' }}
         </h1>
-        <p class="mt-2 text-gray-600">
+        <p class="mt-2 text-base-content/60">
           {{ isEditMode() ? 'Update audit information' : 'Create a new audit' }}
         </p>
       </div>
 
       <!-- Loading state -->
       <div *ngIf="loading()" class="flex items-center justify-center py-12">
-        <div class="flex items-center gap-2 text-gray-500">
-          <svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
+        <div class="flex items-center gap-2">
+          <span class="loading loading-spinner loading-md"></span>
           <span>Loading audit...</span>
         </div>
       </div>
 
       <!-- Error state -->
-      <div *ngIf="error()" class="rounded-md bg-red-50 p-4 mb-6">
-        <div class="flex">
-          <div class="shrink-0">
-            <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-            </svg>
-          </div>
-          <div class="ml-3">
-            <h3 class="text-sm font-medium text-red-800">Error</h3>
-            <div class="mt-2 text-sm text-red-700">{{ error() }}</div>
-          </div>
-        </div>
+      <div *ngIf="error()" class="alert alert-error mb-6">
+        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+        </svg>
+        <span>{{ error() }}</span>
       </div>
 
       <!-- Form for creating new audit -->
-      <div *ngIf="!loading() && !isEditMode()" class="bg-white rounded-lg shadow">
-        <app-dynamic-form
-          [config]="createFormConfig"
-          [initialData]="initialData()"
-          (formSubmit)="onSubmit($event)"
-          (formCancel)="goBack()"
-        />
+      <div *ngIf="!loading() && !isEditMode()" class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <app-dynamic-form
+            [config]="createFormConfig()"
+            [initialData]="initialData()"
+            (formSubmit)="onSubmit($event)"
+            (formCancel)="goBack()"
+          />
+        </div>
       </div>
 
       <!-- Form for editing existing audit -->
-      <div *ngIf="!loading() && isEditMode()" class="bg-white rounded-lg shadow">
-        <app-dynamic-form
-          [config]="updateFormConfig"
-          [initialData]="initialData()"
-          (formSubmit)="onSubmit($event)"
-          (formCancel)="goBack()"
-        />
+      <div *ngIf="!loading() && isEditMode()" class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <app-dynamic-form
+            [config]="updateFormConfig"
+            [initialData]="initialData()"
+            (formSubmit)="onSubmit($event)"
+            (formCancel)="goBack()"
+          />
+        </div>
       </div>
 
       <!-- Success message -->
-      <div *ngIf="successMessage()" class="fixed bottom-4 right-4 rounded-md bg-green-50 p-4 shadow-lg">
-        <div class="flex">
-          <div class="shrink-0">
-            <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-            </svg>
-          </div>
-          <div class="ml-3">
-            <p class="text-sm font-medium text-green-800">{{ successMessage() }}</p>
-          </div>
+      <div *ngIf="successMessage()" class="toast toast-end">
+        <div class="alert alert-success">
+          <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+          </svg>
+          <span>{{ successMessage() }}</span>
         </div>
       </div>
     </div>
   `,
 })
-export class AuditEditComponent implements OnInit {
+export class AuditEditComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly auditsService = inject(AuditsService);
+  private readonly suppliersService = inject(SuppliersService);
 
-  // State
-  loading = signal(false);
-  error = signal<string | null>(null);
+  // Get audit ID from route
+  private readonly auditId = signal<number | null>(null);
+
+  // TanStack Query for audit data
+  private auditQuery = this.auditsService.getAuditByIdQuery(this.auditId());
+
+  // TanStack Query for audit numbers (for searchable select)
+  private auditsListQuery = this.auditsService.getAllAuditsQuery({ pageSize: 1000 });
+
+  // TanStack Query for supplier numbers (for searchable select)
+  private suppliersListQuery = this.suppliersService.getSuppliersQuery({ pageSize: 1000 });
+
+  // Computed state from query
+  loading = computed(() => this.auditQuery.isLoading());
+  error = computed(() => this.auditQuery.error()?.message || null);
+
+  // Map audit data to SelectOption format
+  auditNumberOptions = computed((): SelectOption[] => {
+    const audits = this.auditsListQuery.data();
+    if (!audits?.items) return [];
+    return audits.items.map(audit => ({
+      label: `${audit.auditNumber} - ${audit.supplierNumber}`,
+      value: audit.auditNumber
+    }));
+  });
+
+  // Map supplier data to SelectOption format
+  supplierNumberOptions = computed((): SelectOption[] => {
+    const suppliers = this.suppliersListQuery.data();
+    if (!suppliers?.items) return [];
+    return suppliers.items.map(supplier => ({
+      label: `${supplier.supplierNumber} - ${supplier.supplierName}`,
+      value: supplier.supplierNumber
+    }));
+  });
+
+  // Form state
   successMessage = signal<string | null>(null);
-  isEditMode = signal(false);
-  auditId = signal<number | null>(null);
-  initialData = signal<Partial<AuditFormData | AuditUpdateFormData> | undefined>(undefined);
+  isEditMode = computed(() => !!this.auditId());
+
+  initialData = computed(() => {
+    const audit = this.auditQuery.data();
+    if (!audit) return undefined;
+
+    return {
+      leadUtilityCode: audit.leadUtilityCode,
+      fkPerNumb: audit.fkPerNumb,
+      contactPersonEmail: audit.contactPersonEmail,
+      alternateContact: audit.alternateContact,
+      startDate: audit.startDate || undefined,
+      endDate: audit.endDate || undefined,
+      dateNotified: audit.dateNotified || undefined,
+      updatedBy: audit.updatedBy,
+    };
+  });
 
   // Form configuration for creating new audit
-  createFormConfig: DynamicFormConfig<typeof auditSchema.shape> = {
+  createFormConfig = computed((): DynamicFormConfig<typeof auditSchema.shape> => ({
     schema: auditSchema,
     layout: 'grid',
     columns: 2,
     fields: {
-      auditNumber: { colSpan: 1 },
-      supplierNumber: { colSpan: 1 },
+      auditNumber: {
+        colSpan: 1,
+        type: 'searchable-select',
+        options: this.auditNumberOptions(),
+        loading: this.auditsListQuery.isLoading(),
+        placeholder: 'Search audit number...'
+      },
+      supplierNumber: {
+        colSpan: 1,
+        type: 'searchable-select',
+        options: this.supplierNumberOptions(),
+        loading: this.suppliersListQuery.isLoading(),
+        placeholder: 'Search supplier...'
+      },
       leadUtilityCode: { colSpan: 1 },
       auditTypeId: { colSpan: 1 },
       fkPerNumb: { colSpan: 1 },
@@ -163,7 +215,7 @@ export class AuditEditComponent implements OnInit {
     },
     submitLabel: 'Create Audit',
     showCancel: true,
-  };
+  }));
 
   // Form configuration for updating existing audit
   updateFormConfig: DynamicFormConfig<typeof auditUpdateSchema.shape> = {
@@ -184,42 +236,14 @@ export class AuditEditComponent implements OnInit {
     showCancel: true,
   };
 
-  ngOnInit(): void {
-    // Check if we're in edit mode
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.isEditMode.set(true);
-      this.auditId.set(parseInt(id, 10));
-      this.loadAudit(parseInt(id, 10));
-    }
-  }
-
-  /**
-   * Load audit data for editing
-   */
-  loadAudit(auditId: number): void {
-    this.loading.set(true);
-    this.error.set(null);
-
-    this.auditsService.getAuditById(auditId).subscribe({
-      next: (audit: any) => {
-        this.initialData.set({
-          leadUtilityCode: audit.leadUtilityCode,
-          fkPerNumb: audit.fkPerNumb,
-          contactPersonEmail: audit.contactPersonEmail,
-          alternateContact: audit.alternateContact,
-          startDate: audit.startDate || undefined,
-          endDate: audit.endDate || undefined,
-          dateNotified: audit.dateNotified || undefined,
-          updatedBy: audit.updatedBy,
-        });
-        this.loading.set(false);
-      },
-      error: (err: any) => {
-        this.error.set(err.message || 'Failed to load audit');
-        this.loading.set(false);
-      },
-    });
+  constructor() {
+    // Check if we're in edit mode and set audit ID
+    effect(() => {
+      const id = this.route.snapshot.paramMap.get('id');
+      if (id) {
+        this.auditId.set(parseInt(id, 10));
+      }
+    }, { allowSignalWrites: true });
   }
 
   /**
@@ -228,11 +252,12 @@ export class AuditEditComponent implements OnInit {
   onSubmit(data: AuditFormData | AuditUpdateFormData): void {
     console.log('Audit form submitted:', data);
 
+    // TODO: Implement actual save logic
+    // Use createAuditMutation() or updateAuditMutation()
+
     if (this.isEditMode() && this.auditId()) {
-      // TODO: Implement update logic
       this.successMessage.set('Audit updated successfully');
     } else {
-      // TODO: Implement create logic
       this.successMessage.set('Audit created successfully');
     }
 

@@ -266,25 +266,10 @@ export class ExampleApiComponent implements OnInit {
   }
 
   loadAudits() {
-    this.loadingAudits.set(true);
-    this.auditsError.set(null);
-
-    this.auditsService
-      .getAllAudits({
-        pageNumber: this.currentPage(),
-        pageSize: this.pageSize,
-        search: this.searchTerm || undefined,
-      })
-      .subscribe({
-        next: (response) => {
-          this.audits.set(response);
-          this.loadingAudits.set(false);
-        },
-        error: (error) => {
-          this.auditsError.set(error.message);
-          this.loadingAudits.set(false);
-        },
-      });
+    // TODO: Refactor to use TanStack Query's getAllAuditsQuery()
+    // For now, this is disabled since we migrated to TanStack Query exclusively
+    console.log('Load audits - refactor needed to use TanStack Query');
+    this.auditsError.set('This example needs to be refactored to use TanStack Query. See suppliers-table.component.ts for a working example.');
   }
 
   searchAudits() {
@@ -307,23 +292,9 @@ export class ExampleApiComponent implements OnInit {
   }
 
   loadSuppliers() {
-    this.loadingSuppliers.set(true);
-    this.suppliersError.set(null);
-
-    this.suppliersService
-      .getSuppliers({
-        pageNumber: 1,
-        pageSize: 12,
-      })
-      .subscribe({
-        next: (response) => {
-          this.suppliers.set(response.items);
-          this.loadingSuppliers.set(false);
-        },
-        error: (error) => {
-          this.suppliersError.set(error.message);
-          this.loadingSuppliers.set(false);
-        },
-      });
+    // TODO: Refactor to use TanStack Query's getSuppliersQuery()
+    // For now, this is disabled since we migrated to TanStack Query exclusively
+    console.log('Load suppliers - refactor needed to use TanStack Query');
+    this.suppliersError.set('This example needs to be refactored to use TanStack Query. See suppliers-table.component.ts for a working example.');
   }
 }

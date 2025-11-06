@@ -40,11 +40,11 @@ export interface SelectOption {
         tabindex="0"
         role="button"
         class="input input-bordered w-full flex items-center justify-between cursor-pointer"
-        [class.input-error]="error()"
+        [class.input-error]="_error()"
         (click)="toggleDropdown()"
       >
         <span [class.text-gray-400]="!selectedOption()">
-          {{ selectedOption()?.label || placeholder() }}
+          {{ selectedOption()?.label || _placeholder() }}
         </span>
         <svg class="h-4 w-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -70,7 +70,7 @@ export interface SelectOption {
           </div>
 
           <!-- Loading State -->
-          @if (loading()) {
+          @if (_loading()) {
             <li class="px-4 py-2 text-gray-500">
               <span class="loading loading-spinner loading-sm"></span>
               Loading...
@@ -78,11 +78,11 @@ export interface SelectOption {
           }
 
           <!-- Options -->
-          @if (!loading() && filteredOptions().length > 0) {
+          @if (!_loading() && filteredOptions().length > 0) {
             @for (option of filteredOptions(); track option.value) {
               <li>
                 <a
-                  [class.active]="option.value === value()"
+                  [class.active]="option.value === _value()"
                   [class.disabled]="option.disabled"
                   (click)="selectOption(option)"
                 >
@@ -93,7 +93,7 @@ export interface SelectOption {
           }
 
           <!-- No Results -->
-          @if (!loading() && filteredOptions().length === 0) {
+          @if (!_loading() && filteredOptions().length === 0) {
             <li class="px-4 py-2 text-gray-500 text-center">
               No results found
             </li>
@@ -102,9 +102,9 @@ export interface SelectOption {
       }
     </div>
 
-    @if (error()) {
+    @if (_error()) {
       <label class="label">
-        <span class="label-text-alt text-error">{{ error() }}</span>
+        <span class="label-text-alt text-error">{{ _error() }}</span>
       </label>
     }
   `,
@@ -145,10 +145,6 @@ export class SearchableSelectComponent {
   protected _error = signal<string | null>(null);
   protected isOpen = signal(false);
   protected searchTerm = '';
-
-  protected placeholder = computed(() => this._placeholder());
-  protected loading = computed(() => this._loading());
-  protected error = computed(() => this._error());
 
   protected filteredOptions = computed(() => {
     const search = this.searchTerm.toLowerCase().trim();
