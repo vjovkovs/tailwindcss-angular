@@ -1,7 +1,7 @@
-/* Preview Dialog Animations */
+/* Preview Dialog Animations - Angular 20 Native CSS */
 
-/* Backdrop fade in */
-@keyframes fadeIn {
+/* Backdrop fade animations */
+@keyframes dialog-backdrop-enter-kf {
   from {
     opacity: 0;
   }
@@ -10,24 +10,53 @@
   }
 }
 
-/* Panel scale in */
-@keyframes scaleIn {
+@keyframes dialog-backdrop-leave-kf {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Dialog panel scale animations */
+@keyframes dialog-scale-enter-kf {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale3d(0.95, 0.95, 1);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: scale3d(1, 1, 1);
   }
 }
 
-.fixed.inset-0 {
-  animation: fadeIn 0.2s ease-out;
+@keyframes dialog-scale-leave-kf {
+  from {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+  to {
+    opacity: 0;
+    transform: scale3d(0.95, 0.95, 1);
+  }
 }
 
-.relative.transform {
-  animation: scaleIn 0.2s ease-out;
+/* Animation classes */
+.dialog-backdrop {
+  animation: dialog-backdrop-enter-kf 200ms ease-out both;
+}
+
+.dialog-backdrop-leave {
+  animation: dialog-backdrop-leave-kf 150ms ease-in both;
+}
+
+.dialog-scale {
+  animation: dialog-scale-enter-kf 250ms cubic-bezier(0.25, 0.8, 0.25, 1) both;
+}
+
+.dialog-scale-leave {
+  animation: dialog-scale-leave-kf 200ms cubic-bezier(0.4, 0.0, 0.2, 1) both;
 }
 
 /* Smooth scrolling for content */

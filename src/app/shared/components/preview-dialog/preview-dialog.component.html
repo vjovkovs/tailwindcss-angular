@@ -3,19 +3,21 @@
 <div
   class="fixed inset-0 z-50 overflow-y-auto"
   (click)="onBackdropClick($event)"
+  animate.enter="dialog-backdrop"
+  animate.leave="dialog-backdrop-leave"
 >
   <!-- Backdrop -->
   <div
-    class="fixed inset-0 bg-black/30 transition-opacity"
-    [@fadeIn]
+    class="fixed inset-0 bg-black/30"
   ></div>
 
   <!-- Dialog container -->
   <div class="flex min-h-full items-center justify-center p-4">
     <!-- Dialog panel -->
     <div
-      class="relative w-full max-w-2xl transform overflow-hidden rounded-lg bg-white shadow-xl transition-all"
-      [@scaleIn]
+      class="relative w-full max-w-2xl transform overflow-hidden rounded-lg bg-white shadow-xl"
+      animate.enter="dialog-scale"
+      animate.leave="dialog-scale-leave"
       (click)="$event.stopPropagation()"
     >
       <!-- Header -->

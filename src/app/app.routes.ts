@@ -34,6 +34,36 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'suppliers/new',
+    loadComponent: () =>
+      import('./features/suppliers/supplier-edit.component').then((m) => m.SupplierEditComponent),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'suppliers/:id/edit',
+    loadComponent: () =>
+      import('./features/suppliers/supplier-edit.component').then((m) => m.SupplierEditComponent),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'audits',
+    loadComponent: () =>
+      import('./features/audits/audits-table.component').then((m) => m.AuditsTableComponent),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'audits/new',
+    loadComponent: () =>
+      import('./features/audits/audit-edit.component').then((m) => m.AuditEditComponent),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'audits/:id/edit',
+    loadComponent: () =>
+      import('./features/audits/audit-edit.component').then((m) => m.AuditEditComponent),
+    canActivate: [authGuard],
+  },
+  {
     // Needed for handling redirect after login
     path: 'auth',
     component: MsalRedirectComponent,
