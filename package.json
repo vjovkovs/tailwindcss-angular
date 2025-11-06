@@ -8,6 +8,7 @@
     "postinstall": "npm run setup:env",
     "dev": "ng serve",
     "dev:https": "npm run dev:https:setup && concurrently \"ng serve --port 4200\" \"local-ssl-proxy --source 4201 --target 4200 --cert .certs/localhost.crt --key .certs/localhost.key\"",
+    "dev:start:https": "concurrently \"ng serve --port 4200\" \"local-ssl-proxy --source 4201 --target 4200 --cert .certs/localhost.crt --key .certs/localhost.key\"",
     "dev:https:setup": "npm run ssl:generate",
     "start": "ng serve",
     "start:https": "ng serve --ssl --ssl-cert .certs/localhost.pem --ssl-key .certs/localhost.key",
