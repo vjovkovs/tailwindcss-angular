@@ -27,6 +27,12 @@ export const routes: Routes = [
       import('./features/example/example-api.component').then((m) => m.ExampleApiComponent),
     canActivate: [authGuard],
   },
+    {
+    path: 'suppliers',
+    loadComponent: () =>
+      import('./features/suppliers/suppliers-table.component').then((m) => m.SuppliersTableComponent),
+    canActivate: [authGuard],
+  },
   {
     // Needed for handling redirect after login
     path: 'auth',

@@ -1,6 +1,6 @@
 <!-- Dialog overlay and panel -->
+@if(showDialog()){
 <div
-  *ngIf="showDialog()"
   class="fixed inset-0 z-50 overflow-y-auto"
   (click)="onBackdropClick($event)"
 >
@@ -84,3 +84,4 @@
     </div>
   </div>
 </div>
+}
