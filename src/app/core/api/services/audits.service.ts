@@ -40,7 +40,7 @@ export class AuditsService extends BaseApiService {
   getAllAudits(params?: PaginationParams): Observable<PaginatedResponse<AuditResponse>> {
     const httpParams = this.buildParams(params);
     return this.get(
-      this.endpoint,
+      `${this.endpoint}/GetAll`,
       PaginatedResponseSchema(AuditResponseSchema),
       httpParams
     );

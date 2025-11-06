@@ -11,7 +11,7 @@
     "dev:start:https": "concurrently \"ng serve --port 4200\" \"local-ssl-proxy --source 4201 --target 4200 --cert .certs/localhost.crt --key .certs/localhost.key\"",
     "dev:https:setup": "npm run ssl:generate",
     "start": "ng serve",
-    "start:https": "ng serve --ssl --ssl-cert .certs/localhost.pem --ssl-key .certs/localhost.key",
+    "start:https": "ng serve --ssl --ssl-cert .certs/localhost.pem --ssl-key .certs/localhost-key.pem --host localhost --port 4200",
     "ssl:generate": "node scripts/generate-cert.js",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
@@ -50,6 +50,7 @@
     "@tanstack/angular-table": "^8.21.3",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "vite": "^7.2.1",
     "zod": "^3.25.76",
     "zone.js": "~0.15.0"
   },
