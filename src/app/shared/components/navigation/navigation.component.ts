@@ -1,6 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 
 export interface NavItem {
@@ -61,6 +61,7 @@ export interface NavItem {
                   [routerLink]="item.route"
                   routerLinkActive="active"
                   [routerLinkActiveOptions]="{exact: item.route === '/'}"
+                  [class.active]="isActive(item.route)"
                   class="flex items-center gap-3 rounded-lg"
                   (click)="onNavItemClick()"
                 >
@@ -118,6 +119,8 @@ export interface NavItem {
   `]
 })
 export class NavigationComponent {
+  private router = inject(Router);
+
   appTitle = signal(environment.companyName);
   appSubtitle = signal('Document Management');
 
@@ -143,6 +146,16 @@ export class NavigationComponent {
       route: '/example',
     },
   ]);
+
+  /**
+   * Check if a route is currently active
+   */
+  isActive(route: string): boolean {
+    if (route === '/') {
+      return this.router.url === '/';
+    }
+    return this.router.url.startsWith(route);
+  }
 
   /**
    * Close drawer on mobile when nav item is clicked

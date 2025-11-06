@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { FieldConfig } from './types';
+import { SearchableSelectComponent } from '../searchable-select';
 
 /**
  * Field Renderer Component
@@ -10,7 +11,7 @@ import { FieldConfig } from './types';
 @Component({
   selector: 'app-field-renderer',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, SearchableSelectComponent],
   templateUrl: './field-renderer.component.html',
 })
 export class FieldRendererComponent {

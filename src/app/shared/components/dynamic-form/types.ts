@@ -9,6 +9,7 @@ export type FieldType =
   | 'email'
   | 'number'
   | 'select'
+  | 'searchable-select'
   | 'checkbox'
   | 'textarea'
   | 'date'
@@ -59,6 +60,10 @@ export interface FieldConfig {
 
   // Phase 3: Field grouping
   group?: string; // Group identifier for field organization
+
+  // Searchable select
+  loading?: boolean; // Loading state for async options
+  searchable?: boolean; // Enable search functionality
 }
 
 /**

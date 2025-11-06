@@ -43,7 +43,6 @@ import { AuditsService } from '../../core/api/services/audits.service';
         [isOpen]="previewDialogOpen()"
         [title]="'Audit Details'"
         [fields]="previewFields()"
-        [data]="selectedAudit()"
         (close)="closePreview()"
       />
 
