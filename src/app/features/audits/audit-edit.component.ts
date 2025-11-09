@@ -12,6 +12,7 @@ import { z } from 'zod';
 
 import { DynamicFormComponent, DynamicFormConfig } from '../../shared/components/dynamic-form';
 import { AuditsService } from '../../core/api/services/audits.service';
+import { ReferenceAuditsService } from '../../core/api/services/reference-audits.service';
 import { SuppliersService } from '../../core/api/services/suppliers.service';
 import type { SelectOption } from '../../shared/components/searchable-select';
 
@@ -127,6 +128,7 @@ export class AuditEditComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly auditsService = inject(AuditsService);
+  private readonly referenceAuditsService = inject(ReferenceAuditsService);
   private readonly suppliersService = inject(SuppliersService);
 
   // Get audit ID from route
@@ -135,8 +137,8 @@ export class AuditEditComponent {
   // TanStack Query for audit data
   private auditQuery = this.auditsService.getAuditByIdQuery(this.auditId());
 
-  // TanStack Query for audit numbers (for searchable select)
-  private auditsListQuery = this.auditsService.getAllAuditsQuery({ pageSize: 1000 });
+  // TanStack Query for NUPIC reference audit numbers (for searchable select)
+  private referenceAuditsQuery = this.referenceAuditsService.getReferenceAuditsQuery({ pageSize: 1000 });
 
   // TanStack Query for supplier numbers (for searchable select)
   private suppliersListQuery = this.suppliersService.getSuppliersQuery({ pageSize: 1000 });
@@ -145,9 +147,9 @@ export class AuditEditComponent {
   loading = computed(() => this.auditQuery.isLoading());
   error = computed(() => this.auditQuery.error()?.message || null);
 
-  // Map audit data to SelectOption format
+  // Map NUPIC reference audit data to SelectOption format
   auditNumberOptions = computed((): SelectOption[] => {
-    const audits = this.auditsListQuery.data();
+    const audits = this.referenceAuditsQuery.data();
     if (!audits?.items) return [];
     return audits.items.map(audit => ({
       label: `${audit.auditNumber} - ${audit.supplierNumber}`,
@@ -195,7 +197,7 @@ export class AuditEditComponent {
         colSpan: 1,
         type: 'searchable-select',
         options: this.auditNumberOptions(),
-        loading: this.auditsListQuery.isLoading(),
+        loading: this.referenceAuditsQuery.isLoading(),
         placeholder: 'Search audit number...'
       },
       supplierNumber: {

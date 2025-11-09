@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { injectQuery, injectMutation, injectQueryClient } from '@tanstack/angular-query-experimental';
+import { z } from 'zod';
 import { PaginatedResponse, PaginationParams, SupplierDetailsResponse } from '../models';
 import { PaginatedSupplierResponseSchema, SupplierDetailsResponseSchema } from '../schemas';
 import { BaseApiService } from './base-api.service';
@@ -17,7 +18,7 @@ import { BaseApiService } from './base-api.service';
   providedIn: 'root',
 })
 export class SuppliersService extends BaseApiService {
-  private readonly endpoint = '/api/Suppliers';
+  private readonly endpoint = '/api/ReferenceSuppliers';
   private queryClient = injectQueryClient();
 
   /**
@@ -63,21 +64,18 @@ export class SuppliersService extends BaseApiService {
 
   /**
    * Query for searching suppliers
-   * Usage: results = this.suppliersService.searchSuppliersQuery(searchTerm, params);
+   * Usage: results = this.suppliersService.searchSuppliersQuery(searchTerm);
    * Access data: results.data(), results.isLoading(), results.error()
    */
-  searchSuppliersQuery(searchTerm: string, params?: PaginationParams) {
-    const httpParams = this.buildParams({
-      ...params,
-      search: searchTerm,
-    });
+  searchSuppliersQuery(searchTerm: string) {
+    const httpParams = this.buildParams({ searchTerm });
     return injectQuery(() => ({
-      queryKey: ['suppliers', 'search', searchTerm, params] as const,
+      queryKey: ['suppliers', 'search', searchTerm] as const,
       queryFn: () =>
         this.toPromise(
-          this.get<PaginatedResponse<SupplierDetailsResponse>>(
+          this.get<SupplierDetailsResponse[]>(
             `${this.endpoint}/search`,
-            PaginatedSupplierResponseSchema,
+            z.array(SupplierDetailsResponseSchema),
             httpParams
           )
         ),

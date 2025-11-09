@@ -46,7 +46,7 @@ export class AuditsService extends BaseApiService {
       queryFn: () =>
         this.toPromise(
           this.get<PaginatedResponse<AuditResponse>>(
-            this.endpoint,
+            `${this.endpoint}/GetAll`,
             PaginatedResponseSchema(AuditResponseSchema),
             httpParams
           )
@@ -71,57 +71,23 @@ export class AuditsService extends BaseApiService {
   }
 
   /**
-   * Query for a specific audit by audit number
-   * Usage: audit = this.auditsService.getAuditByNumberQuery(auditNumber);
-   * Access data: audit.data(), audit.isLoading(), audit.error()
-   */
-  getAuditByNumberQuery(auditNumber: string | null) {
-    return injectQuery(() => ({
-      queryKey: ['audits', 'number', auditNumber] as const,
-      queryFn: () =>
-        this.toPromise(
-          this.get<AuditResponse>(`${this.endpoint}/number/${auditNumber}`, AuditResponseSchema)
-        ),
-      enabled: !!auditNumber,
-      staleTime: 1000 * 60 * 5, // 5 minutes
-    }));
-  }
-
-  /**
-   * Query for audits by supplier number
-   * Usage: audits = this.auditsService.getAuditsBySupplierQuery(supplierNumber, params);
+   * Query for searching audits
+   * Usage: audits = this.auditsService.searchAuditsQuery({ auditNumber, supplierNumber, fiscalYear });
    * Access data: audits.data(), audits.isLoading(), audits.error()
    */
-  getAuditsBySupplierQuery(supplierNumber: string | null, params?: PaginationParams) {
+  searchAuditsQuery(params: { auditNumber?: string; supplierNumber?: string; fiscalYear?: number }) {
     const httpParams = this.buildParams(params);
     return injectQuery(() => ({
-      queryKey: ['audits', 'supplier', supplierNumber, params] as const,
+      queryKey: ['audits', 'search', params] as const,
       queryFn: () =>
         this.toPromise(
-          this.get<PaginatedResponse<AuditResponse>>(
-            `${this.endpoint}/supplier/${supplierNumber}`,
-            PaginatedResponseSchema(AuditResponseSchema),
+          this.get<AuditResponse[]>(
+            `${this.endpoint}/search`,
+            z.array(AuditResponseSchema),
             httpParams
           )
         ),
-      enabled: !!supplierNumber,
-      staleTime: 1000 * 60 * 5, // 5 minutes
-    }));
-  }
-
-  /**
-   * Query for audit types
-   * Usage: auditTypes = this.auditsService.getAuditTypesQuery();
-   * Access data: auditTypes.data(), auditTypes.isLoading(), auditTypes.error()
-   */
-  getAuditTypesQuery() {
-    return injectQuery(() => ({
-      queryKey: ['audits', 'types'] as const,
-      queryFn: () =>
-        this.toPromise(
-          this.get<AuditTypeResponse[]>(`${this.endpoint}/types`, z.array(AuditTypeResponseSchema))
-        ),
-      staleTime: 1000 * 60 * 30, // 30 minutes (audit types rarely change)
+      staleTime: 1000 * 60 * 2, // 2 minutes
     }));
   }
 
@@ -187,26 +153,6 @@ export class AuditsService extends BaseApiService {
       onSuccess: (_, id) => {
         // Remove from cache and invalidate list
         this.queryClient.removeQueries({ queryKey: ['audits', 'detail', id] });
-        this.queryClient.invalidateQueries({ queryKey: ['audits', 'list'] });
-      },
-    }));
-  }
-
-  /**
-   * Mutation for approving an audit
-   * Usage: const approveMutation = this.auditsService.approveAuditMutation();
-   * Call: approveMutation.mutate(id)
-   */
-  approveAuditMutation() {
-    return injectMutation(() => ({
-      mutationFn: async (id: number) => {
-        return this.toPromise(
-          this.post<{}, AuditResponse>(`${this.endpoint}/${id}/approve`, {}, AuditResponseSchema)
-        );
-      },
-      onSuccess: (_, id) => {
-        // Invalidate specific audit and list
-        this.queryClient.invalidateQueries({ queryKey: ['audits', 'detail', id] });
         this.queryClient.invalidateQueries({ queryKey: ['audits', 'list'] });
       },
     }));
