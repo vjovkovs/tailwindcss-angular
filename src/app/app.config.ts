@@ -7,6 +7,7 @@ import {
 } from '@tanstack/angular-query-experimental';
 import { IPublicClientApplication, PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel } from '@azure/msal-browser';
 import { MsalInterceptor, MSAL_INSTANCE, MsalInterceptorConfiguration, MsalGuardConfiguration, MSAL_GUARD_CONFIG, MSAL_INTERCEPTOR_CONFIG, MsalService, MsalGuard, MsalBroadcastService } from '@azure/msal-angular';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 import { routes } from './app.routes';
 import { apiInterceptor } from './core/http/api.interceptor';
@@ -87,6 +88,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withRouterConfig({ 
       onSameUrlNavigation: 'reload'
     })),
+    provideAnimations(), // Add this line
     provideHttpClient(withInterceptors([apiInterceptor])),
     provideAngularQuery(createQueryClient()),
 

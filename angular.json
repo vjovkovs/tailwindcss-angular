@@ -54,6 +54,14 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "ssl": true,
+            "sslCert": "certs/localhost.pem",
+            "sslKey": "certs/localhost-key.pem",
+            "port": 4200,
+            "host": "localhost",
+            "proxyConfig": "proxy.conf.ts"
+          },
           "configurations": {
             "production": {
               "buildTarget": "angular-tailwind-template:build:production"

@@ -1,14 +1,22 @@
 /* Tailwind CSS 4 imports */
 @import "tailwindcss";
 @import "./styles/tailwind/theme.css";
+/* @plugin "daisyui"; */
+/* @plugin "daisyui" {
+  themes: all;
+  root: ":root";
+  exclude: ;
+  prefix: ;
+  logs: true;
+} */
 
-/* 
 @plugin "daisyui" {
   logs: false;
   themes:
     light --default,
     dark --prefersdark;
 }
+
 @plugin "daisyui/theme" {
   name: "light";
   default: true;
@@ -35,7 +43,7 @@
   --color-warning: "#f6c177";
   --color-error: "#b4637a";
   --color-contrast: "#faf4ed";
-} */
+}
 
 /* Add your global component styles here */
 /* @theme {

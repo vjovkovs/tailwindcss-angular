@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { injectQuery, injectMutation, injectQueryClient } from '@tanstack/angular-query-experimental';
 import { z } from 'zod';
 import {
   AuditResponse,
@@ -19,104 +19,142 @@ import {
 import { BaseApiService } from './base-api.service';
 
 /**
- * Audits Service
+ * Audits Service (TanStack Query Exclusive)
  *
- * Provides full CRUD operations for managing audits:
- * - Create, read, update, delete audits
- * - Search and filter audits
- * - Get audits by supplier
- * - Approve audits
- * - Get audit types
+ * Uses TanStack Query for all operations:
+ * - Automatic caching and cache invalidation
+ * - Background refetching
+ * - Optimistic updates
+ * - Loading and error states
  */
 @Injectable({
   providedIn: 'root',
 })
 export class AuditsService extends BaseApiService {
   private readonly endpoint = '/api/Audits';
+  private queryClient = injectQueryClient();
 
   /**
-   * Get all audits with pagination and search
+   * Query for all audits with pagination
+   * Usage: audits = this.auditsService.getAllAuditsQuery(params);
+   * Access data: audits.data(), audits.isLoading(), audits.error()
    */
-  getAllAudits(params?: PaginationParams): Observable<PaginatedResponse<AuditResponse>> {
+  getAllAuditsQuery(params?: PaginationParams) {
     const httpParams = this.buildParams(params);
-    return this.get(
-      this.endpoint,
-      PaginatedResponseSchema(AuditResponseSchema),
-      httpParams
-    );
+    return injectQuery(() => ({
+      queryKey: ['audits', 'list', params] as const,
+      queryFn: () =>
+        this.toPromise(
+          this.get<PaginatedResponse<AuditResponse>>(
+            `${this.endpoint}/GetAll`,
+            PaginatedResponseSchema(AuditResponseSchema),
+            httpParams
+          )
+        ),
+      staleTime: 1000 * 60 * 5, // 5 minutes
+    }));
   }
 
   /**
-   * Create a new audit
+   * Query for a specific audit by ID
+   * Usage: audit = this.auditsService.getAuditByIdQuery(id);
+   * Access data: audit.data(), audit.isLoading(), audit.error()
    */
-  createAudit(request: CreateAuditRequest): Observable<AuditResponse> {
-    return this.post(
-      this.endpoint,
-      request,
-      AuditResponseSchema,
-      CreateAuditRequestSchema
-    );
+  getAuditByIdQuery(id: number | null) {
+    return injectQuery(() => ({
+      queryKey: ['audits', 'detail', id] as const,
+      queryFn: () =>
+        this.toPromise(this.get<AuditResponse>(`${this.endpoint}/${id}`, AuditResponseSchema)),
+      enabled: !!id,
+      staleTime: 1000 * 60 * 5, // 5 minutes
+    }));
   }
 
   /**
-   * Get audit by ID
+   * Query for searching audits
+   * Usage: audits = this.auditsService.searchAuditsQuery({ auditNumber, supplierNumber, fiscalYear });
+   * Access data: audits.data(), audits.isLoading(), audits.error()
    */
-  getAuditById(id: number): Observable<AuditResponse> {
-    return this.get(`${this.endpoint}/${id}`, AuditResponseSchema);
-  }
-
-  /**
-   * Update an existing audit
-   */
-  updateAudit(id: number, request: UpdateAuditRequest): Observable<AuditResponse> {
-    return this.put(
-      `${this.endpoint}/${id}`,
-      request,
-      AuditResponseSchema,
-      UpdateAuditRequestSchema
-    );
-  }
-
-  /**
-   * Delete an audit
-   */
-  deleteAudit(id: number): Observable<void> {
-    return this.delete(`${this.endpoint}/${id}`);
-  }
-
-  /**
-   * Get audit by audit number
-   */
-  getAuditByNumber(auditNumber: string): Observable<AuditResponse> {
-    return this.get(`${this.endpoint}/number/${auditNumber}`, AuditResponseSchema);
-  }
-
-  /**
-   * Get audits by supplier number
-   */
-  getAuditsBySupplier(
-    supplierNumber: string,
-    params?: PaginationParams
-  ): Observable<PaginatedResponse<AuditResponse>> {
+  searchAuditsQuery(params: { auditNumber?: string; supplierNumber?: string; fiscalYear?: number }) {
     const httpParams = this.buildParams(params);
-    return this.get(
-      `${this.endpoint}/supplier/${supplierNumber}`,
-      PaginatedResponseSchema(AuditResponseSchema),
-      httpParams
-    );
+    return injectQuery(() => ({
+      queryKey: ['audits', 'search', params] as const,
+      queryFn: () =>
+        this.toPromise(
+          this.get<AuditResponse[]>(
+            `${this.endpoint}/search`,
+            z.array(AuditResponseSchema),
+            httpParams
+          )
+        ),
+      staleTime: 1000 * 60 * 2, // 2 minutes
+    }));
   }
 
   /**
-   * Approve an audit
+   * Mutation for creating a new audit
+   * Usage: const createMutation = this.auditsService.createAuditMutation();
+   * Call: createMutation.mutate(auditData)
    */
-  approveAudit(id: number): Observable<AuditResponse> {
-    return this.post(`${this.endpoint}/${id}/approve`, {}, AuditResponseSchema);
+  createAuditMutation() {
+    return injectMutation(() => ({
+      mutationFn: async (request: CreateAuditRequest) => {
+        return this.toPromise(
+          this.post<CreateAuditRequest, AuditResponse>(
+            this.endpoint,
+            request,
+            AuditResponseSchema,
+            CreateAuditRequestSchema
+          )
+        );
+      },
+      onSuccess: () => {
+        // Invalidate audits list to refetch
+        this.queryClient.invalidateQueries({ queryKey: ['audits', 'list'] });
+      },
+    }));
   }
 
   /**
-   * Get available audit types
+   * Mutation for updating an existing audit
+   * Usage: const updateMutation = this.auditsService.updateAuditMutation();
+   * Call: updateMutation.mutate({ id, request })
    */
-  getAuditTypes(): Observable<AuditTypeResponse[]> {
-    return this.get(`${this.endpoint}/types`, z.array(AuditTypeResponseSchema));
+  updateAuditMutation() {
+    return injectMutation(() => ({
+      mutationFn: async ({ id, request }: { id: number; request: UpdateAuditRequest }) => {
+        return this.toPromise(
+          this.put<UpdateAuditRequest, AuditResponse>(
+            `${this.endpoint}/${id}`,
+            request,
+            AuditResponseSchema,
+            UpdateAuditRequestSchema
+          )
+        );
+      },
+      onSuccess: (_, variables) => {
+        // Invalidate specific audit and list
+        this.queryClient.invalidateQueries({ queryKey: ['audits', 'detail', variables.id] });
+        this.queryClient.invalidateQueries({ queryKey: ['audits', 'list'] });
+      },
+    }));
+  }
+
+  /**
+   * Mutation for deleting an audit
+   * Usage: const deleteMutation = this.auditsService.deleteAuditMutation();
+   * Call: deleteMutation.mutate(id)
+   */
+  deleteAuditMutation() {
+    return injectMutation(() => ({
+      mutationFn: async (id: number) => {
+        return this.toPromise(this.delete(`${this.endpoint}/${id}`));
+      },
+      onSuccess: (_, id) => {
+        // Remove from cache and invalidate list
+        this.queryClient.removeQueries({ queryKey: ['audits', 'detail', id] });
+        this.queryClient.invalidateQueries({ queryKey: ['audits', 'list'] });
+      },
+    }));
   }
 }
