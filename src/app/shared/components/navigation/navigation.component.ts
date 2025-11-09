@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
@@ -46,7 +46,7 @@ export interface NavItem {
         <label for="app-drawer" class="drawer-overlay"></label>
 
         <!-- Sidebar content -->
-        <aside class="min-h-screen w-64 bg-base-200">
+        <aside class="min-h-screen w-64 bg-base-200 flex flex-col">
           <!-- Logo/Brand -->
           <div class="sticky top-0 z-10 bg-base-200 px-4 py-6">
             <h1 class="text-2xl font-bold text-primary">{{ appTitle() }}</h1>
@@ -54,7 +54,7 @@ export interface NavItem {
           </div>
 
           <!-- Navigation menu -->
-          <ul class="menu px-4 py-0">
+          <ul class="menu px-4 py-0 flex-1">
             @for (item of navItems(); track item.route) {
               <li>
                 <a
@@ -75,29 +75,35 @@ export interface NavItem {
             }
           </ul>
 
-          <!-- Divider -->
-          <!-- <div class="divider px-4"></div> -->
-
-          <!-- Settings/User section -->
-          <!-- <ul class="menu px-4 py-0">
-            <li>
-              <a class="flex items-center gap-3 rounded-lg">
-                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <!-- Theme toggle at bottom -->
+          <div class="px-4 py-4 mt-auto border-t border-base-300">
+            <label class="flex items-center justify-between cursor-pointer">
+              <span class="text-sm font-medium">Theme</span>
+              <input
+                type="checkbox"
+                [checked]="isDarkMode()"
+                (change)="toggleTheme()"
+                class="toggle theme-controller"
+                aria-label="Toggle theme"
+              />
+            </label>
+            <div class="flex items-center justify-between mt-2 text-xs text-base-content/60">
+              <div class="flex items-center gap-1">
+                <!-- Sun icon -->
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
-                <span>Settings</span>
-              </a>
-            </li>
-            <li>
-              <a class="flex items-center gap-3 rounded-lg">
-                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                <span>Light</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <span>Dark</span>
+                <!-- Moon icon -->
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                 </svg>
-                <span>Logout</span>
-              </a>
-            </li>
-          </ul> -->
+              </div>
+            </div>
+          </div>
         </aside>
       </div>
     </div>
@@ -124,6 +130,9 @@ export class NavigationComponent {
   appTitle = signal(environment.companyName);
   appSubtitle = signal('Document Management');
 
+  // Theme state
+  isDarkMode = signal(false);
+
   navItems = signal<NavItem[]>([
     {
       label: 'Dashboard',
@@ -147,6 +156,16 @@ export class NavigationComponent {
     },
   ]);
 
+  constructor() {
+    // Load saved theme preference
+    this.loadThemePreference();
+
+    // Apply theme when it changes
+    effect(() => {
+      this.applyTheme(this.isDarkMode());
+    });
+  }
+
   /**
    * Check if a route is currently active
    */
@@ -168,5 +187,37 @@ export class NavigationComponent {
         drawerToggle.checked = false;
       }
     }
+  }
+
+  /**
+   * Load theme preference from localStorage
+   */
+  private loadThemePreference(): void {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      this.isDarkMode.set(true);
+    } else if (savedTheme === 'light') {
+      this.isDarkMode.set(false);
+    } else {
+      // Check system preference
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      this.isDarkMode.set(prefersDark);
+    }
+  }
+
+  /**
+   * Toggle between light and dark theme
+   */
+  toggleTheme(): void {
+    this.isDarkMode.update(current => !current);
+  }
+
+  /**
+   * Apply theme to the document
+   */
+  private applyTheme(isDark: boolean): void {
+    const theme = isDark ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
   }
 }
