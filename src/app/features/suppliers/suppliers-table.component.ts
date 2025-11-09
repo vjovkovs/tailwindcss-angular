@@ -19,6 +19,7 @@ import { PreviewDialogComponent, PreviewField } from '../../shared/components/pr
 import { TableConfig, TableColumn, TableAction } from '../../shared/components/data-table/data-table.types';
 import { SupplierDetailsResponse } from '../../core/api/models';
 import { SuppliersService } from '../../core/api/services/suppliers.service';
+import { SuppliersQueryService } from '../../core/api/services/suppliers-query.service';
 
 @Component({
   selector: 'app-suppliers-table',
@@ -71,10 +72,10 @@ import { SuppliersService } from '../../core/api/services/suppliers.service';
 })
 export class SuppliersTableComponent {
   private readonly router = inject(Router);
-  private readonly suppliersService = inject(SuppliersService);
+  private readonly suppliersService = inject(SuppliersQueryService);
 
   // TanStack Query for suppliers data
-  private suppliersQuery = this.suppliersService.getSuppliersQuery({ pageNumber: 1, pageSize: 100 });
+  private suppliersQuery = this.suppliersService.createPaginatedQuery({ pageNumber: 1, pageSize: 100 });
 
   // Computed state from query
   suppliers = computed(() => this.suppliersQuery.data()?.items || []);

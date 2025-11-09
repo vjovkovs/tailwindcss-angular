@@ -13,6 +13,7 @@ import { z } from 'zod';
 import { DynamicFormComponent, DynamicFormConfig } from '../../shared/components/dynamic-form';
 import { SuppliersService } from '../../core/api/services/suppliers.service';
 import { SupplierDetailsResponse } from '../../core/api/models';
+import { SuppliersQueryService } from '../../core/api/services/suppliers-query.service';
 
 // Supplier form schema
 const supplierSchema = z.object({
@@ -99,13 +100,13 @@ type SupplierFormData = z.infer<typeof supplierSchema>;
 export class SupplierEditComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly suppliersService = inject(SuppliersService);
+  private readonly suppliersService = inject(SuppliersQueryService);
 
   // Get supplier ID from route
   private readonly supplierId = signal<string | null>(null);
 
   // TanStack Query for supplier data
-  private supplierQuery = this.suppliersService.getSupplierQuery(this.supplierId());
+  private supplierQuery = this.suppliersService.createSupplierQuery(this.supplierId() ?? '-1');
 
   // Computed state from query
   loading = computed(() => this.supplierQuery.isLoading());

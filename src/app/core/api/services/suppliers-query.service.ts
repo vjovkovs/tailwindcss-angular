@@ -52,7 +52,7 @@ export class SuppliersQueryService extends BaseApiService {
     queryKey: ['suppliers', 'list'] as const,
     queryFn: () => this.toPromise(
       this.get<PaginatedResponse<SupplierDetailsResponse>>(
-        '/api/Suppliers',
+        '/api/ReferenceSuppliers',
         PaginatedSupplierResponseSchema,
         this.buildParams({ pageNumber: 1, pageSize: 100 })
       )
@@ -72,7 +72,7 @@ export class SuppliersQueryService extends BaseApiService {
       queryKey: ['suppliers', 'detail', supplierNumber] as const,
       queryFn: () => this.toPromise(
         this.get<SupplierDetailsResponse>(
-          `/api/Suppliers/${supplierNumber}`,
+          `/api/ReferenceSuppliers/${supplierNumber}`,
           SupplierDetailsResponseSchema
         )
       ),
@@ -93,7 +93,7 @@ export class SuppliersQueryService extends BaseApiService {
       queryKey: ['suppliers', 'list', params.pageNumber, params.pageSize, params.search] as const,
       queryFn: () => this.toPromise(
         this.get<PaginatedResponse<SupplierDetailsResponse>>(
-          '/api/Suppliers',
+          '/api/ReferenceSuppliers',
           PaginatedSupplierResponseSchema,
           this.buildParams(params)
         )
@@ -114,7 +114,7 @@ export class SuppliersQueryService extends BaseApiService {
       queryKey: ['suppliers', 'search', searchTerm, params?.pageNumber, params?.pageSize] as const,
       queryFn: () => this.toPromise(
         this.get<PaginatedResponse<SupplierDetailsResponse>>(
-          '/api/Suppliers/search',
+          '/api/ReferenceSuppliers/search',
           PaginatedSupplierResponseSchema,
           this.buildParams({ ...params, search: searchTerm })
         )
