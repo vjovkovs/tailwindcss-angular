@@ -14,6 +14,7 @@ import { z } from 'zod';
 import { DynamicFormComponent, DynamicFormConfig } from '../../shared/components/dynamic-form';
 import { auditsGetAuditByIdOptions, referenceAuditsGetReferenceAuditsOptions, referenceSuppliersGetAllSuppliersOptions } from '@/core/api/generated/@tanstack/angular-query-experimental.gen';
 import type { SelectOption } from '../../shared/components/searchable-select';
+import type { AuditResponse, PaginatedResponseOfAuditResponse, PaginatedResponseOfSupplierDetailsResponse } from '@/core/api/generated';
 
 // Audit form schema (for creation)
 const auditSchema = z.object({
@@ -145,11 +146,11 @@ export class AuditEditComponent {
 
   // Map NUPIC reference audit data to SelectOption format
   auditNumberOptions = computed((): SelectOption[] => {
-    const audits = this.referenceAuditsQuery.data();
+    const audits = this.referenceAuditsQuery.data() as PaginatedResponseOfAuditResponse | undefined;
     if (!audits || !Array.isArray(audits.items)) return [];
     return audits.items
-      .filter(audit => audit.auditNumber)
-      .map(audit => ({
+      .filter((audit: AuditResponse) => audit.auditNumber)
+      .map((audit: AuditResponse) => ({
         label: `${audit.auditNumber} - ${audit.supplierNumber || 'N/A'}`,
         value: audit.auditNumber!
       }));
@@ -157,7 +158,7 @@ export class AuditEditComponent {
 
   // Map supplier data to SelectOption format
   supplierNumberOptions = computed((): SelectOption[] => {
-    const suppliers = this.suppliersListQuery.data();
+    const suppliers = this.suppliersListQuery.data() as PaginatedResponseOfSupplierDetailsResponse | undefined;
     if (!suppliers || !Array.isArray(suppliers.items)) return [];
     return suppliers.items
       .filter(supplier => supplier.supplierNumber)

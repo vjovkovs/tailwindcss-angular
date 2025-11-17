@@ -119,14 +119,14 @@ export class SupplierEditComponent {
     if (!supplier) return undefined;
 
     return {
-      supplierNumber: supplier.supplierNumber,
-      supplierName: supplier.supplierName,
-      city: supplier.city,
-      state: supplier.state,
-      contact: supplier.contact || undefined,
-      contactEmail: supplier.contactEmail || undefined,
-      isActive: supplier.isActive,
-      nupAudit: supplier.nupAudit || undefined,
+      supplierNumber: supplier.supplierNumber ?? undefined,
+      supplierName: supplier.supplierName ?? undefined,
+      city: supplier.city ?? undefined,
+      state: supplier.state ?? undefined,
+      contact: supplier.contact ?? undefined,
+      contactEmail: supplier.contactEmail ?? undefined,
+      isActive: supplier.isActive ?? true,
+      nupAudit: supplier.nupAudit ?? undefined,
     };
   });
 
