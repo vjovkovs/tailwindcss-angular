@@ -7,7 +7,7 @@ export default defineConfig({
     lint: 'eslint',
     path: './src/app/core/api/generated'
   },
-lugins: [
+  plugins: [
     '@hey-api/schemas',
     {
       dates: true,

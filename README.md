@@ -9,6 +9,7 @@ This template provides a complete, opinionated foundation for building modern An
 - **Angular 20** with Standalone Components, Signals, and Typed Forms
 - **Tailwind CSS 4** for utility-first styling
 - **TanStack Query/Table** for data fetching and table management
+- **@hey-api/openapi-ts** for automatic API client generation from OpenAPI specs
 - **Zod** for runtime validation
 - **Headless UI Primitives** (Dialog, Popover, Menu) built with Angular CDK
 - **Testing Infrastructure**: Vitest + Testing Library + Playwright + axe
@@ -63,6 +64,22 @@ npm run dev
 
 Navigate to `http://localhost:4200/`. The app will automatically reload on file changes.
 
+### API Code Generation
+
+Generate type-safe API clients from OpenAPI specifications:
+
+```bash
+npm run generate:api
+```
+
+This uses `@hey-api/openapi-ts` to automatically generate:
+- TypeScript types
+- Zod validation schemas
+- SDK methods with runtime validation
+- TanStack Query hooks
+
+See [docs/API_CODEGEN.md](docs/API_CODEGEN.md) for detailed setup and usage.
+
 ### Build
 
 Build the project for production:
@@ -111,6 +128,8 @@ npm run test:a11y
 src/
   app/
     core/              # Core services, interceptors, guards
+      api/             # API client
+        generated/     # Auto-generated from OpenAPI spec (@hey-api)
       http/            # HTTP client wrappers
       query/           # TanStack Query setup
       auth/            # Auth guards and services
