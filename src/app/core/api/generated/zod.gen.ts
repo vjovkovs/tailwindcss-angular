@@ -2,6 +2,50 @@
 
 import { z } from 'zod';
 
+export const zAuditResponse = z.object({
+    id: z.number().int().optional(),
+    auditNumber: z.string().optional(),
+    supplierNumber: z.string().optional(),
+    leadUtilityCode: z.string().optional(),
+    auditTypeId: z.number().int().optional(),
+    auditTypeName: z.string().optional(),
+    fkPerNumb: z.union([
+        z.number().int(),
+        z.null()
+    ]).optional(),
+    contactPersonEmail: z.string().optional(),
+    alternateContact: z.string().optional(),
+    startDate: z.union([
+        z.string().datetime(),
+        z.null()
+    ]).optional(),
+    endDate: z.union([
+        z.string().datetime(),
+        z.null()
+    ]).optional(),
+    auditApproved: z.boolean().optional(),
+    approvedBy: z.string().optional(),
+    dateNotified: z.union([
+        z.string().datetime(),
+        z.null()
+    ]).optional(),
+    createdDate: z.string().datetime().optional(),
+    createdBy: z.string().optional(),
+    updatedDate: z.string().datetime().optional(),
+    updatedBy: z.string().optional(),
+    leadAuditorName: z.string().optional()
+});
+
+export const zPaginatedResponseOfAuditResponse = z.object({
+    items: z.array(zAuditResponse).optional(),
+    totalCount: z.number().int().optional(),
+    pageNumber: z.number().int().optional(),
+    pageSize: z.number().int().optional(),
+    totalPages: z.number().int().optional(),
+    hasPreviousPage: z.boolean().optional(),
+    hasNextPage: z.boolean().optional()
+});
+
 export const zProblemDetails = z.object({
     type: z.union([
         z.string(),
@@ -305,50 +349,6 @@ export const zMergeFilesRequest = z.object({
     mergedFileName: z.string().min(1)
 });
 
-export const zAuditResponse = z.object({
-    id: z.number().int().optional(),
-    auditNumber: z.string().optional(),
-    supplierNumber: z.string().optional(),
-    leadUtilityCode: z.string().optional(),
-    auditTypeId: z.number().int().optional(),
-    auditTypeName: z.string().optional(),
-    fkPerNumb: z.union([
-        z.number().int(),
-        z.null()
-    ]).optional(),
-    contactPersonEmail: z.string().optional(),
-    alternateContact: z.string().optional(),
-    startDate: z.union([
-        z.string().datetime(),
-        z.null()
-    ]).optional(),
-    endDate: z.union([
-        z.string().datetime(),
-        z.null()
-    ]).optional(),
-    auditApproved: z.boolean().optional(),
-    approvedBy: z.string().optional(),
-    dateNotified: z.union([
-        z.string().datetime(),
-        z.null()
-    ]).optional(),
-    createdDate: z.string().datetime().optional(),
-    createdBy: z.string().optional(),
-    updatedDate: z.string().datetime().optional(),
-    updatedBy: z.string().optional(),
-    leadAuditorName: z.string().optional()
-});
-
-export const zPaginatedResponseOfAuditResponse = z.object({
-    items: z.array(zAuditResponse).optional(),
-    totalCount: z.number().int().optional(),
-    pageNumber: z.number().int().optional(),
-    pageSize: z.number().int().optional(),
-    totalPages: z.number().int().optional(),
-    hasPreviousPage: z.boolean().optional(),
-    hasNextPage: z.boolean().optional()
-});
-
 export const zCreateAuditRequest = z.object({
     auditNumber: z.string().length(5),
     supplierNumber: z.string().length(4),
@@ -464,6 +464,15 @@ export const zCompletePhaseRequest = z.object({
     sendNotification: z.boolean().optional()
 });
 
+export const zPhaseResponse = z.object({
+    id: z.number().int().optional(),
+    code: z.string().optional(),
+    name: z.string().optional(),
+    category: z.string().optional(),
+    description: z.string().optional(),
+    isActive: z.boolean().optional()
+});
+
 export const zUpdatePhaseAssignmentRequest = z.object({
     status: z.string().optional(),
     isActive: z.union([
@@ -491,6 +500,8 @@ export const zReferenceAuditsGetReferenceAuditsData = z.object({
     }).optional()
 });
 
+export const zReferenceAuditsGetReferenceAuditsResponse = zPaginatedResponseOfAuditResponse;
+
 export const zReferenceAuditsGetAllNupicAuditsData = z.object({
     body: z.never().optional(),
     path: z.never().optional(),
@@ -509,6 +520,8 @@ export const zReferenceAuditsGetAllNupicAuditsData = z.object({
         ]).optional()
     }).optional()
 });
+
+export const zReferenceAuditsGetAllNupicAuditsResponse = zPaginatedResponseOfAuditResponse;
 
 export const zReferenceAuditsGetNupicAuditByNumberData = z.object({
     body: z.never().optional(),
@@ -1089,4 +1102,4 @@ export const zPhasesGetAvailablePhasesData = z.object({
     query: z.never().optional()
 });
 
-export const zPhasesGetAvailablePhasesResponse = z.array(z.unknown());
+export const zPhasesGetAvailablePhasesResponse = z.array(zPhaseResponse);

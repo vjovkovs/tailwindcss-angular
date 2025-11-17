@@ -73,7 +73,8 @@ type SupplierFormData = z.infer<typeof supplierSchema>;
       </div>
 
       <!-- Form -->
-      <div *ngIf="!loading()" class="card bg-base-100 shadow-xl">
+       @if(!loading()){
+      <div class="card bg-base-100 shadow-xl">
         <div class="card-body">
           <app-dynamic-form
             [config]="formConfig"
@@ -83,9 +84,10 @@ type SupplierFormData = z.infer<typeof supplierSchema>;
           />
         </div>
       </div>
-
+       }
       <!-- Success message -->
-      <div *ngIf="successMessage()" class="toast toast-end">
+      @if (successMessage()){
+      <div class="toast toast-end">
         <div class="alert alert-success">
           <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
@@ -93,6 +95,7 @@ type SupplierFormData = z.infer<typeof supplierSchema>;
           <span>{{ successMessage() }}</span>
         </div>
       </div>
+    }
     </div>
   `,
 })
