@@ -15,7 +15,7 @@
 /package-lock.json
 /yarn.lock
 
-openapi.json
+openapi*.json
 
 # Environment files with sensitive data
 /src/environments/environment.ts

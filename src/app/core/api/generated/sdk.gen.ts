@@ -2,7 +2,9 @@
 
 import { type Client, formDataBodySerializer, type Options as Options2, type TDataShape } from './client';
 import { client } from './client.gen';
-import type { AuditDocumentMergeGetMergeTemplatesData, AuditDocumentMergeGetMergeTemplatesResponses, AuditDocumentMergeMergeAuditDocumentsData, AuditDocumentMergeMergeAuditDocumentsErrors, AuditDocumentMergeMergeAuditDocumentsResponses, AuditDocumentMergePreviewMergeData, AuditDocumentMergePreviewMergeErrors, AuditDocumentMergePreviewMergeResponses, AuditDocumentMergeRenamePreviousMergesData, AuditDocumentMergeRenamePreviousMergesErrors, AuditDocumentMergeRenamePreviousMergesResponses, AuditDocumentMergeValidateMergeRequestData, AuditDocumentMergeValidateMergeRequestErrors, AuditDocumentMergeValidateMergeRequestResponses, AuditFilesDeleteFileData, AuditFilesDeleteFileErrors, AuditFilesDeleteFileResponses, AuditFilesDownloadFileData, AuditFilesDownloadFileErrors, AuditFilesDownloadFileResponses, AuditFilesGetAuditFilesData, AuditFilesGetAuditFilesErrors, AuditFilesGetAuditFilesResponses, AuditFilesGetFileMetadataData, AuditFilesGetFileMetadataErrors, AuditFilesGetFileMetadataResponses, AuditFilesGetPhaseFilesData, AuditFilesGetPhaseFilesErrors, AuditFilesGetPhaseFilesResponses, AuditFilesMergeFilesData, AuditFilesMergeFilesErrors, AuditFilesMergeFilesResponses, AuditFilesReviewFileData, AuditFilesReviewFileErrors, AuditFilesReviewFileResponses, AuditFilesSendApprovalEmailData, AuditFilesSendApprovalEmailErrors, AuditFilesSendApprovalEmailResponses, AuditFilesUpdateFileMetadataData, AuditFilesUpdateFileMetadataErrors, AuditFilesUpdateFileMetadataResponses, AuditFilesUploadFilesData, AuditFilesUploadFilesErrors, AuditFilesUploadFilesResponses, AuditsCreateAuditData, AuditsCreateAuditErrors, AuditsCreateAuditResponses, AuditsDeleteAuditData, AuditsDeleteAuditErrors, AuditsDeleteAuditResponses, AuditsGetAllAuditsData, AuditsGetAllAuditsErrors, AuditsGetAllAuditsResponses, AuditsGetAuditByIdData, AuditsGetAuditByIdErrors, AuditsGetAuditByIdResponses, AuditsSearchAuditsData, AuditsSearchAuditsResponses, AuditsUpdateAuditData, AuditsUpdateAuditErrors, AuditsUpdateAuditResponses, BookmarksCreateBookmarkData, BookmarksCreateBookmarkErrors, BookmarksCreateBookmarkResponses, BookmarksCreateBookmarksBatchData, BookmarksCreateBookmarksBatchErrors, BookmarksCreateBookmarksBatchResponses, BookmarksDeleteBookmarkData, BookmarksDeleteBookmarkErrors, BookmarksDeleteBookmarkResponses, BookmarksGetAuditBookmarksData, BookmarksGetAuditBookmarksErrors, BookmarksGetAuditBookmarksResponses, BookmarksGetBookmarkData, BookmarksGetBookmarkErrors, BookmarksGetBookmarkResponses, BookmarksGetBookmarkTemplateData, BookmarksGetBookmarkTemplateErrors, BookmarksGetBookmarkTemplateResponses, BookmarksGetPhaseBookmarksData, BookmarksGetPhaseBookmarksErrors, BookmarksGetPhaseBookmarksResponses, BookmarksUpdateBookmarkData, BookmarksUpdateBookmarkErrors, BookmarksUpdateBookmarkResponses, PhasesCompletePhaseData, PhasesCompletePhaseErrors, PhasesCompletePhaseResponses, PhasesGetAuditPhasesData, PhasesGetAuditPhasesErrors, PhasesGetAuditPhasesResponses, PhasesGetAvailablePhasesData, PhasesGetAvailablePhasesErrors, PhasesGetAvailablePhasesResponses, PhasesGetCurrentPhaseData, PhasesGetCurrentPhaseErrors, PhasesGetCurrentPhaseResponses, PhasesGetPhaseAssignmentData, PhasesGetPhaseAssignmentErrors, PhasesGetPhaseAssignmentResponses, PhasesReactivatePhaseData, PhasesReactivatePhaseErrors, PhasesReactivatePhaseResponses, PhasesStartPhaseData, PhasesStartPhaseErrors, PhasesStartPhaseResponses, PhasesUpdatePhaseAssignmentData, PhasesUpdatePhaseAssignmentErrors, PhasesUpdatePhaseAssignmentResponses, ReferenceAuditsGetAllNupicAuditsData, ReferenceAuditsGetAllNupicAuditsErrors, ReferenceAuditsGetAllNupicAuditsResponses, ReferenceAuditsGetNupicAuditByNumberData, ReferenceAuditsGetNupicAuditByNumberErrors, ReferenceAuditsGetNupicAuditByNumberResponses, ReferenceAuditsGetNupicAuditsBySupplierData, ReferenceAuditsGetNupicAuditsBySupplierErrors, ReferenceAuditsGetNupicAuditsBySupplierResponses, ReferenceAuditsGetReferenceAuditsData, ReferenceAuditsGetReferenceAuditsErrors, ReferenceAuditsGetReferenceAuditsResponses, ReferenceAuditsNupicAuditExistsGetData, ReferenceAuditsNupicAuditExistsGetErrors, ReferenceAuditsNupicAuditExistsGetResponses, ReferenceAuditsNupicAuditExistsHeadData, ReferenceAuditsNupicAuditExistsHeadErrors, ReferenceAuditsNupicAuditExistsHeadResponses, ReferenceSuppliersGetAllSuppliersData, ReferenceSuppliersGetAllSuppliersErrors, ReferenceSuppliersGetAllSuppliersResponses, ReferenceSuppliersGetSupplierByNumberData, ReferenceSuppliersGetSupplierByNumberErrors, ReferenceSuppliersGetSupplierByNumberResponses, ReferenceSuppliersSearchSuppliersData, ReferenceSuppliersSearchSuppliersErrors, ReferenceSuppliersSearchSuppliersResponses, ReferenceSuppliersSupplierExistsGetData, ReferenceSuppliersSupplierExistsGetErrors, ReferenceSuppliersSupplierExistsGetResponses, ReferenceSuppliersSupplierExistsHeadData, ReferenceSuppliersSupplierExistsHeadErrors, ReferenceSuppliersSupplierExistsHeadResponses } from './types.gen';
+import { auditFilesDownloadFileResponseTransformer, auditFilesGetAuditFilesResponseTransformer, auditFilesGetFileMetadataResponseTransformer, auditFilesGetPhaseFilesResponseTransformer, auditFilesMergeFilesResponseTransformer, auditFilesReviewFileResponseTransformer, auditFilesUpdateFileMetadataResponseTransformer, auditFilesUploadFilesResponseTransformer, auditsCreateAuditResponseTransformer, auditsGetAllAuditsResponseTransformer, auditsGetAuditByIdResponseTransformer, auditsSearchAuditsResponseTransformer, auditsUpdateAuditResponseTransformer, bookmarksCreateBookmarkResponseTransformer, bookmarksCreateBookmarksBatchResponseTransformer, bookmarksGetAuditBookmarksResponseTransformer, bookmarksGetBookmarkResponseTransformer, bookmarksGetPhaseBookmarksResponseTransformer, bookmarksUpdateBookmarkResponseTransformer, phasesCompletePhaseResponseTransformer, phasesGetAuditPhasesResponseTransformer, phasesGetCurrentPhaseResponseTransformer, phasesGetPhaseAssignmentResponseTransformer, phasesReactivatePhaseResponseTransformer, phasesStartPhaseResponseTransformer, phasesUpdatePhaseAssignmentResponseTransformer, referenceAuditsGetNupicAuditByNumberResponseTransformer, referenceAuditsGetNupicAuditsBySupplierResponseTransformer } from './transformers.gen';
+import type { AuditDocumentMergeGetMergeTemplatesData, AuditDocumentMergeGetMergeTemplatesResponses, AuditDocumentMergeMergeAuditDocumentsData, AuditDocumentMergeMergeAuditDocumentsErrors, AuditDocumentMergeMergeAuditDocumentsResponses, AuditDocumentMergePreviewMergeData, AuditDocumentMergePreviewMergeErrors, AuditDocumentMergePreviewMergeResponses, AuditDocumentMergeRenamePreviousMergesData, AuditDocumentMergeRenamePreviousMergesErrors, AuditDocumentMergeRenamePreviousMergesResponses, AuditDocumentMergeValidateMergeRequestData, AuditDocumentMergeValidateMergeRequestErrors, AuditDocumentMergeValidateMergeRequestResponses, AuditFilesDeleteFileData, AuditFilesDeleteFileErrors, AuditFilesDeleteFileResponses, AuditFilesDownloadFileData, AuditFilesDownloadFileErrors, AuditFilesDownloadFileResponses, AuditFilesGetAuditFilesData, AuditFilesGetAuditFilesErrors, AuditFilesGetAuditFilesResponses, AuditFilesGetFileMetadataData, AuditFilesGetFileMetadataErrors, AuditFilesGetFileMetadataResponses, AuditFilesGetPhaseFilesData, AuditFilesGetPhaseFilesErrors, AuditFilesGetPhaseFilesResponses, AuditFilesMergeFilesData, AuditFilesMergeFilesErrors, AuditFilesMergeFilesResponses, AuditFilesReviewFileData, AuditFilesReviewFileErrors, AuditFilesReviewFileResponses, AuditFilesSendApprovalEmailData, AuditFilesSendApprovalEmailErrors, AuditFilesSendApprovalEmailResponses, AuditFilesUpdateFileMetadataData, AuditFilesUpdateFileMetadataErrors, AuditFilesUpdateFileMetadataResponses, AuditFilesUploadFilesData, AuditFilesUploadFilesErrors, AuditFilesUploadFilesResponses, AuditsCreateAuditData, AuditsCreateAuditErrors, AuditsCreateAuditResponses, AuditsDeleteAuditData, AuditsDeleteAuditErrors, AuditsDeleteAuditResponses, AuditsGetAllAuditsData, AuditsGetAllAuditsErrors, AuditsGetAllAuditsResponses, AuditsGetAuditByIdData, AuditsGetAuditByIdErrors, AuditsGetAuditByIdResponses, AuditsSearchAuditsData, AuditsSearchAuditsResponses, AuditsUpdateAuditData, AuditsUpdateAuditErrors, AuditsUpdateAuditResponses, BookmarksCreateBookmarkData, BookmarksCreateBookmarkErrors, BookmarksCreateBookmarkResponses, BookmarksCreateBookmarksBatchData, BookmarksCreateBookmarksBatchErrors, BookmarksCreateBookmarksBatchResponses, BookmarksDeleteBookmarkData, BookmarksDeleteBookmarkErrors, BookmarksDeleteBookmarkResponses, BookmarksGetAuditBookmarksData, BookmarksGetAuditBookmarksErrors, BookmarksGetAuditBookmarksResponses, BookmarksGetBookmarkData, BookmarksGetBookmarkErrors, BookmarksGetBookmarkResponses, BookmarksGetBookmarkTemplateData, BookmarksGetBookmarkTemplateErrors, BookmarksGetBookmarkTemplateResponses, BookmarksGetPhaseBookmarksData, BookmarksGetPhaseBookmarksErrors, BookmarksGetPhaseBookmarksResponses, BookmarksUpdateBookmarkData, BookmarksUpdateBookmarkErrors, BookmarksUpdateBookmarkResponses, PhasesCompletePhaseData, PhasesCompletePhaseErrors, PhasesCompletePhaseResponses, PhasesGetAuditPhasesData, PhasesGetAuditPhasesErrors, PhasesGetAuditPhasesResponses, PhasesGetAvailablePhasesData, PhasesGetAvailablePhasesErrors, PhasesGetAvailablePhasesResponses, PhasesGetCurrentPhaseData, PhasesGetCurrentPhaseErrors, PhasesGetCurrentPhaseResponses, PhasesGetPhaseAssignmentData, PhasesGetPhaseAssignmentErrors, PhasesGetPhaseAssignmentResponses, PhasesReactivatePhaseData, PhasesReactivatePhaseErrors, PhasesReactivatePhaseResponses, PhasesStartPhaseData, PhasesStartPhaseErrors, PhasesStartPhaseResponses, PhasesUpdatePhaseAssignmentData, PhasesUpdatePhaseAssignmentErrors, PhasesUpdatePhaseAssignmentResponses, ReferenceAuditsGetAllNupicAuditsData, ReferenceAuditsGetAllNupicAuditsErrors, ReferenceAuditsGetAllNupicAuditsResponses, ReferenceAuditsGetNupicAuditByNumberData, ReferenceAuditsGetNupicAuditByNumberErrors, ReferenceAuditsGetNupicAuditByNumberResponses, ReferenceAuditsGetNupicAuditsBySupplierData, ReferenceAuditsGetNupicAuditsBySupplierErrors, ReferenceAuditsGetNupicAuditsBySupplierResponses, ReferenceAuditsGetReferenceAuditsData, ReferenceAuditsGetReferenceAuditsErrors, ReferenceAuditsGetReferenceAuditsResponses, ReferenceAuditsNupicAuditExistsGetData, ReferenceAuditsNupicAuditExistsGetErrors, ReferenceAuditsNupicAuditExistsGetResponses, ReferenceAuditsNupicAuditExistsHeadData, ReferenceAuditsNupicAuditExistsHeadErrors, ReferenceAuditsNupicAuditExistsHeadResponses, ReferencePersonnelGetActiveAuditorsData, ReferencePersonnelGetActiveAuditorsErrors, ReferencePersonnelGetActiveAuditorsResponses, ReferencePersonnelGetActivePersonnelData, ReferencePersonnelGetActivePersonnelErrors, ReferencePersonnelGetActivePersonnelResponses, ReferencePersonnelGetAuditorsByMemberData, ReferencePersonnelGetAuditorsByMemberErrors, ReferencePersonnelGetAuditorsByMemberResponses, ReferencePersonnelGetAuditorsData, ReferencePersonnelGetAuditorsErrors, ReferencePersonnelGetAuditorsResponses, ReferencePersonnelGetPersonnelByEmailData, ReferencePersonnelGetPersonnelByEmailErrors, ReferencePersonnelGetPersonnelByEmailResponses, ReferencePersonnelGetPersonnelByMemberData, ReferencePersonnelGetPersonnelByMemberErrors, ReferencePersonnelGetPersonnelByMemberResponses, ReferencePersonnelGetPersonnelByNumberData, ReferencePersonnelGetPersonnelByNumberErrors, ReferencePersonnelGetPersonnelByNumberResponses, ReferencePersonnelGetPersonnelData, ReferencePersonnelGetPersonnelErrors, ReferencePersonnelGetPersonnelResponses, ReferencePersonnelSearchPersonnelData, ReferencePersonnelSearchPersonnelErrors, ReferencePersonnelSearchPersonnelResponses, ReferenceSuppliersGetAllSuppliersData, ReferenceSuppliersGetAllSuppliersErrors, ReferenceSuppliersGetAllSuppliersResponses, ReferenceSuppliersGetSupplierByNumberData, ReferenceSuppliersGetSupplierByNumberErrors, ReferenceSuppliersGetSupplierByNumberResponses, ReferenceSuppliersSearchSuppliersData, ReferenceSuppliersSearchSuppliersErrors, ReferenceSuppliersSearchSuppliersResponses, ReferenceSuppliersSupplierExistsGetData, ReferenceSuppliersSupplierExistsGetErrors, ReferenceSuppliersSupplierExistsGetResponses, ReferenceSuppliersSupplierExistsHeadData, ReferenceSuppliersSupplierExistsHeadErrors, ReferenceSuppliersSupplierExistsHeadResponses } from './types.gen';
+import { zAuditDocumentMergeGetMergeTemplatesData, zAuditDocumentMergeGetMergeTemplatesResponse, zAuditDocumentMergeMergeAuditDocumentsData, zAuditDocumentMergeMergeAuditDocumentsResponse, zAuditDocumentMergePreviewMergeData, zAuditDocumentMergePreviewMergeResponse, zAuditDocumentMergeRenamePreviousMergesData, zAuditDocumentMergeValidateMergeRequestData, zAuditFilesDeleteFileData, zAuditFilesDeleteFileResponse, zAuditFilesDownloadFileData, zAuditFilesDownloadFileResponse, zAuditFilesGetAuditFilesData, zAuditFilesGetAuditFilesResponse, zAuditFilesGetFileMetadataData, zAuditFilesGetFileMetadataResponse, zAuditFilesGetPhaseFilesData, zAuditFilesGetPhaseFilesResponse, zAuditFilesMergeFilesData, zAuditFilesMergeFilesResponse, zAuditFilesReviewFileData, zAuditFilesReviewFileResponse, zAuditFilesSendApprovalEmailData, zAuditFilesUpdateFileMetadataData, zAuditFilesUpdateFileMetadataResponse, zAuditFilesUploadFilesData, zAuditFilesUploadFilesResponse, zAuditsCreateAuditData, zAuditsCreateAuditResponse, zAuditsDeleteAuditData, zAuditsDeleteAuditResponse, zAuditsGetAllAuditsData, zAuditsGetAllAuditsResponse, zAuditsGetAuditByIdData, zAuditsGetAuditByIdResponse, zAuditsSearchAuditsData, zAuditsSearchAuditsResponse, zAuditsUpdateAuditData, zAuditsUpdateAuditResponse, zBookmarksCreateBookmarkData, zBookmarksCreateBookmarkResponse, zBookmarksCreateBookmarksBatchData, zBookmarksCreateBookmarksBatchResponse, zBookmarksDeleteBookmarkData, zBookmarksDeleteBookmarkResponse, zBookmarksGetAuditBookmarksData, zBookmarksGetAuditBookmarksResponse, zBookmarksGetBookmarkData, zBookmarksGetBookmarkResponse, zBookmarksGetBookmarkTemplateData, zBookmarksGetBookmarkTemplateResponse, zBookmarksGetPhaseBookmarksData, zBookmarksGetPhaseBookmarksResponse, zBookmarksUpdateBookmarkData, zBookmarksUpdateBookmarkResponse, zPhasesCompletePhaseData, zPhasesCompletePhaseResponse, zPhasesGetAuditPhasesData, zPhasesGetAuditPhasesResponse, zPhasesGetAvailablePhasesData, zPhasesGetAvailablePhasesResponse, zPhasesGetCurrentPhaseData, zPhasesGetCurrentPhaseResponse, zPhasesGetPhaseAssignmentData, zPhasesGetPhaseAssignmentResponse, zPhasesReactivatePhaseData, zPhasesReactivatePhaseResponse, zPhasesStartPhaseData, zPhasesStartPhaseResponse, zPhasesUpdatePhaseAssignmentData, zPhasesUpdatePhaseAssignmentResponse, zReferenceAuditsGetAllNupicAuditsData, zReferenceAuditsGetNupicAuditByNumberData, zReferenceAuditsGetNupicAuditByNumberResponse, zReferenceAuditsGetNupicAuditsBySupplierData, zReferenceAuditsGetNupicAuditsBySupplierResponse, zReferenceAuditsGetReferenceAuditsData, zReferenceAuditsNupicAuditExistsGetData, zReferenceAuditsNupicAuditExistsHeadData, zReferencePersonnelGetActiveAuditorsData, zReferencePersonnelGetActiveAuditorsResponse, zReferencePersonnelGetActivePersonnelData, zReferencePersonnelGetActivePersonnelResponse, zReferencePersonnelGetAuditorsByMemberData, zReferencePersonnelGetAuditorsByMemberResponse, zReferencePersonnelGetAuditorsData, zReferencePersonnelGetAuditorsResponse, zReferencePersonnelGetPersonnelByEmailData, zReferencePersonnelGetPersonnelByEmailResponse, zReferencePersonnelGetPersonnelByMemberData, zReferencePersonnelGetPersonnelByMemberResponse, zReferencePersonnelGetPersonnelByNumberData, zReferencePersonnelGetPersonnelByNumberResponse, zReferencePersonnelGetPersonnelData, zReferencePersonnelGetPersonnelResponse, zReferencePersonnelSearchPersonnelData, zReferencePersonnelSearchPersonnelResponse, zReferenceSuppliersGetAllSuppliersData, zReferenceSuppliersGetAllSuppliersResponse, zReferenceSuppliersGetSupplierByNumberData, zReferenceSuppliersGetSupplierByNumberResponse, zReferenceSuppliersSearchSuppliersData, zReferenceSuppliersSearchSuppliersResponse, zReferenceSuppliersSupplierExistsGetData, zReferenceSuppliersSupplierExistsHeadData } from './zod.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -20,6 +22,9 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
 
 export const referenceAuditsGetReferenceAudits = <ThrowOnError extends boolean = false>(options?: Options<ReferenceAuditsGetReferenceAuditsData, ThrowOnError>) => {
     return (options?.client ?? client).get<ReferenceAuditsGetReferenceAuditsResponses, ReferenceAuditsGetReferenceAuditsErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zReferenceAuditsGetReferenceAuditsData.parseAsync(data);
+        },
         url: '/api/ReferenceAudits',
         ...options
     });
@@ -30,6 +35,9 @@ export const referenceAuditsGetReferenceAudits = <ThrowOnError extends boolean =
  */
 export const referenceAuditsGetAllNupicAudits = <ThrowOnError extends boolean = false>(options?: Options<ReferenceAuditsGetAllNupicAuditsData, ThrowOnError>) => {
     return (options?.client ?? client).get<ReferenceAuditsGetAllNupicAuditsResponses, ReferenceAuditsGetAllNupicAuditsErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zReferenceAuditsGetAllNupicAuditsData.parseAsync(data);
+        },
         url: '/api/ReferenceAudits/GetAllNupicAudits',
         ...options
     });
@@ -37,6 +45,13 @@ export const referenceAuditsGetAllNupicAudits = <ThrowOnError extends boolean = 
 
 export const referenceAuditsGetNupicAuditByNumber = <ThrowOnError extends boolean = false>(options: Options<ReferenceAuditsGetNupicAuditByNumberData, ThrowOnError>) => {
     return (options.client ?? client).get<ReferenceAuditsGetNupicAuditByNumberResponses, ReferenceAuditsGetNupicAuditByNumberErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zReferenceAuditsGetNupicAuditByNumberData.parseAsync(data);
+        },
+        responseTransformer: referenceAuditsGetNupicAuditByNumberResponseTransformer,
+        responseValidator: async (data) => {
+            return await zReferenceAuditsGetNupicAuditByNumberResponse.parseAsync(data);
+        },
         url: '/api/ReferenceAudits/{auditNumber}',
         ...options
     });
@@ -44,6 +59,9 @@ export const referenceAuditsGetNupicAuditByNumber = <ThrowOnError extends boolea
 
 export const referenceAuditsNupicAuditExistsHead = <ThrowOnError extends boolean = false>(options: Options<ReferenceAuditsNupicAuditExistsHeadData, ThrowOnError>) => {
     return (options.client ?? client).head<ReferenceAuditsNupicAuditExistsHeadResponses, ReferenceAuditsNupicAuditExistsHeadErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zReferenceAuditsNupicAuditExistsHeadData.parseAsync(data);
+        },
         url: '/api/ReferenceAudits/{auditNumber}',
         ...options
     });
@@ -51,6 +69,13 @@ export const referenceAuditsNupicAuditExistsHead = <ThrowOnError extends boolean
 
 export const referenceAuditsGetNupicAuditsBySupplier = <ThrowOnError extends boolean = false>(options: Options<ReferenceAuditsGetNupicAuditsBySupplierData, ThrowOnError>) => {
     return (options.client ?? client).get<ReferenceAuditsGetNupicAuditsBySupplierResponses, ReferenceAuditsGetNupicAuditsBySupplierErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zReferenceAuditsGetNupicAuditsBySupplierData.parseAsync(data);
+        },
+        responseTransformer: referenceAuditsGetNupicAuditsBySupplierResponseTransformer,
+        responseValidator: async (data) => {
+            return await zReferenceAuditsGetNupicAuditsBySupplierResponse.parseAsync(data);
+        },
         url: '/api/ReferenceAudits/supplier/{supplierNumber}',
         ...options
     });
@@ -58,13 +83,193 @@ export const referenceAuditsGetNupicAuditsBySupplier = <ThrowOnError extends boo
 
 export const referenceAuditsNupicAuditExistsGet = <ThrowOnError extends boolean = false>(options: Options<ReferenceAuditsNupicAuditExistsGetData, ThrowOnError>) => {
     return (options.client ?? client).get<ReferenceAuditsNupicAuditExistsGetResponses, ReferenceAuditsNupicAuditExistsGetErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zReferenceAuditsNupicAuditExistsGetData.parseAsync(data);
+        },
         url: '/api/ReferenceAudits/{auditNumber}/exists',
+        ...options
+    });
+};
+
+export const referencePersonnelGetPersonnel = <ThrowOnError extends boolean = false>(options?: Options<ReferencePersonnelGetPersonnelData, ThrowOnError>) => {
+    return (options?.client ?? client).get<ReferencePersonnelGetPersonnelResponses, ReferencePersonnelGetPersonnelErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zReferencePersonnelGetPersonnelData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zReferencePersonnelGetPersonnelResponse.parseAsync(data);
+        },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/api/reference-personnel',
+        ...options
+    });
+};
+
+export const referencePersonnelGetPersonnelByNumber = <ThrowOnError extends boolean = false>(options: Options<ReferencePersonnelGetPersonnelByNumberData, ThrowOnError>) => {
+    return (options.client ?? client).get<ReferencePersonnelGetPersonnelByNumberResponses, ReferencePersonnelGetPersonnelByNumberErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zReferencePersonnelGetPersonnelByNumberData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zReferencePersonnelGetPersonnelByNumberResponse.parseAsync(data);
+        },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/api/reference-personnel/{personnelNumber}',
+        ...options
+    });
+};
+
+export const referencePersonnelGetPersonnelByMember = <ThrowOnError extends boolean = false>(options: Options<ReferencePersonnelGetPersonnelByMemberData, ThrowOnError>) => {
+    return (options.client ?? client).get<ReferencePersonnelGetPersonnelByMemberResponses, ReferencePersonnelGetPersonnelByMemberErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zReferencePersonnelGetPersonnelByMemberData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zReferencePersonnelGetPersonnelByMemberResponse.parseAsync(data);
+        },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/api/reference-personnel/member/{memberCode}',
+        ...options
+    });
+};
+
+export const referencePersonnelGetActivePersonnel = <ThrowOnError extends boolean = false>(options?: Options<ReferencePersonnelGetActivePersonnelData, ThrowOnError>) => {
+    return (options?.client ?? client).get<ReferencePersonnelGetActivePersonnelResponses, ReferencePersonnelGetActivePersonnelErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zReferencePersonnelGetActivePersonnelData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zReferencePersonnelGetActivePersonnelResponse.parseAsync(data);
+        },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/api/reference-personnel/active',
+        ...options
+    });
+};
+
+export const referencePersonnelGetActiveAuditors = <ThrowOnError extends boolean = false>(options?: Options<ReferencePersonnelGetActiveAuditorsData, ThrowOnError>) => {
+    return (options?.client ?? client).get<ReferencePersonnelGetActiveAuditorsResponses, ReferencePersonnelGetActiveAuditorsErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zReferencePersonnelGetActiveAuditorsData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zReferencePersonnelGetActiveAuditorsResponse.parseAsync(data);
+        },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/api/reference-personnel/auditors',
+        ...options
+    });
+};
+
+export const referencePersonnelGetAuditors = <ThrowOnError extends boolean = false>(options?: Options<ReferencePersonnelGetAuditorsData, ThrowOnError>) => {
+    return (options?.client ?? client).get<ReferencePersonnelGetAuditorsResponses, ReferencePersonnelGetAuditorsErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zReferencePersonnelGetAuditorsData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zReferencePersonnelGetAuditorsResponse.parseAsync(data);
+        },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/api/reference-personnel/auditors/all',
+        ...options
+    });
+};
+
+export const referencePersonnelGetAuditorsByMember = <ThrowOnError extends boolean = false>(options: Options<ReferencePersonnelGetAuditorsByMemberData, ThrowOnError>) => {
+    return (options.client ?? client).get<ReferencePersonnelGetAuditorsByMemberResponses, ReferencePersonnelGetAuditorsByMemberErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zReferencePersonnelGetAuditorsByMemberData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zReferencePersonnelGetAuditorsByMemberResponse.parseAsync(data);
+        },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/api/reference-personnel/member/{memberCode}/auditors',
+        ...options
+    });
+};
+
+export const referencePersonnelGetPersonnelByEmail = <ThrowOnError extends boolean = false>(options?: Options<ReferencePersonnelGetPersonnelByEmailData, ThrowOnError>) => {
+    return (options?.client ?? client).get<ReferencePersonnelGetPersonnelByEmailResponses, ReferencePersonnelGetPersonnelByEmailErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zReferencePersonnelGetPersonnelByEmailData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zReferencePersonnelGetPersonnelByEmailResponse.parseAsync(data);
+        },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/api/reference-personnel/by-email',
+        ...options
+    });
+};
+
+export const referencePersonnelSearchPersonnel = <ThrowOnError extends boolean = false>(options?: Options<ReferencePersonnelSearchPersonnelData, ThrowOnError>) => {
+    return (options?.client ?? client).get<ReferencePersonnelSearchPersonnelResponses, ReferencePersonnelSearchPersonnelErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zReferencePersonnelSearchPersonnelData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zReferencePersonnelSearchPersonnelResponse.parseAsync(data);
+        },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/api/reference-personnel/search',
         ...options
     });
 };
 
 export const referenceSuppliersGetAllSuppliers = <ThrowOnError extends boolean = false>(options?: Options<ReferenceSuppliersGetAllSuppliersData, ThrowOnError>) => {
     return (options?.client ?? client).get<ReferenceSuppliersGetAllSuppliersResponses, ReferenceSuppliersGetAllSuppliersErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zReferenceSuppliersGetAllSuppliersData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zReferenceSuppliersGetAllSuppliersResponse.parseAsync(data);
+        },
         url: '/api/ReferenceSuppliers',
         ...options
     });
@@ -72,6 +277,12 @@ export const referenceSuppliersGetAllSuppliers = <ThrowOnError extends boolean =
 
 export const referenceSuppliersGetSupplierByNumber = <ThrowOnError extends boolean = false>(options: Options<ReferenceSuppliersGetSupplierByNumberData, ThrowOnError>) => {
     return (options.client ?? client).get<ReferenceSuppliersGetSupplierByNumberResponses, ReferenceSuppliersGetSupplierByNumberErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zReferenceSuppliersGetSupplierByNumberData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zReferenceSuppliersGetSupplierByNumberResponse.parseAsync(data);
+        },
         url: '/api/ReferenceSuppliers/{supplierNumber}',
         ...options
     });
@@ -79,6 +290,9 @@ export const referenceSuppliersGetSupplierByNumber = <ThrowOnError extends boole
 
 export const referenceSuppliersSupplierExistsHead = <ThrowOnError extends boolean = false>(options: Options<ReferenceSuppliersSupplierExistsHeadData, ThrowOnError>) => {
     return (options.client ?? client).head<ReferenceSuppliersSupplierExistsHeadResponses, ReferenceSuppliersSupplierExistsHeadErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zReferenceSuppliersSupplierExistsHeadData.parseAsync(data);
+        },
         url: '/api/ReferenceSuppliers/{supplierNumber}',
         ...options
     });
@@ -86,6 +300,12 @@ export const referenceSuppliersSupplierExistsHead = <ThrowOnError extends boolea
 
 export const referenceSuppliersSearchSuppliers = <ThrowOnError extends boolean = false>(options?: Options<ReferenceSuppliersSearchSuppliersData, ThrowOnError>) => {
     return (options?.client ?? client).get<ReferenceSuppliersSearchSuppliersResponses, ReferenceSuppliersSearchSuppliersErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zReferenceSuppliersSearchSuppliersData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zReferenceSuppliersSearchSuppliersResponse.parseAsync(data);
+        },
         url: '/api/ReferenceSuppliers/search',
         ...options
     });
@@ -93,6 +313,9 @@ export const referenceSuppliersSearchSuppliers = <ThrowOnError extends boolean =
 
 export const referenceSuppliersSupplierExistsGet = <ThrowOnError extends boolean = false>(options: Options<ReferenceSuppliersSupplierExistsGetData, ThrowOnError>) => {
     return (options.client ?? client).get<ReferenceSuppliersSupplierExistsGetResponses, ReferenceSuppliersSupplierExistsGetErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zReferenceSuppliersSupplierExistsGetData.parseAsync(data);
+        },
         url: '/api/ReferenceSuppliers/{supplierNumber}/exists',
         ...options
     });
@@ -100,6 +323,12 @@ export const referenceSuppliersSupplierExistsGet = <ThrowOnError extends boolean
 
 export const auditDocumentMergeMergeAuditDocuments = <ThrowOnError extends boolean = false>(options: Options<AuditDocumentMergeMergeAuditDocumentsData, ThrowOnError>) => {
     return (options.client ?? client).post<AuditDocumentMergeMergeAuditDocumentsResponses, AuditDocumentMergeMergeAuditDocumentsErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zAuditDocumentMergeMergeAuditDocumentsData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zAuditDocumentMergeMergeAuditDocumentsResponse.parseAsync(data);
+        },
         url: '/api/AuditDocumentMerge/merge',
         ...options,
         headers: {
@@ -111,6 +340,12 @@ export const auditDocumentMergeMergeAuditDocuments = <ThrowOnError extends boole
 
 export const auditDocumentMergePreviewMerge = <ThrowOnError extends boolean = false>(options: Options<AuditDocumentMergePreviewMergeData, ThrowOnError>) => {
     return (options.client ?? client).post<AuditDocumentMergePreviewMergeResponses, AuditDocumentMergePreviewMergeErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zAuditDocumentMergePreviewMergeData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zAuditDocumentMergePreviewMergeResponse.parseAsync(data);
+        },
         url: '/api/AuditDocumentMerge/preview',
         ...options,
         headers: {
@@ -122,6 +357,12 @@ export const auditDocumentMergePreviewMerge = <ThrowOnError extends boolean = fa
 
 export const auditDocumentMergeGetMergeTemplates = <ThrowOnError extends boolean = false>(options?: Options<AuditDocumentMergeGetMergeTemplatesData, ThrowOnError>) => {
     return (options?.client ?? client).get<AuditDocumentMergeGetMergeTemplatesResponses, unknown, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zAuditDocumentMergeGetMergeTemplatesData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zAuditDocumentMergeGetMergeTemplatesResponse.parseAsync(data);
+        },
         url: '/api/AuditDocumentMerge/templates',
         ...options
     });
@@ -129,6 +370,9 @@ export const auditDocumentMergeGetMergeTemplates = <ThrowOnError extends boolean
 
 export const auditDocumentMergeValidateMergeRequest = <ThrowOnError extends boolean = false>(options: Options<AuditDocumentMergeValidateMergeRequestData, ThrowOnError>) => {
     return (options.client ?? client).post<AuditDocumentMergeValidateMergeRequestResponses, AuditDocumentMergeValidateMergeRequestErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zAuditDocumentMergeValidateMergeRequestData.parseAsync(data);
+        },
         url: '/api/AuditDocumentMerge/validate',
         ...options,
         headers: {
@@ -140,6 +384,9 @@ export const auditDocumentMergeValidateMergeRequest = <ThrowOnError extends bool
 
 export const auditDocumentMergeRenamePreviousMerges = <ThrowOnError extends boolean = false>(options: Options<AuditDocumentMergeRenamePreviousMergesData, ThrowOnError>) => {
     return (options.client ?? client).post<AuditDocumentMergeRenamePreviousMergesResponses, AuditDocumentMergeRenamePreviousMergesErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zAuditDocumentMergeRenamePreviousMergesData.parseAsync(data);
+        },
         url: '/api/AuditDocumentMerge/rename-previous-merges/{auditId}',
         ...options
     });
@@ -147,6 +394,13 @@ export const auditDocumentMergeRenamePreviousMerges = <ThrowOnError extends bool
 
 export const auditFilesGetAuditFiles = <ThrowOnError extends boolean = false>(options: Options<AuditFilesGetAuditFilesData, ThrowOnError>) => {
     return (options.client ?? client).get<AuditFilesGetAuditFilesResponses, AuditFilesGetAuditFilesErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zAuditFilesGetAuditFilesData.parseAsync(data);
+        },
+        responseTransformer: auditFilesGetAuditFilesResponseTransformer,
+        responseValidator: async (data) => {
+            return await zAuditFilesGetAuditFilesResponse.parseAsync(data);
+        },
         url: '/api/AuditFiles/{auditId}/files',
         ...options
     });
@@ -155,6 +409,13 @@ export const auditFilesGetAuditFiles = <ThrowOnError extends boolean = false>(op
 export const auditFilesUploadFiles = <ThrowOnError extends boolean = false>(options: Options<AuditFilesUploadFilesData, ThrowOnError>) => {
     return (options.client ?? client).post<AuditFilesUploadFilesResponses, AuditFilesUploadFilesErrors, ThrowOnError>({
         ...formDataBodySerializer,
+        requestValidator: async (data) => {
+            return await zAuditFilesUploadFilesData.parseAsync(data);
+        },
+        responseTransformer: auditFilesUploadFilesResponseTransformer,
+        responseValidator: async (data) => {
+            return await zAuditFilesUploadFilesResponse.parseAsync(data);
+        },
         url: '/api/AuditFiles/{auditId}/files',
         ...options,
         headers: {
@@ -166,6 +427,13 @@ export const auditFilesUploadFiles = <ThrowOnError extends boolean = false>(opti
 
 export const auditFilesGetPhaseFiles = <ThrowOnError extends boolean = false>(options: Options<AuditFilesGetPhaseFilesData, ThrowOnError>) => {
     return (options.client ?? client).get<AuditFilesGetPhaseFilesResponses, AuditFilesGetPhaseFilesErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zAuditFilesGetPhaseFilesData.parseAsync(data);
+        },
+        responseTransformer: auditFilesGetPhaseFilesResponseTransformer,
+        responseValidator: async (data) => {
+            return await zAuditFilesGetPhaseFilesResponse.parseAsync(data);
+        },
         url: '/api/AuditFiles/{auditId}/phases/{phaseAssignmentId}/files',
         ...options
     });
@@ -173,6 +441,12 @@ export const auditFilesGetPhaseFiles = <ThrowOnError extends boolean = false>(op
 
 export const auditFilesDeleteFile = <ThrowOnError extends boolean = false>(options: Options<AuditFilesDeleteFileData, ThrowOnError>) => {
     return (options.client ?? client).delete<AuditFilesDeleteFileResponses, AuditFilesDeleteFileErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zAuditFilesDeleteFileData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zAuditFilesDeleteFileResponse.parseAsync(data);
+        },
         url: '/api/AuditFiles/{auditId}/files/{fileId}',
         ...options
     });
@@ -180,6 +454,13 @@ export const auditFilesDeleteFile = <ThrowOnError extends boolean = false>(optio
 
 export const auditFilesGetFileMetadata = <ThrowOnError extends boolean = false>(options: Options<AuditFilesGetFileMetadataData, ThrowOnError>) => {
     return (options.client ?? client).get<AuditFilesGetFileMetadataResponses, AuditFilesGetFileMetadataErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zAuditFilesGetFileMetadataData.parseAsync(data);
+        },
+        responseTransformer: auditFilesGetFileMetadataResponseTransformer,
+        responseValidator: async (data) => {
+            return await zAuditFilesGetFileMetadataResponse.parseAsync(data);
+        },
         url: '/api/AuditFiles/{auditId}/files/{fileId}',
         ...options
     });
@@ -187,6 +468,13 @@ export const auditFilesGetFileMetadata = <ThrowOnError extends boolean = false>(
 
 export const auditFilesUpdateFileMetadata = <ThrowOnError extends boolean = false>(options: Options<AuditFilesUpdateFileMetadataData, ThrowOnError>) => {
     return (options.client ?? client).put<AuditFilesUpdateFileMetadataResponses, AuditFilesUpdateFileMetadataErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zAuditFilesUpdateFileMetadataData.parseAsync(data);
+        },
+        responseTransformer: auditFilesUpdateFileMetadataResponseTransformer,
+        responseValidator: async (data) => {
+            return await zAuditFilesUpdateFileMetadataResponse.parseAsync(data);
+        },
         url: '/api/AuditFiles/{auditId}/files/{fileId}',
         ...options,
         headers: {
@@ -198,6 +486,13 @@ export const auditFilesUpdateFileMetadata = <ThrowOnError extends boolean = fals
 
 export const auditFilesDownloadFile = <ThrowOnError extends boolean = false>(options: Options<AuditFilesDownloadFileData, ThrowOnError>) => {
     return (options.client ?? client).get<AuditFilesDownloadFileResponses, AuditFilesDownloadFileErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zAuditFilesDownloadFileData.parseAsync(data);
+        },
+        responseTransformer: auditFilesDownloadFileResponseTransformer,
+        responseValidator: async (data) => {
+            return await zAuditFilesDownloadFileResponse.parseAsync(data);
+        },
         url: '/api/AuditFiles/{auditId}/files/{fileId}/download',
         ...options
     });
@@ -205,6 +500,13 @@ export const auditFilesDownloadFile = <ThrowOnError extends boolean = false>(opt
 
 export const auditFilesReviewFile = <ThrowOnError extends boolean = false>(options: Options<AuditFilesReviewFileData, ThrowOnError>) => {
     return (options.client ?? client).post<AuditFilesReviewFileResponses, AuditFilesReviewFileErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zAuditFilesReviewFileData.parseAsync(data);
+        },
+        responseTransformer: auditFilesReviewFileResponseTransformer,
+        responseValidator: async (data) => {
+            return await zAuditFilesReviewFileResponse.parseAsync(data);
+        },
         url: '/api/AuditFiles/{auditId}/files/{fileId}/review',
         ...options,
         headers: {
@@ -216,6 +518,13 @@ export const auditFilesReviewFile = <ThrowOnError extends boolean = false>(optio
 
 export const auditFilesMergeFiles = <ThrowOnError extends boolean = false>(options: Options<AuditFilesMergeFilesData, ThrowOnError>) => {
     return (options.client ?? client).post<AuditFilesMergeFilesResponses, AuditFilesMergeFilesErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zAuditFilesMergeFilesData.parseAsync(data);
+        },
+        responseTransformer: auditFilesMergeFilesResponseTransformer,
+        responseValidator: async (data) => {
+            return await zAuditFilesMergeFilesResponse.parseAsync(data);
+        },
         url: '/api/AuditFiles/{auditId}/files/merge',
         ...options,
         headers: {
@@ -227,6 +536,9 @@ export const auditFilesMergeFiles = <ThrowOnError extends boolean = false>(optio
 
 export const auditFilesSendApprovalEmail = <ThrowOnError extends boolean = false>(options: Options<AuditFilesSendApprovalEmailData, ThrowOnError>) => {
     return (options.client ?? client).post<AuditFilesSendApprovalEmailResponses, AuditFilesSendApprovalEmailErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zAuditFilesSendApprovalEmailData.parseAsync(data);
+        },
         url: '/api/AuditFiles/{auditId}/send-approval-email',
         ...options
     });
@@ -234,6 +546,13 @@ export const auditFilesSendApprovalEmail = <ThrowOnError extends boolean = false
 
 export const auditsGetAllAudits = <ThrowOnError extends boolean = false>(options?: Options<AuditsGetAllAuditsData, ThrowOnError>) => {
     return (options?.client ?? client).get<AuditsGetAllAuditsResponses, AuditsGetAllAuditsErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zAuditsGetAllAuditsData.parseAsync(data);
+        },
+        responseTransformer: auditsGetAllAuditsResponseTransformer,
+        responseValidator: async (data) => {
+            return await zAuditsGetAllAuditsResponse.parseAsync(data);
+        },
         url: '/api/Audits/GetAll',
         ...options
     });
@@ -241,6 +560,12 @@ export const auditsGetAllAudits = <ThrowOnError extends boolean = false>(options
 
 export const auditsDeleteAudit = <ThrowOnError extends boolean = false>(options: Options<AuditsDeleteAuditData, ThrowOnError>) => {
     return (options.client ?? client).delete<AuditsDeleteAuditResponses, AuditsDeleteAuditErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zAuditsDeleteAuditData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zAuditsDeleteAuditResponse.parseAsync(data);
+        },
         url: '/api/Audits/{id}',
         ...options
     });
@@ -248,6 +573,13 @@ export const auditsDeleteAudit = <ThrowOnError extends boolean = false>(options:
 
 export const auditsGetAuditById = <ThrowOnError extends boolean = false>(options: Options<AuditsGetAuditByIdData, ThrowOnError>) => {
     return (options.client ?? client).get<AuditsGetAuditByIdResponses, AuditsGetAuditByIdErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zAuditsGetAuditByIdData.parseAsync(data);
+        },
+        responseTransformer: auditsGetAuditByIdResponseTransformer,
+        responseValidator: async (data) => {
+            return await zAuditsGetAuditByIdResponse.parseAsync(data);
+        },
         url: '/api/Audits/{id}',
         ...options
     });
@@ -255,6 +587,13 @@ export const auditsGetAuditById = <ThrowOnError extends boolean = false>(options
 
 export const auditsUpdateAudit = <ThrowOnError extends boolean = false>(options: Options<AuditsUpdateAuditData, ThrowOnError>) => {
     return (options.client ?? client).put<AuditsUpdateAuditResponses, AuditsUpdateAuditErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zAuditsUpdateAuditData.parseAsync(data);
+        },
+        responseTransformer: auditsUpdateAuditResponseTransformer,
+        responseValidator: async (data) => {
+            return await zAuditsUpdateAuditResponse.parseAsync(data);
+        },
         url: '/api/Audits/{id}',
         ...options,
         headers: {
@@ -266,6 +605,13 @@ export const auditsUpdateAudit = <ThrowOnError extends boolean = false>(options:
 
 export const auditsCreateAudit = <ThrowOnError extends boolean = false>(options: Options<AuditsCreateAuditData, ThrowOnError>) => {
     return (options.client ?? client).post<AuditsCreateAuditResponses, AuditsCreateAuditErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zAuditsCreateAuditData.parseAsync(data);
+        },
+        responseTransformer: auditsCreateAuditResponseTransformer,
+        responseValidator: async (data) => {
+            return await zAuditsCreateAuditResponse.parseAsync(data);
+        },
         url: '/api/Audits',
         ...options,
         headers: {
@@ -277,6 +623,13 @@ export const auditsCreateAudit = <ThrowOnError extends boolean = false>(options:
 
 export const auditsSearchAudits = <ThrowOnError extends boolean = false>(options?: Options<AuditsSearchAuditsData, ThrowOnError>) => {
     return (options?.client ?? client).get<AuditsSearchAuditsResponses, unknown, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zAuditsSearchAuditsData.parseAsync(data);
+        },
+        responseTransformer: auditsSearchAuditsResponseTransformer,
+        responseValidator: async (data) => {
+            return await zAuditsSearchAuditsResponse.parseAsync(data);
+        },
         url: '/api/Audits/search',
         ...options
     });
@@ -284,6 +637,13 @@ export const auditsSearchAudits = <ThrowOnError extends boolean = false>(options
 
 export const bookmarksGetAuditBookmarks = <ThrowOnError extends boolean = false>(options: Options<BookmarksGetAuditBookmarksData, ThrowOnError>) => {
     return (options.client ?? client).get<BookmarksGetAuditBookmarksResponses, BookmarksGetAuditBookmarksErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zBookmarksGetAuditBookmarksData.parseAsync(data);
+        },
+        responseTransformer: bookmarksGetAuditBookmarksResponseTransformer,
+        responseValidator: async (data) => {
+            return await zBookmarksGetAuditBookmarksResponse.parseAsync(data);
+        },
         url: '/api/Bookmarks/{auditId}/bookmarks',
         ...options
     });
@@ -291,6 +651,13 @@ export const bookmarksGetAuditBookmarks = <ThrowOnError extends boolean = false>
 
 export const bookmarksCreateBookmark = <ThrowOnError extends boolean = false>(options: Options<BookmarksCreateBookmarkData, ThrowOnError>) => {
     return (options.client ?? client).post<BookmarksCreateBookmarkResponses, BookmarksCreateBookmarkErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zBookmarksCreateBookmarkData.parseAsync(data);
+        },
+        responseTransformer: bookmarksCreateBookmarkResponseTransformer,
+        responseValidator: async (data) => {
+            return await zBookmarksCreateBookmarkResponse.parseAsync(data);
+        },
         url: '/api/Bookmarks/{auditId}/bookmarks',
         ...options,
         headers: {
@@ -302,6 +669,12 @@ export const bookmarksCreateBookmark = <ThrowOnError extends boolean = false>(op
 
 export const bookmarksDeleteBookmark = <ThrowOnError extends boolean = false>(options: Options<BookmarksDeleteBookmarkData, ThrowOnError>) => {
     return (options.client ?? client).delete<BookmarksDeleteBookmarkResponses, BookmarksDeleteBookmarkErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zBookmarksDeleteBookmarkData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zBookmarksDeleteBookmarkResponse.parseAsync(data);
+        },
         url: '/api/Bookmarks/{auditId}/bookmarks/{bookmarkId}',
         ...options
     });
@@ -309,6 +682,13 @@ export const bookmarksDeleteBookmark = <ThrowOnError extends boolean = false>(op
 
 export const bookmarksGetBookmark = <ThrowOnError extends boolean = false>(options: Options<BookmarksGetBookmarkData, ThrowOnError>) => {
     return (options.client ?? client).get<BookmarksGetBookmarkResponses, BookmarksGetBookmarkErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zBookmarksGetBookmarkData.parseAsync(data);
+        },
+        responseTransformer: bookmarksGetBookmarkResponseTransformer,
+        responseValidator: async (data) => {
+            return await zBookmarksGetBookmarkResponse.parseAsync(data);
+        },
         url: '/api/Bookmarks/{auditId}/bookmarks/{bookmarkId}',
         ...options
     });
@@ -316,6 +696,13 @@ export const bookmarksGetBookmark = <ThrowOnError extends boolean = false>(optio
 
 export const bookmarksUpdateBookmark = <ThrowOnError extends boolean = false>(options: Options<BookmarksUpdateBookmarkData, ThrowOnError>) => {
     return (options.client ?? client).put<BookmarksUpdateBookmarkResponses, BookmarksUpdateBookmarkErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zBookmarksUpdateBookmarkData.parseAsync(data);
+        },
+        responseTransformer: bookmarksUpdateBookmarkResponseTransformer,
+        responseValidator: async (data) => {
+            return await zBookmarksUpdateBookmarkResponse.parseAsync(data);
+        },
         url: '/api/Bookmarks/{auditId}/bookmarks/{bookmarkId}',
         ...options,
         headers: {
@@ -327,6 +714,13 @@ export const bookmarksUpdateBookmark = <ThrowOnError extends boolean = false>(op
 
 export const bookmarksGetPhaseBookmarks = <ThrowOnError extends boolean = false>(options: Options<BookmarksGetPhaseBookmarksData, ThrowOnError>) => {
     return (options.client ?? client).get<BookmarksGetPhaseBookmarksResponses, BookmarksGetPhaseBookmarksErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zBookmarksGetPhaseBookmarksData.parseAsync(data);
+        },
+        responseTransformer: bookmarksGetPhaseBookmarksResponseTransformer,
+        responseValidator: async (data) => {
+            return await zBookmarksGetPhaseBookmarksResponse.parseAsync(data);
+        },
         url: '/api/Bookmarks/{auditId}/phases/{phaseAssignmentId}/bookmarks',
         ...options
     });
@@ -334,6 +728,13 @@ export const bookmarksGetPhaseBookmarks = <ThrowOnError extends boolean = false>
 
 export const bookmarksCreateBookmarksBatch = <ThrowOnError extends boolean = false>(options: Options<BookmarksCreateBookmarksBatchData, ThrowOnError>) => {
     return (options.client ?? client).post<BookmarksCreateBookmarksBatchResponses, BookmarksCreateBookmarksBatchErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zBookmarksCreateBookmarksBatchData.parseAsync(data);
+        },
+        responseTransformer: bookmarksCreateBookmarksBatchResponseTransformer,
+        responseValidator: async (data) => {
+            return await zBookmarksCreateBookmarksBatchResponse.parseAsync(data);
+        },
         url: '/api/Bookmarks/{auditId}/bookmarks/batch',
         ...options,
         headers: {
@@ -345,6 +746,12 @@ export const bookmarksCreateBookmarksBatch = <ThrowOnError extends boolean = fal
 
 export const bookmarksGetBookmarkTemplate = <ThrowOnError extends boolean = false>(options: Options<BookmarksGetBookmarkTemplateData, ThrowOnError>) => {
     return (options.client ?? client).get<BookmarksGetBookmarkTemplateResponses, BookmarksGetBookmarkTemplateErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zBookmarksGetBookmarkTemplateData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zBookmarksGetBookmarkTemplateResponse.parseAsync(data);
+        },
         url: '/api/Bookmarks/types/{auditTypeId}/bookmark-template',
         ...options
     });
@@ -352,6 +759,13 @@ export const bookmarksGetBookmarkTemplate = <ThrowOnError extends boolean = fals
 
 export const phasesGetAuditPhases = <ThrowOnError extends boolean = false>(options: Options<PhasesGetAuditPhasesData, ThrowOnError>) => {
     return (options.client ?? client).get<PhasesGetAuditPhasesResponses, PhasesGetAuditPhasesErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zPhasesGetAuditPhasesData.parseAsync(data);
+        },
+        responseTransformer: phasesGetAuditPhasesResponseTransformer,
+        responseValidator: async (data) => {
+            return await zPhasesGetAuditPhasesResponse.parseAsync(data);
+        },
         url: '/api/Phases/{auditId}/phases',
         ...options
     });
@@ -359,6 +773,13 @@ export const phasesGetAuditPhases = <ThrowOnError extends boolean = false>(optio
 
 export const phasesGetPhaseAssignment = <ThrowOnError extends boolean = false>(options: Options<PhasesGetPhaseAssignmentData, ThrowOnError>) => {
     return (options.client ?? client).get<PhasesGetPhaseAssignmentResponses, PhasesGetPhaseAssignmentErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zPhasesGetPhaseAssignmentData.parseAsync(data);
+        },
+        responseTransformer: phasesGetPhaseAssignmentResponseTransformer,
+        responseValidator: async (data) => {
+            return await zPhasesGetPhaseAssignmentResponse.parseAsync(data);
+        },
         url: '/api/Phases/{auditId}/phases/{phaseAssignmentId}',
         ...options
     });
@@ -366,6 +787,13 @@ export const phasesGetPhaseAssignment = <ThrowOnError extends boolean = false>(o
 
 export const phasesUpdatePhaseAssignment = <ThrowOnError extends boolean = false>(options: Options<PhasesUpdatePhaseAssignmentData, ThrowOnError>) => {
     return (options.client ?? client).put<PhasesUpdatePhaseAssignmentResponses, PhasesUpdatePhaseAssignmentErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zPhasesUpdatePhaseAssignmentData.parseAsync(data);
+        },
+        responseTransformer: phasesUpdatePhaseAssignmentResponseTransformer,
+        responseValidator: async (data) => {
+            return await zPhasesUpdatePhaseAssignmentResponse.parseAsync(data);
+        },
         url: '/api/Phases/{auditId}/phases/{phaseAssignmentId}',
         ...options,
         headers: {
@@ -377,6 +805,13 @@ export const phasesUpdatePhaseAssignment = <ThrowOnError extends boolean = false
 
 export const phasesGetCurrentPhase = <ThrowOnError extends boolean = false>(options: Options<PhasesGetCurrentPhaseData, ThrowOnError>) => {
     return (options.client ?? client).get<PhasesGetCurrentPhaseResponses, PhasesGetCurrentPhaseErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zPhasesGetCurrentPhaseData.parseAsync(data);
+        },
+        responseTransformer: phasesGetCurrentPhaseResponseTransformer,
+        responseValidator: async (data) => {
+            return await zPhasesGetCurrentPhaseResponse.parseAsync(data);
+        },
         url: '/api/Phases/{auditId}/phases/current',
         ...options
     });
@@ -384,6 +819,13 @@ export const phasesGetCurrentPhase = <ThrowOnError extends boolean = false>(opti
 
 export const phasesStartPhase = <ThrowOnError extends boolean = false>(options: Options<PhasesStartPhaseData, ThrowOnError>) => {
     return (options.client ?? client).post<PhasesStartPhaseResponses, PhasesStartPhaseErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zPhasesStartPhaseData.parseAsync(data);
+        },
+        responseTransformer: phasesStartPhaseResponseTransformer,
+        responseValidator: async (data) => {
+            return await zPhasesStartPhaseResponse.parseAsync(data);
+        },
         url: '/api/Phases/{auditId}/phases/start',
         ...options
     });
@@ -391,6 +833,13 @@ export const phasesStartPhase = <ThrowOnError extends boolean = false>(options: 
 
 export const phasesCompletePhase = <ThrowOnError extends boolean = false>(options: Options<PhasesCompletePhaseData, ThrowOnError>) => {
     return (options.client ?? client).post<PhasesCompletePhaseResponses, PhasesCompletePhaseErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zPhasesCompletePhaseData.parseAsync(data);
+        },
+        responseTransformer: phasesCompletePhaseResponseTransformer,
+        responseValidator: async (data) => {
+            return await zPhasesCompletePhaseResponse.parseAsync(data);
+        },
         url: '/api/Phases/{auditId}/phases/{phaseAssignmentId}/complete',
         ...options,
         headers: {
@@ -402,6 +851,13 @@ export const phasesCompletePhase = <ThrowOnError extends boolean = false>(option
 
 export const phasesReactivatePhase = <ThrowOnError extends boolean = false>(options: Options<PhasesReactivatePhaseData, ThrowOnError>) => {
     return (options.client ?? client).post<PhasesReactivatePhaseResponses, PhasesReactivatePhaseErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zPhasesReactivatePhaseData.parseAsync(data);
+        },
+        responseTransformer: phasesReactivatePhaseResponseTransformer,
+        responseValidator: async (data) => {
+            return await zPhasesReactivatePhaseResponse.parseAsync(data);
+        },
         url: '/api/Phases/{auditId}/phases/{phaseAssignmentId}/reactivate',
         ...options
     });
@@ -409,6 +865,12 @@ export const phasesReactivatePhase = <ThrowOnError extends boolean = false>(opti
 
 export const phasesGetAvailablePhases = <ThrowOnError extends boolean = false>(options: Options<PhasesGetAvailablePhasesData, ThrowOnError>) => {
     return (options.client ?? client).get<PhasesGetAvailablePhasesResponses, PhasesGetAvailablePhasesErrors, ThrowOnError>({
+        requestValidator: async (data) => {
+            return await zPhasesGetAvailablePhasesData.parseAsync(data);
+        },
+        responseValidator: async (data) => {
+            return await zPhasesGetAvailablePhasesResponse.parseAsync(data);
+        },
         url: '/api/Phases/types/{auditTypeId}/available-phases',
         ...options
     });

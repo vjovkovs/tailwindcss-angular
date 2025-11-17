@@ -1,13 +1,13 @@
 import { defineConfig } from '@hey-api/openapi-ts';
 
 export default defineConfig({
-  input: './openapi.json', 
+  input: './openapi-updated.json', 
   output: {
     format: 'prettier',
     lint: 'eslint',
     path: './src/app/core/api/generated'
   },
-lugins: [
+  plugins: [
     '@hey-api/schemas',
     {
       dates: true,

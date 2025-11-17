@@ -2,6 +2,8 @@
 
 Complete TypeScript/Angular integration for the NUPIC Document Manager API with type safety, Zod validation, and MSAL authentication.
 
+> **📝 Note:** This project now uses `@hey-api/openapi-ts` for automatic API client generation. For new projects or when the API changes, see [API_CODEGEN.md](./API_CODEGEN.md) for how to auto-generate type-safe API clients from OpenAPI specs. The information below documents the API structure and usage patterns that apply whether using auto-generated or manually-written services.
+
 ## Table of Contents
 
 - [Overview](#overview)
