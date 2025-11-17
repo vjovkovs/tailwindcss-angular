@@ -12,7 +12,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { z } from 'zod';
 
 import { DynamicFormComponent, DynamicFormConfig } from '../../shared/components/dynamic-form';
-import { auditsGetAuditByIdOptions, referenceAuditsGetReferenceAuditsOptions, referenceSuppliersGetAllSuppliersOptions } from '@/core/api/generated';
+import { auditsGetAuditByIdOptions, referenceAuditsGetReferenceAuditsOptions, referenceSuppliersGetAllSuppliersOptions } from '@/core/api/generated/@tanstack/angular-query-experimental.gen';
 import type { SelectOption } from '../../shared/components/searchable-select';
 
 // Audit form schema (for creation)
@@ -146,21 +146,25 @@ export class AuditEditComponent {
   // Map NUPIC reference audit data to SelectOption format
   auditNumberOptions = computed((): SelectOption[] => {
     const audits = this.referenceAuditsQuery.data();
-    if (!audits?.items) return [];
-    return audits.items.map(audit => ({
-      label: `${audit.auditNumber} - ${audit.supplierNumber}`,
-      value: audit.auditNumber
-    }));
+    if (!audits || !Array.isArray(audits.items)) return [];
+    return audits.items
+      .filter(audit => audit.auditNumber)
+      .map(audit => ({
+        label: `${audit.auditNumber} - ${audit.supplierNumber || 'N/A'}`,
+        value: audit.auditNumber!
+      }));
   });
 
   // Map supplier data to SelectOption format
   supplierNumberOptions = computed((): SelectOption[] => {
     const suppliers = this.suppliersListQuery.data();
-    if (!suppliers?.items) return [];
-    return suppliers.items.map(supplier => ({
-      label: `${supplier.supplierNumber} - ${supplier.supplierName}`,
-      value: supplier.supplierNumber
-    }));
+    if (!suppliers || !Array.isArray(suppliers.items)) return [];
+    return suppliers.items
+      .filter(supplier => supplier.supplierNumber)
+      .map(supplier => ({
+        label: `${supplier.supplierNumber} - ${supplier.supplierName || 'N/A'}`,
+        value: supplier.supplierNumber!
+      }));
   });
 
   // Form state
@@ -176,9 +180,9 @@ export class AuditEditComponent {
       fkPerNumb: audit.fkPerNumb,
       contactPersonEmail: audit.contactPersonEmail,
       alternateContact: audit.alternateContact,
-      startDate: audit.startDate || undefined,
-      endDate: audit.endDate || undefined,
-      dateNotified: audit.dateNotified || undefined,
+      startDate: audit.startDate ? (audit.startDate instanceof Date ? audit.startDate.toISOString().split('T')[0] : audit.startDate) : undefined,
+      endDate: audit.endDate ? (audit.endDate instanceof Date ? audit.endDate.toISOString().split('T')[0] : audit.endDate) : undefined,
+      dateNotified: audit.dateNotified ? (audit.dateNotified instanceof Date ? audit.dateNotified.toISOString().split('T')[0] : audit.dateNotified) : undefined,
       updatedBy: audit.updatedBy,
     };
   });

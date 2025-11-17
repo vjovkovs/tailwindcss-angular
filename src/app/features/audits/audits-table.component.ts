@@ -18,7 +18,7 @@ import { DataTableComponent } from '../../shared/components/data-table/data-tabl
 import { PreviewDialogComponent, PreviewField } from '../../shared/components/preview-dialog/preview-dialog.component';
 import { TableConfig, TableColumn, TableAction } from '../../shared/components/data-table/data-table.types';
 import type { AuditResponse } from '@/core/api/generated';
-import { auditsGetAllAuditsOptions } from '@/core/api/generated';
+import { auditsGetAllAuditsOptions } from '@/core/api/generated/@tanstack/angular-query-experimental.gen';
 
 @Component({
   selector: 'app-audits-table',

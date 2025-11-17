@@ -12,7 +12,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { z } from 'zod';
 
 import { DynamicFormComponent, DynamicFormConfig } from '../../shared/components/dynamic-form';
-import { referenceSuppliersGetSupplierByNumberOptions } from '@/core/api/generated';
+import { referenceSuppliersGetSupplierByNumberOptions } from '@/core/api/generated/@tanstack/angular-query-experimental.gen';
 
 // Supplier form schema
 const supplierSchema = z.object({

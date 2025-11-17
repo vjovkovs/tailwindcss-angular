@@ -19,7 +19,7 @@ import { DataTableComponent } from '../../shared/components/data-table/data-tabl
 import { PreviewDialogComponent, PreviewField } from '../../shared/components/preview-dialog/preview-dialog.component';
 import { TableConfig, TableColumn, TableAction } from '../../shared/components/data-table/data-table.types';
 import type { SupplierDetailsResponse } from '@/core/api/generated';
-import { referenceSuppliersGetAllSuppliersOptions } from '@/core/api/generated';
+import { referenceSuppliersGetAllSuppliersOptions } from '@/core/api/generated/@tanstack/angular-query-experimental.gen';
 
 @Component({
   selector: 'app-suppliers-table',
