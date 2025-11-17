@@ -82,7 +82,7 @@ import type {
             @if (audits()) {
               <div class="space-y-2">
                 <div class="text-sm text-gray-600 mb-2">
-                  Showing {{ audits()!.items.length }} of {{ audits()!.totalCount }} audits
+                  Showing {{ audits()!.items!.length }} of {{ audits()!.totalCount }} audits
                   (Page {{ audits()!.pageNumber }} of {{ audits()!.totalPages }})
                 </div>
 
@@ -135,7 +135,7 @@ import type {
                   </table>
                 </div>
 
-                @if (audits()!.totalPages > 1) {
+                @if (audits()!.totalPages! > 1) {
                   <div class="flex justify-between items-center mt-4">
                     <button
                       (click)="previousPage()"
