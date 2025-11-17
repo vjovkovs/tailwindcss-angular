@@ -19,14 +19,56 @@ export type AuditDetailsResponse = {
     supplierName?: string | null;
     leadUtilityCode?: string | null;
     leadUtilityName?: string | null;
-    auditDate?: string | null;
-    entranceDate?: string | null;
-    closeDate?: string | null;
+    auditDate?: Date | null;
+    entranceDate?: Date | null;
+    closeDate?: Date | null;
     personPerformingAudit?: string | null;
     scheduledMonth?: string | null;
     scheduledYear?: string | null;
     isClosed?: boolean;
     isScheduled?: boolean;
+};
+
+export type ResultOfPaginatedResponseOfPersonnelResponse = Result & {
+    data?: PaginatedResponseOfPersonnelResponse | null;
+};
+
+export type PaginatedResponseOfPersonnelResponse = {
+    items?: Array<PersonnelResponse>;
+    totalCount?: number;
+    pageNumber?: number;
+    pageSize?: number;
+    totalPages?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+};
+
+export type PersonnelResponse = {
+    personnelNumber?: number;
+    personnelId?: string | null;
+    memberCode?: string | null;
+    memberName?: string | null;
+    name?: string | null;
+    email?: string | null;
+    role?: string | null;
+    phone?: string | null;
+    utilityCode?: string | null;
+    isActive?: boolean;
+    isAuditor?: boolean;
+};
+
+export type Result = {
+    isSuccess?: boolean;
+    message?: string;
+    errors?: Array<string>;
+};
+
+export type ResultOfPersonnelResponse = Result & {
+    data?: PersonnelResponse | null;
+};
+
+export type ResultOfIEnumerableOfPersonnelResponse = Result & {
+    data?: Array<PersonnelResponse> | null;
 };
 
 export type PaginatedResponseOfSupplierDetailsResponse = {
@@ -81,17 +123,17 @@ export type FileMetadataResponse = {
     fileStatusId?: number;
     fileStatusName?: string;
     reviewedBy?: string;
-    reviewedDate?: string | null;
-    notifiedDate?: string | null;
+    reviewedDate?: Date | null;
+    notifiedDate?: Date | null;
     notifiedEmail?: string;
     sortOrder?: number;
     auditDocumentId?: number;
     auditNumber?: string;
     phaseAssignmentId?: number;
     phaseName?: string;
-    createdDate?: string;
+    createdDate?: Date;
     createdBy?: string;
-    updatedDate?: string;
+    updatedDate?: Date;
     updatedBy?: string;
     isMerged?: boolean;
     contentType?: string | null;
@@ -102,11 +144,11 @@ export type FileDownloadResponse = {
     fileName?: string;
     contentType?: string;
     content?: string;
-    fileSize?: number;
+    fileSize?: bigint;
     fileExtension?: string;
     contentHash?: string;
     eTag?: string;
-    lastModified?: string | null;
+    lastModified?: Date | null;
     inline?: boolean;
     metadata?: {
         [key: string]: string;
@@ -117,7 +159,7 @@ export type FileDownloadResponse = {
 export type UpdateFileMetadataRequest = {
     fileName?: string;
     sortOrder?: number | null;
-    notifiedDate?: string;
+    notifiedDate?: Date;
     notifiedEmail?: string;
     updatedBy?: string | null;
 };
@@ -153,14 +195,14 @@ export type AuditResponse = {
     fkPerNumb?: number | null;
     contactPersonEmail?: string;
     alternateContact?: string;
-    startDate?: string | null;
-    endDate?: string | null;
+    startDate?: Date | null;
+    endDate?: Date | null;
     auditApproved?: boolean;
     approvedBy?: string;
-    dateNotified?: string | null;
-    createdDate?: string;
+    dateNotified?: Date | null;
+    createdDate?: Date;
     createdBy?: string;
-    updatedDate?: string;
+    updatedDate?: Date;
     updatedBy?: string;
     leadAuditorName?: string;
 };
@@ -173,8 +215,8 @@ export type CreateAuditRequest = {
     fkPerNumb?: number | null;
     contactPersonEmail?: string;
     alternateContact?: string;
-    startDate?: string | null;
-    endDate?: string | null;
+    startDate?: Date | null;
+    endDate?: Date | null;
 };
 
 export type UpdateAuditRequest = {
@@ -182,9 +224,9 @@ export type UpdateAuditRequest = {
     fkPerNumb?: number | null;
     contactPersonEmail?: string;
     alternateContact?: string;
-    startDate?: string | null;
-    endDate?: string | null;
-    dateNotified?: string;
+    startDate?: Date | null;
+    endDate?: Date | null;
+    dateNotified?: Date;
     updatedBy?: string;
 };
 
@@ -198,7 +240,7 @@ export type DocumentBookmarkResponse = {
     value?: string;
     appliedFromTemplateId?: number | null;
     templateName?: string;
-    createdDate?: string;
+    createdDate?: Date;
     createdBy?: string;
 };
 
@@ -241,10 +283,10 @@ export type PhaseAssignmentResponse = {
     phaseCode?: string;
     status?: string;
     isActive?: boolean;
-    startedDate?: string | null;
-    completedDate?: string | null;
+    startedDate?: Date | null;
+    completedDate?: Date | null;
     completedBy?: string;
-    createdDate?: string;
+    createdDate?: Date;
     createdBy?: string;
 };
 
@@ -382,6 +424,196 @@ export type ReferenceAuditsNupicAuditExistsGetError = ReferenceAuditsNupicAuditE
 export type ReferenceAuditsNupicAuditExistsGetResponses = {
     200: unknown;
 };
+
+export type ReferencePersonnelGetPersonnelData = {
+    body?: never;
+    path?: never;
+    query?: {
+        SearchTerm?: string | null;
+        MemberCode?: string | null;
+        OnlyActive?: boolean;
+        OnlyAuditors?: boolean;
+        PageNumber?: number;
+        PageSize?: number;
+    };
+    url: '/api/reference-personnel';
+};
+
+export type ReferencePersonnelGetPersonnelErrors = {
+    400: ProblemDetails;
+    500: unknown;
+};
+
+export type ReferencePersonnelGetPersonnelError = ReferencePersonnelGetPersonnelErrors[keyof ReferencePersonnelGetPersonnelErrors];
+
+export type ReferencePersonnelGetPersonnelResponses = {
+    200: ResultOfPaginatedResponseOfPersonnelResponse;
+};
+
+export type ReferencePersonnelGetPersonnelResponse = ReferencePersonnelGetPersonnelResponses[keyof ReferencePersonnelGetPersonnelResponses];
+
+export type ReferencePersonnelGetPersonnelByNumberData = {
+    body?: never;
+    path: {
+        personnelNumber: number;
+    };
+    query?: never;
+    url: '/api/reference-personnel/{personnelNumber}';
+};
+
+export type ReferencePersonnelGetPersonnelByNumberErrors = {
+    404: ProblemDetails;
+    500: unknown;
+};
+
+export type ReferencePersonnelGetPersonnelByNumberError = ReferencePersonnelGetPersonnelByNumberErrors[keyof ReferencePersonnelGetPersonnelByNumberErrors];
+
+export type ReferencePersonnelGetPersonnelByNumberResponses = {
+    200: ResultOfPersonnelResponse;
+};
+
+export type ReferencePersonnelGetPersonnelByNumberResponse = ReferencePersonnelGetPersonnelByNumberResponses[keyof ReferencePersonnelGetPersonnelByNumberResponses];
+
+export type ReferencePersonnelGetPersonnelByMemberData = {
+    body?: never;
+    path: {
+        memberCode: string;
+    };
+    query?: never;
+    url: '/api/reference-personnel/member/{memberCode}';
+};
+
+export type ReferencePersonnelGetPersonnelByMemberErrors = {
+    400: ProblemDetails;
+    500: unknown;
+};
+
+export type ReferencePersonnelGetPersonnelByMemberError = ReferencePersonnelGetPersonnelByMemberErrors[keyof ReferencePersonnelGetPersonnelByMemberErrors];
+
+export type ReferencePersonnelGetPersonnelByMemberResponses = {
+    200: ResultOfIEnumerableOfPersonnelResponse;
+};
+
+export type ReferencePersonnelGetPersonnelByMemberResponse = ReferencePersonnelGetPersonnelByMemberResponses[keyof ReferencePersonnelGetPersonnelByMemberResponses];
+
+export type ReferencePersonnelGetActivePersonnelData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/reference-personnel/active';
+};
+
+export type ReferencePersonnelGetActivePersonnelErrors = {
+    500: unknown;
+};
+
+export type ReferencePersonnelGetActivePersonnelResponses = {
+    200: ResultOfIEnumerableOfPersonnelResponse;
+};
+
+export type ReferencePersonnelGetActivePersonnelResponse = ReferencePersonnelGetActivePersonnelResponses[keyof ReferencePersonnelGetActivePersonnelResponses];
+
+export type ReferencePersonnelGetActiveAuditorsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/reference-personnel/auditors';
+};
+
+export type ReferencePersonnelGetActiveAuditorsErrors = {
+    500: unknown;
+};
+
+export type ReferencePersonnelGetActiveAuditorsResponses = {
+    200: ResultOfIEnumerableOfPersonnelResponse;
+};
+
+export type ReferencePersonnelGetActiveAuditorsResponse = ReferencePersonnelGetActiveAuditorsResponses[keyof ReferencePersonnelGetActiveAuditorsResponses];
+
+export type ReferencePersonnelGetAuditorsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/reference-personnel/auditors/all';
+};
+
+export type ReferencePersonnelGetAuditorsErrors = {
+    500: unknown;
+};
+
+export type ReferencePersonnelGetAuditorsResponses = {
+    200: ResultOfIEnumerableOfPersonnelResponse;
+};
+
+export type ReferencePersonnelGetAuditorsResponse = ReferencePersonnelGetAuditorsResponses[keyof ReferencePersonnelGetAuditorsResponses];
+
+export type ReferencePersonnelGetAuditorsByMemberData = {
+    body?: never;
+    path: {
+        memberCode: string;
+    };
+    query?: never;
+    url: '/api/reference-personnel/member/{memberCode}/auditors';
+};
+
+export type ReferencePersonnelGetAuditorsByMemberErrors = {
+    400: ProblemDetails;
+    500: unknown;
+};
+
+export type ReferencePersonnelGetAuditorsByMemberError = ReferencePersonnelGetAuditorsByMemberErrors[keyof ReferencePersonnelGetAuditorsByMemberErrors];
+
+export type ReferencePersonnelGetAuditorsByMemberResponses = {
+    200: ResultOfIEnumerableOfPersonnelResponse;
+};
+
+export type ReferencePersonnelGetAuditorsByMemberResponse = ReferencePersonnelGetAuditorsByMemberResponses[keyof ReferencePersonnelGetAuditorsByMemberResponses];
+
+export type ReferencePersonnelGetPersonnelByEmailData = {
+    body?: never;
+    path?: never;
+    query?: {
+        email?: string;
+    };
+    url: '/api/reference-personnel/by-email';
+};
+
+export type ReferencePersonnelGetPersonnelByEmailErrors = {
+    400: ProblemDetails;
+    404: ProblemDetails;
+    500: unknown;
+};
+
+export type ReferencePersonnelGetPersonnelByEmailError = ReferencePersonnelGetPersonnelByEmailErrors[keyof ReferencePersonnelGetPersonnelByEmailErrors];
+
+export type ReferencePersonnelGetPersonnelByEmailResponses = {
+    200: ResultOfPersonnelResponse;
+};
+
+export type ReferencePersonnelGetPersonnelByEmailResponse = ReferencePersonnelGetPersonnelByEmailResponses[keyof ReferencePersonnelGetPersonnelByEmailResponses];
+
+export type ReferencePersonnelSearchPersonnelData = {
+    body?: never;
+    path?: never;
+    query?: {
+        term?: string;
+        take?: number;
+    };
+    url: '/api/reference-personnel/search';
+};
+
+export type ReferencePersonnelSearchPersonnelErrors = {
+    400: ProblemDetails;
+    500: unknown;
+};
+
+export type ReferencePersonnelSearchPersonnelError = ReferencePersonnelSearchPersonnelErrors[keyof ReferencePersonnelSearchPersonnelErrors];
+
+export type ReferencePersonnelSearchPersonnelResponses = {
+    200: ResultOfIEnumerableOfPersonnelResponse;
+};
+
+export type ReferencePersonnelSearchPersonnelResponse = ReferencePersonnelSearchPersonnelResponses[keyof ReferencePersonnelSearchPersonnelResponses];
 
 export type ReferenceSuppliersGetAllSuppliersData = {
     body?: never;
