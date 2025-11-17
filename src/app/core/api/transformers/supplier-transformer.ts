@@ -2,17 +2,19 @@
  * Supplier Data Transformer
  *
  * Handles custom transformation logic for supplier data from the API.
- * The API returns different field names than what the frontend expects,
- * and we compute additional derived fields.
  *
- * This preserves the custom logic from the manual schemas while using
- * the generated API types.
+ * NOTE: As of the latest API update, the backend now returns computed fields
+ * (hasContact, hasEmail, location, auditCount) directly, so this transformer
+ * is primarily for compatibility and any future client-side transformations.
  */
 
 import type { SupplierDetailsResponse } from '@/core/api/generated';
 
 /**
  * Extended supplier response with computed fields
+ *
+ * NOTE: These fields are now returned directly from the API, so this
+ * interface is mainly for documentation and type compatibility.
  */
 export interface SupplierViewModel extends SupplierDetailsResponse {
   /** Whether the supplier has a contact person defined */
@@ -29,7 +31,10 @@ export interface SupplierViewModel extends SupplierDetailsResponse {
 }
 
 /**
- * Transform raw API supplier data to view model with computed fields
+ * Transform raw API supplier data to view model
+ *
+ * Since the API now returns computed fields, this mainly ensures
+ * consistent typing and provides fallbacks for any missing data.
  *
  * @param data Raw supplier data from API
  * @returns Transformed supplier view model
@@ -38,11 +43,11 @@ export function transformSupplierData(data: SupplierDetailsResponse): SupplierVi
   return {
     ...data,
 
-    // Computed fields
-    hasContact: !!data.contact && data.contact.trim().length > 0,
-    hasEmail: !!data.contactEmail && data.contactEmail.trim().length > 0,
-    location: `${data.city || ''}, ${data.state || ''}`.trim(),
-    auditCount: data.audits?.length || 0,
+    // Use API-provided computed fields with fallbacks
+    hasContact: data.hasContact ?? (!!data.contact && data.contact.trim().length > 0),
+    hasEmail: data.hasEmail ?? (!!data.contactEmail && data.contactEmail.trim().length > 0),
+    location: data.location ?? `${data.city || ''}, ${data.state || ''}`.trim(),
+    auditCount: data.auditCount ?? 0,
   };
 }
 
