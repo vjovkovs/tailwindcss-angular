@@ -12,12 +12,13 @@
 import { Component, signal, inject, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { injectQuery } from '@tanstack/angular-query-experimental';
 
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
 import { PreviewDialogComponent, PreviewField } from '../../shared/components/preview-dialog/preview-dialog.component';
 import { TableConfig, TableColumn, TableAction } from '../../shared/components/data-table/data-table.types';
-import { AuditResponse } from '../../core/api/models';
-import { AuditsService } from '../../core/api/services/audits.service';
+import type { AuditResponse } from '@/core/api/generated';
+import { auditsGetAllAuditsOptions } from '@/core/api/generated';
 
 @Component({
   selector: 'app-audits-table',
@@ -70,10 +71,9 @@ import { AuditsService } from '../../core/api/services/audits.service';
 })
 export class AuditsTableComponent {
   private readonly router = inject(Router);
-  private readonly auditsService = inject(AuditsService);
 
   // TanStack Query for audits data
-  private auditsQuery = this.auditsService.getAllAuditsQuery({ pageNumber: 1, pageSize: 100 });
+  private auditsQuery = injectQuery(() => auditsGetAllAuditsOptions({ query: { pageNumber: 1, pageSize: 100 } }));
 
   // Computed state from query
   audits = computed(() => this.auditsQuery.data()?.items || []);

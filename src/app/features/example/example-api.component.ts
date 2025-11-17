@@ -2,18 +2,11 @@ import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import {
-  AuditsService,
-  SuppliersService,
-  NupicAuditsService,
-  AuditFilesService,
-} from '../../core/api/services';
-import {
+import type {
   AuditResponse,
   SupplierDetailsResponse,
-  FileMetadataResponse,
-  PaginatedResponse,
-} from '../../core/api/models';
+  PaginatedResponseOfAuditResponse,
+} from '@/core/api/generated';
 
 /**
  * Example API Component
@@ -243,12 +236,10 @@ import {
   `,
 })
 export class ExampleApiComponent implements OnInit {
-  private readonly auditsService = inject(AuditsService);
-  private readonly suppliersService = inject(SuppliersService);
   private readonly router = inject(Router);
 
   // Audits state
-  audits = signal<PaginatedResponse<AuditResponse> | null>(null);
+  audits = signal<PaginatedResponseOfAuditResponse | null>(null);
   loadingAudits = signal(false);
   auditsError = signal<string | null>(null);
   currentPage = signal(1);

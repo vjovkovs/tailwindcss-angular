@@ -8,12 +8,11 @@
 import { Component, signal, inject, computed, effect } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { injectQuery } from '@tanstack/angular-query-experimental';
 import { z } from 'zod';
 
 import { DynamicFormComponent, DynamicFormConfig } from '../../shared/components/dynamic-form';
-import { AuditsService } from '../../core/api/services/audits.service';
-import { ReferenceAuditsService } from '../../core/api/services/reference-audits.service';
-import { SuppliersService } from '../../core/api/services/suppliers.service';
+import { auditsGetAuditByIdOptions, referenceAuditsGetReferenceAuditsOptions, referenceSuppliersGetAllSuppliersOptions } from '@/core/api/generated';
 import type { SelectOption } from '../../shared/components/searchable-select';
 
 // Audit form schema (for creation)
@@ -127,21 +126,18 @@ type AuditUpdateFormData = z.infer<typeof auditUpdateSchema>;
 export class AuditEditComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly auditsService = inject(AuditsService);
-  private readonly referenceAuditsService = inject(ReferenceAuditsService);
-  private readonly suppliersService = inject(SuppliersService);
 
   // Get audit ID from route
   private readonly auditId = signal<number | null>(null);
 
   // TanStack Query for audit data
-  private auditQuery = this.auditsService.getAuditByIdQuery(this.auditId());
+  private auditQuery = injectQuery(() => auditsGetAuditByIdOptions({ path: { id: this.auditId() || 0 } }));
 
   // TanStack Query for NUPIC reference audit numbers (for searchable select)
-  private referenceAuditsQuery = this.referenceAuditsService.getReferenceAuditsQuery({ pageSize: 1000 });
+  private referenceAuditsQuery = injectQuery(() => referenceAuditsGetReferenceAuditsOptions({ query: { pageSize: 1000 } }));
 
   // TanStack Query for supplier numbers (for searchable select)
-  private suppliersListQuery = this.suppliersService.getSuppliersQuery({ pageSize: 1000 });
+  private suppliersListQuery = injectQuery(() => referenceSuppliersGetAllSuppliersOptions({ query: { pageSize: 1000 } }));
 
   // Computed state from query
   loading = computed(() => this.auditQuery.isLoading());

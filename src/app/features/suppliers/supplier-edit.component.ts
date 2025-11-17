@@ -8,12 +8,11 @@
 import { Component, signal, inject, computed, effect } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { injectQuery } from '@tanstack/angular-query-experimental';
 import { z } from 'zod';
 
 import { DynamicFormComponent, DynamicFormConfig } from '../../shared/components/dynamic-form';
-import { SuppliersService } from '../../core/api/services/suppliers.service';
-import { SupplierDetailsResponse } from '../../core/api/models';
-import { SuppliersQueryService } from '../../core/api/services/suppliers-query.service';
+import { referenceSuppliersGetSupplierByNumberOptions } from '@/core/api/generated';
 
 // Supplier form schema
 const supplierSchema = z.object({
@@ -100,13 +99,12 @@ type SupplierFormData = z.infer<typeof supplierSchema>;
 export class SupplierEditComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly suppliersService = inject(SuppliersQueryService);
 
   // Get supplier ID from route
   private readonly supplierId = signal<string | null>(null);
 
   // TanStack Query for supplier data
-  private supplierQuery = this.suppliersService.createSupplierQuery(this.supplierId() ?? '-1');
+  private supplierQuery = injectQuery(() => referenceSuppliersGetSupplierByNumberOptions({ path: { supplierNumber: this.supplierId() ?? '-1' } }));
 
   // Computed state from query
   loading = computed(() => this.supplierQuery.isLoading());

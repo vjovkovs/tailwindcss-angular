@@ -13,13 +13,13 @@
 import { Component, signal, inject, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { injectQuery } from '@tanstack/angular-query-experimental';
 
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
 import { PreviewDialogComponent, PreviewField } from '../../shared/components/preview-dialog/preview-dialog.component';
 import { TableConfig, TableColumn, TableAction } from '../../shared/components/data-table/data-table.types';
-import { SupplierDetailsResponse } from '../../core/api/models';
-import { SuppliersService } from '../../core/api/services/suppliers.service';
-import { SuppliersQueryService } from '../../core/api/services/suppliers-query.service';
+import type { SupplierDetailsResponse } from '@/core/api/generated';
+import { referenceSuppliersGetAllSuppliersOptions } from '@/core/api/generated';
 
 @Component({
   selector: 'app-suppliers-table',
@@ -72,10 +72,9 @@ import { SuppliersQueryService } from '../../core/api/services/suppliers-query.s
 })
 export class SuppliersTableComponent {
   private readonly router = inject(Router);
-  private readonly suppliersService = inject(SuppliersQueryService);
 
   // TanStack Query for suppliers data
-  private suppliersQuery = this.suppliersService.createPaginatedQuery({ pageNumber: 1, pageSize: 100 });
+  private suppliersQuery = injectQuery(() => referenceSuppliersGetAllSuppliersOptions({ query: { pageNumber: 1, pageSize: 100 } }));
 
   // Computed state from query
   suppliers = computed(() => this.suppliersQuery.data()?.items || []);
