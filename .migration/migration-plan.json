@@ -1,0 +1,509 @@
+{
+  "plan": {
+    "summary": {
+      "totalFiles": 5,
+      "componentsToMigrate": 0,
+      "servicesToRemove": 0,
+      "typesToReplace": 7,
+      "complexMigrations": 1
+    },
+    "files": [
+      {
+        "path": "src\\app\\features\\audits\\audit-edit.component.ts",
+        "actions": [
+          {
+            "type": "replace-service",
+            "serviceName": "audits.service",
+            "imports": [
+              "AuditsService"
+            ]
+          },
+          {
+            "type": "replace-service",
+            "serviceName": "reference-audits.service",
+            "imports": [
+              "ReferenceAuditsService"
+            ]
+          },
+          {
+            "type": "replace-service",
+            "serviceName": "suppliers.service",
+            "imports": [
+              "SuppliersService"
+            ]
+          }
+        ],
+        "complexity": "simple"
+      },
+      {
+        "path": "src\\app\\features\\audits\\audits-table.component.ts",
+        "actions": [
+          {
+            "type": "replace-import",
+            "from": "@core/api/models",
+            "to": "@core/api/generated",
+            "imports": [
+              "AuditResponse"
+            ]
+          },
+          {
+            "type": "replace-service",
+            "serviceName": "audits.service",
+            "imports": [
+              "AuditsService"
+            ]
+          }
+        ],
+        "complexity": "simple"
+      },
+      {
+        "path": "src\\app\\features\\example\\example-api.component.ts",
+        "actions": [
+          {
+            "type": "replace-import",
+            "from": "@core/api/models",
+            "to": "@core/api/generated",
+            "imports": [
+              "AuditResponse",
+              "SupplierDetailsResponse",
+              "FileMetadataResponse",
+              "PaginatedResponse"
+            ]
+          }
+        ],
+        "complexity": "simple"
+      },
+      {
+        "path": "src\\app\\features\\suppliers\\supplier-edit.component.ts",
+        "actions": [
+          {
+            "type": "replace-import",
+            "from": "@core/api/models",
+            "to": "@core/api/generated",
+            "imports": [
+              "SupplierDetailsResponse"
+            ]
+          },
+          {
+            "type": "replace-service",
+            "serviceName": "suppliers.service",
+            "imports": [
+              "SuppliersService"
+            ]
+          },
+          {
+            "type": "replace-service",
+            "serviceName": "suppliers-query.service",
+            "imports": [
+              "SuppliersQueryService"
+            ]
+          }
+        ],
+        "complexity": "simple"
+      },
+      {
+        "path": "src\\app\\features\\suppliers\\suppliers-table.component.ts",
+        "actions": [
+          {
+            "type": "replace-import",
+            "from": "@core/api/models",
+            "to": "@core/api/generated",
+            "imports": [
+              "SupplierDetailsResponse"
+            ]
+          },
+          {
+            "type": "replace-service",
+            "serviceName": "suppliers.service",
+            "imports": [
+              "SuppliersService"
+            ]
+          },
+          {
+            "type": "replace-service",
+            "serviceName": "suppliers-query.service",
+            "imports": [
+              "SuppliersQueryService"
+            ]
+          }
+        ],
+        "complexity": "complex"
+      }
+    ],
+    "warnings": [
+      {
+        "file": "src\\app\\features\\suppliers\\suppliers-table.component.ts",
+        "message": "Contains custom transformation logic that needs manual review"
+      }
+    ],
+    "customLogicFiles": [
+      "src\\app\\features\\suppliers\\suppliers-table.component.ts"
+    ]
+  },
+  "mappings": {
+    "services": {
+      "AuditsService.getAllAuditsQuery": "auditsGetAllAuditsOptions",
+      "AuditsService.getAuditByIdQuery": "auditsGetAuditByIdOptions",
+      "AuditsService.searchAuditsQuery": "auditsSearchAuditsOptions",
+      "AuditsService.createAuditMutation": "auditsCreateAuditMutation",
+      "AuditsService.updateAuditMutation": "auditsUpdateAuditMutation",
+      "AuditsService.deleteAuditMutation": "auditsDeleteAuditMutation",
+      "ReferenceAuditsService.getReferenceAuditsQuery": "referenceAuditsGetReferenceAuditsOptions",
+      "ReferenceAuditsService.getAuditByNumberQuery": "referenceAuditsGetAuditByAuditNumberOptions",
+      "ReferenceAuditsService.getAuditsBySupplierQuery": "referenceAuditsGetAuditsBySupplierNumberOptions",
+      "ReferenceAuditsService.auditExistsQuery": "referenceAuditsAuditExistsOptions",
+      "SuppliersService.getSuppliersQuery": "referenceSuppliersGetAllSuppliersOptions",
+      "SuppliersService.getSupplierQuery": "referenceSuppliersGetSupplierByNumberOptions",
+      "SuppliersService.searchSuppliersQuery": "referenceSuppliersSearchSuppliersOptions",
+      "SuppliersQueryService.createPaginatedQuery": "referenceSuppliersGetAllSuppliersOptions",
+      "SuppliersQueryService.createSupplierQuery": "referenceSuppliersGetSupplierByNumberOptions",
+      "SuppliersQueryService.createSearchQuery": "referenceSuppliersSearchSuppliersOptions"
+    },
+    "types": {
+      "AuditResponse": "AuditResponse",
+      "AuditDetailsResponse": "AuditDetailsResponse",
+      "CreateAuditRequest": "CreateAuditRequest",
+      "UpdateAuditRequest": "UpdateAuditRequest",
+      "SupplierDetailsResponse": "SupplierDetailsResponse",
+      "PaginatedResponse": "PaginatedResponseOfAuditResponse",
+      "PaginationParams": "{ pageNumber?: number; pageSize?: number }"
+    }
+  },
+  "generatedMapping": {
+    "types": [
+      "ClientOptions",
+      "ProblemDetails",
+      "AuditDetailsResponse",
+      "PaginatedResponseOfPersonnelResponse",
+      "PersonnelResponse",
+      "Result",
+      "PaginatedResponseOfSupplierDetailsResponse",
+      "SupplierDetailsResponse",
+      "MergeAuditDocumentsRequest",
+      "MergeTemplateResponse",
+      "FileMetadataResponse",
+      "FileDownloadResponse",
+      "UpdateFileMetadataRequest",
+      "ReviewFileRequest",
+      "MergeFilesRequest",
+      "PaginatedResponseOfAuditResponse",
+      "AuditResponse",
+      "CreateAuditRequest",
+      "UpdateAuditRequest",
+      "DocumentBookmarkResponse",
+      "CreateDocumentBookmarkRequest",
+      "UpdateDocumentBookmarkRequest",
+      "BookmarkTemplateResponse",
+      "BookmarkTemplateItemResponse",
+      "PhaseAssignmentResponse",
+      "CompletePhaseRequest",
+      "UpdatePhaseAssignmentRequest",
+      "ReferenceAuditsGetReferenceAuditsData",
+      "ReferenceAuditsGetReferenceAuditsErrors",
+      "ReferenceAuditsGetReferenceAuditsResponses",
+      "ReferenceAuditsGetAllNupicAuditsData",
+      "ReferenceAuditsGetAllNupicAuditsErrors",
+      "ReferenceAuditsGetAllNupicAuditsResponses",
+      "ReferenceAuditsGetNupicAuditByNumberData",
+      "ReferenceAuditsGetNupicAuditByNumberErrors",
+      "ReferenceAuditsGetNupicAuditByNumberResponses",
+      "ReferenceAuditsNupicAuditExistsHeadData",
+      "ReferenceAuditsNupicAuditExistsHeadErrors",
+      "ReferenceAuditsNupicAuditExistsHeadResponses",
+      "ReferenceAuditsGetNupicAuditsBySupplierData",
+      "ReferenceAuditsGetNupicAuditsBySupplierErrors",
+      "ReferenceAuditsGetNupicAuditsBySupplierResponses",
+      "ReferenceAuditsNupicAuditExistsGetData",
+      "ReferenceAuditsNupicAuditExistsGetErrors",
+      "ReferenceAuditsNupicAuditExistsGetResponses",
+      "ReferencePersonnelGetPersonnelData",
+      "ReferencePersonnelGetPersonnelErrors",
+      "ReferencePersonnelGetPersonnelResponses",
+      "ReferencePersonnelGetPersonnelByNumberData",
+      "ReferencePersonnelGetPersonnelByNumberErrors",
+      "ReferencePersonnelGetPersonnelByNumberResponses",
+      "ReferencePersonnelGetPersonnelByMemberData",
+      "ReferencePersonnelGetPersonnelByMemberErrors",
+      "ReferencePersonnelGetPersonnelByMemberResponses",
+      "ReferencePersonnelGetActivePersonnelData",
+      "ReferencePersonnelGetActivePersonnelErrors",
+      "ReferencePersonnelGetActivePersonnelResponses",
+      "ReferencePersonnelGetActiveAuditorsData",
+      "ReferencePersonnelGetActiveAuditorsErrors",
+      "ReferencePersonnelGetActiveAuditorsResponses",
+      "ReferencePersonnelGetAuditorsData",
+      "ReferencePersonnelGetAuditorsErrors",
+      "ReferencePersonnelGetAuditorsResponses",
+      "ReferencePersonnelGetAuditorsByMemberData",
+      "ReferencePersonnelGetAuditorsByMemberErrors",
+      "ReferencePersonnelGetAuditorsByMemberResponses",
+      "ReferencePersonnelGetPersonnelByEmailData",
+      "ReferencePersonnelGetPersonnelByEmailErrors",
+      "ReferencePersonnelGetPersonnelByEmailResponses",
+      "ReferencePersonnelSearchPersonnelData",
+      "ReferencePersonnelSearchPersonnelErrors",
+      "ReferencePersonnelSearchPersonnelResponses",
+      "ReferenceSuppliersGetAllSuppliersData",
+      "ReferenceSuppliersGetAllSuppliersErrors",
+      "ReferenceSuppliersGetAllSuppliersResponses",
+      "ReferenceSuppliersGetSupplierByNumberData",
+      "ReferenceSuppliersGetSupplierByNumberErrors",
+      "ReferenceSuppliersGetSupplierByNumberResponses",
+      "ReferenceSuppliersSupplierExistsHeadData",
+      "ReferenceSuppliersSupplierExistsHeadErrors",
+      "ReferenceSuppliersSupplierExistsHeadResponses",
+      "ReferenceSuppliersSearchSuppliersData",
+      "ReferenceSuppliersSearchSuppliersErrors",
+      "ReferenceSuppliersSearchSuppliersResponses",
+      "ReferenceSuppliersSupplierExistsGetData",
+      "ReferenceSuppliersSupplierExistsGetErrors",
+      "ReferenceSuppliersSupplierExistsGetResponses",
+      "AuditDocumentMergeMergeAuditDocumentsData",
+      "AuditDocumentMergeMergeAuditDocumentsErrors",
+      "AuditDocumentMergeMergeAuditDocumentsResponses",
+      "AuditDocumentMergePreviewMergeData",
+      "AuditDocumentMergePreviewMergeErrors",
+      "AuditDocumentMergePreviewMergeResponses",
+      "AuditDocumentMergeGetMergeTemplatesData",
+      "AuditDocumentMergeGetMergeTemplatesResponses",
+      "AuditDocumentMergeValidateMergeRequestData",
+      "AuditDocumentMergeValidateMergeRequestErrors",
+      "AuditDocumentMergeValidateMergeRequestResponses",
+      "AuditDocumentMergeRenamePreviousMergesData",
+      "AuditDocumentMergeRenamePreviousMergesErrors",
+      "AuditDocumentMergeRenamePreviousMergesResponses",
+      "AuditFilesGetAuditFilesData",
+      "AuditFilesGetAuditFilesErrors",
+      "AuditFilesGetAuditFilesResponses",
+      "AuditFilesUploadFilesData",
+      "AuditFilesUploadFilesErrors",
+      "AuditFilesUploadFilesResponses",
+      "AuditFilesGetPhaseFilesData",
+      "AuditFilesGetPhaseFilesErrors",
+      "AuditFilesGetPhaseFilesResponses",
+      "AuditFilesDeleteFileData",
+      "AuditFilesDeleteFileErrors",
+      "AuditFilesDeleteFileResponses",
+      "AuditFilesGetFileMetadataData",
+      "AuditFilesGetFileMetadataErrors",
+      "AuditFilesGetFileMetadataResponses",
+      "AuditFilesUpdateFileMetadataData",
+      "AuditFilesUpdateFileMetadataErrors",
+      "AuditFilesUpdateFileMetadataResponses",
+      "AuditFilesDownloadFileData",
+      "AuditFilesDownloadFileErrors",
+      "AuditFilesDownloadFileResponses",
+      "AuditFilesReviewFileData",
+      "AuditFilesReviewFileErrors",
+      "AuditFilesReviewFileResponses",
+      "AuditFilesMergeFilesData",
+      "AuditFilesMergeFilesErrors",
+      "AuditFilesMergeFilesResponses",
+      "AuditFilesSendApprovalEmailData",
+      "AuditFilesSendApprovalEmailErrors",
+      "AuditFilesSendApprovalEmailResponses",
+      "AuditsGetAllAuditsData",
+      "AuditsGetAllAuditsErrors",
+      "AuditsGetAllAuditsResponses",
+      "AuditsDeleteAuditData",
+      "AuditsDeleteAuditErrors",
+      "AuditsDeleteAuditResponses",
+      "AuditsGetAuditByIdData",
+      "AuditsGetAuditByIdErrors",
+      "AuditsGetAuditByIdResponses",
+      "AuditsUpdateAuditData",
+      "AuditsUpdateAuditErrors",
+      "AuditsUpdateAuditResponses",
+      "AuditsCreateAuditData",
+      "AuditsCreateAuditErrors",
+      "AuditsCreateAuditResponses",
+      "AuditsSearchAuditsData",
+      "AuditsSearchAuditsResponses",
+      "BookmarksGetAuditBookmarksData",
+      "BookmarksGetAuditBookmarksErrors",
+      "BookmarksGetAuditBookmarksResponses",
+      "BookmarksCreateBookmarkData",
+      "BookmarksCreateBookmarkErrors",
+      "BookmarksCreateBookmarkResponses",
+      "BookmarksDeleteBookmarkData",
+      "BookmarksDeleteBookmarkErrors",
+      "BookmarksDeleteBookmarkResponses",
+      "BookmarksGetBookmarkData",
+      "BookmarksGetBookmarkErrors",
+      "BookmarksGetBookmarkResponses",
+      "BookmarksUpdateBookmarkData",
+      "BookmarksUpdateBookmarkErrors",
+      "BookmarksUpdateBookmarkResponses",
+      "BookmarksGetPhaseBookmarksData",
+      "BookmarksGetPhaseBookmarksErrors",
+      "BookmarksGetPhaseBookmarksResponses",
+      "BookmarksCreateBookmarksBatchData",
+      "BookmarksCreateBookmarksBatchErrors",
+      "BookmarksCreateBookmarksBatchResponses",
+      "BookmarksGetBookmarkTemplateData",
+      "BookmarksGetBookmarkTemplateErrors",
+      "BookmarksGetBookmarkTemplateResponses",
+      "PhasesGetAuditPhasesData",
+      "PhasesGetAuditPhasesErrors",
+      "PhasesGetAuditPhasesResponses",
+      "PhasesGetPhaseAssignmentData",
+      "PhasesGetPhaseAssignmentErrors",
+      "PhasesGetPhaseAssignmentResponses",
+      "PhasesUpdatePhaseAssignmentData",
+      "PhasesUpdatePhaseAssignmentErrors",
+      "PhasesUpdatePhaseAssignmentResponses",
+      "PhasesGetCurrentPhaseData",
+      "PhasesGetCurrentPhaseErrors",
+      "PhasesGetCurrentPhaseResponses",
+      "PhasesStartPhaseData",
+      "PhasesStartPhaseErrors",
+      "PhasesStartPhaseResponses",
+      "PhasesCompletePhaseData",
+      "PhasesCompletePhaseErrors",
+      "PhasesCompletePhaseResponses",
+      "PhasesReactivatePhaseData",
+      "PhasesReactivatePhaseErrors",
+      "PhasesReactivatePhaseResponses",
+      "PhasesGetAvailablePhasesData",
+      "PhasesGetAvailablePhasesErrors",
+      "PhasesGetAvailablePhasesResponses"
+    ],
+    "queryOptions": [
+      "referenceAuditsGetReferenceAuditsOptions",
+      "referenceAuditsGetAllNupicAuditsOptions",
+      "referenceAuditsGetNupicAuditByNumberOptions",
+      "referenceAuditsGetNupicAuditsBySupplierOptions",
+      "referenceAuditsNupicAuditExistsGetOptions",
+      "referencePersonnelGetPersonnelOptions",
+      "referencePersonnelGetPersonnelByNumberOptions",
+      "referencePersonnelGetPersonnelByMemberOptions",
+      "referencePersonnelGetActivePersonnelOptions",
+      "referencePersonnelGetActiveAuditorsOptions",
+      "referencePersonnelGetAuditorsOptions",
+      "referencePersonnelGetAuditorsByMemberOptions",
+      "referencePersonnelGetPersonnelByEmailOptions",
+      "referencePersonnelSearchPersonnelOptions",
+      "referenceSuppliersGetAllSuppliersOptions",
+      "referenceSuppliersGetSupplierByNumberOptions",
+      "referenceSuppliersSearchSuppliersOptions",
+      "referenceSuppliersSupplierExistsGetOptions",
+      "auditDocumentMergeGetMergeTemplatesOptions",
+      "auditFilesGetAuditFilesOptions",
+      "auditFilesGetPhaseFilesOptions",
+      "auditFilesGetFileMetadataOptions",
+      "auditFilesDownloadFileOptions",
+      "auditsGetAllAuditsOptions",
+      "auditsGetAuditByIdOptions",
+      "auditsSearchAuditsOptions",
+      "bookmarksGetAuditBookmarksOptions",
+      "bookmarksGetBookmarkOptions",
+      "bookmarksGetPhaseBookmarksOptions",
+      "bookmarksGetBookmarkTemplateOptions",
+      "phasesGetAuditPhasesOptions",
+      "phasesGetPhaseAssignmentOptions",
+      "phasesGetCurrentPhaseOptions",
+      "phasesGetAvailablePhasesOptions"
+    ],
+    "mutations": []
+  },
+  "filesToMigrate": [
+    {
+      "path": "src\\app\\features\\audits\\audit-edit.component.ts",
+      "modelsImports": [],
+      "schemasImports": [],
+      "servicesImports": [
+        {
+          "imports": [
+            "AuditsService"
+          ],
+          "serviceName": "audits.service"
+        },
+        {
+          "imports": [
+            "ReferenceAuditsService"
+          ],
+          "serviceName": "reference-audits.service"
+        },
+        {
+          "imports": [
+            "SuppliersService"
+          ],
+          "serviceName": "suppliers.service"
+        }
+      ],
+      "hasCustomLogic": false
+    },
+    {
+      "path": "src\\app\\features\\audits\\audits-table.component.ts",
+      "modelsImports": [
+        "AuditResponse"
+      ],
+      "schemasImports": [],
+      "servicesImports": [
+        {
+          "imports": [
+            "AuditsService"
+          ],
+          "serviceName": "audits.service"
+        }
+      ],
+      "hasCustomLogic": false
+    },
+    {
+      "path": "src\\app\\features\\example\\example-api.component.ts",
+      "modelsImports": [
+        "AuditResponse",
+        "SupplierDetailsResponse",
+        "FileMetadataResponse",
+        "PaginatedResponse"
+      ],
+      "schemasImports": [],
+      "servicesImports": [],
+      "hasCustomLogic": false
+    },
+    {
+      "path": "src\\app\\features\\suppliers\\supplier-edit.component.ts",
+      "modelsImports": [
+        "SupplierDetailsResponse"
+      ],
+      "schemasImports": [],
+      "servicesImports": [
+        {
+          "imports": [
+            "SuppliersService"
+          ],
+          "serviceName": "suppliers.service"
+        },
+        {
+          "imports": [
+            "SuppliersQueryService"
+          ],
+          "serviceName": "suppliers-query.service"
+        }
+      ],
+      "hasCustomLogic": false
+    },
+    {
+      "path": "src\\app\\features\\suppliers\\suppliers-table.component.ts",
+      "modelsImports": [
+        "SupplierDetailsResponse"
+      ],
+      "schemasImports": [],
+      "servicesImports": [
+        {
+          "imports": [
+            "SuppliersService"
+          ],
+          "serviceName": "suppliers.service"
+        },
+        {
+          "imports": [
+            "SuppliersQueryService"
+          ],
+          "serviceName": "suppliers-query.service"
+        }
+      ],
+      "hasCustomLogic": true
+    }
+  ]
+}
