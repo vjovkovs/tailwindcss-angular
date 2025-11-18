@@ -48,8 +48,8 @@ import { {{camelCase apiFunction}}Options } from '@/core/api/generated/@tanstack
       />
 
       <!-- Error message -->
+      @if (error()){
       <div
-        *ngIf="error()"
         class="mt-4 rounded-md bg-red-50 p-4"
       >
         <div class="flex">
@@ -66,6 +66,7 @@ import { {{camelCase apiFunction}}Options } from '@/core/api/generated/@tanstack
           </div>
         </div>
       </div>
+      }
     </div>
   `,
 })

@@ -2,6 +2,7 @@
   "name": "angular-tailwind-template",
   "version": "1.0.0",
   "description": "Production-ready Angular 20 + Tailwind CSS 4 template",
+  "type": "module",
   "scripts": {
     "ng": "ng",
     "setup:env": "node scripts/setup-environment.js",
@@ -15,6 +16,8 @@
     "ssl:generate": "node scripts/generate-cert.js",
     "generate:api": "openapi-ts",
     "generate:table": "node scripts/generators/generate-table.js",
+    "generate:edit": "node scripts/generators/generate-edit.js",
+    "generate:routes": "node scripts/generators/generate-routes.js",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "vitest",

@@ -1,0 +1,174 @@
+/**
+ * {{pascalCase entityName}} Edit Component (TanStack Query)
+ *
+ * Form for creating and editing {{lowerCase entityPluralName}}
+ * Uses DynamicFormComponent with grid layout and TanStack Query for data fetching
+ */
+
+import { Component, signal, inject, computed, effect } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { injectQuery } from '@tanstack/angular-query-experimental';
+import { z } from 'zod';
+
+import { DynamicFormComponent, DynamicFormConfig } from '../../shared/components/dynamic-form';
+{{#if operations.get}}
+import { {{camelCase operations.get.functionName}}Options } from '@/core/api/generated/@tanstack/angular-query-experimental.gen';
+{{/if}}
+{{#each relationships}}
+import { {{camelCase this.queryFunction}}Options } from '@/core/api/generated/@tanstack/angular-query-experimental.gen';
+{{/each}}
+import type { SelectOption } from '../../shared/components/searchable-select';
+
+// Form schema
+const {{camelCase entityName}}Schema = z.object({
+{{#each formFields}}
+  {{this.name}}: {{this.zodType}}{{#if this.description}}.describe('{{this.description}}'){{/if}},
+{{/each}}
+});
+
+type {{pascalCase entityName}}FormData = z.infer<typeof {{camelCase entityName}}Schema>;
+
+@Component({
+  selector: 'app-{{kebabCase entityName}}-edit',
+  standalone: true,
+  imports: [CommonModule, DynamicFormComponent],
+  template: `
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+      <div class="mb-6">
+        <div class="flex items-center gap-4 mb-2">
+          <button
+            type="button"
+            (click)="goBack()"
+            class="btn btn-ghost btn-sm gap-2"
+          >
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to {{pascalCase entityPluralName}}
+          </button>
+        </div>
+        <h1 class="text-3xl font-bold text-base-content">
+          \{{ isEditMode() ? 'Edit {{pascalCase entityName}}' : 'New {{pascalCase entityName}}' }}
+        </h1>
+      </div>
+      @if(loading()){
+      <div class="flex items-center justify-center py-12">
+        <span class="loading loading-spinner loading-md"></span>
+      </div>
+      }
+      @if(!loading() && error()){
+      <div class="alert alert-error mb-6">
+        <span>\{{ error() }}</span>
+      </div>
+      }
+      @if(!loading()){
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <app-dynamic-form
+            [config]="formConfig()"
+            [initialData]="initialData()"
+            (formSubmit)="onSubmit($event)"
+            (formCancel)="goBack()"
+          />
+        </div>
+      </div>
+      }
+
+      @if (successMessage()){
+      <div class="toast toast-end">
+        <div class="alert alert-success">
+          <span>\{{ successMessage() }}</span>
+        </div>
+      </div>
+      }
+    </div>
+  `,
+})
+export class {{pascalCase entityName}}EditComponent {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+
+  private readonly {{camelCase entityName}}Id = signal<{{idFieldType}} | null>(null);
+
+{{#if operations.get}}
+  private {{camelCase entityName}}Query = injectQuery(() =>
+    {{camelCase operations.get.functionName}}Options({ path: { {{idField}}: this.{{camelCase entityName}}Id() || {{idFieldDefault}} } })
+  );
+{{/if}}
+
+{{#each relationships}}
+  private {{camelCase this.pluralName}}Query = injectQuery(() =>
+    {{camelCase this.queryFunction}}Options({ query: { pageSize: 1000 } })
+  );
+
+  {{camelCase this.pluralName}}Options = computed((): SelectOption[] => {
+    const data = this.{{camelCase this.pluralName}}Query.data();
+    if (!data?.items) return [];
+    return data.items.map((item: any) => ({
+      label: `${item.{{this.displayField}} || 'N/A'}`,
+      value: item.{{this.valueField}}
+    }));
+  });
+{{/each}}
+
+  loading = computed(() => this.{{camelCase entityName}}Query?.isLoading() || false);
+  error = computed(() => this.{{camelCase entityName}}Query?.error()?.message || null);
+  successMessage = signal<string | null>(null);
+  isEditMode = computed(() => !!this.{{camelCase entityName}}Id());
+
+  initialData = computed(() => {
+    const data = this.{{camelCase entityName}}Query?.data();
+    if (!data) return undefined;
+
+    return {
+{{#each formFields}}
+      {{this.name}}: data.{{this.name}}{{#if this.transform}} {{this.transform}}{{/if}} ?? undefined,
+{{/each}}
+    };
+  });
+
+  formConfig = computed((): DynamicFormConfig<typeof {{camelCase entityName}}Schema.shape> => ({
+    schema: {{camelCase entityName}}Schema,
+    layout: 'grid',
+    columns: 2,
+    fields: {
+{{#each formFields}}
+      {{this.name}}: {
+        colSpan: {{this.colSpan}},
+{{#if this.type}}
+        type: '{{this.type}}',
+{{/if}}
+{{#if this.options}}
+        options: this.{{this.options}}(),
+{{/if}}
+      },
+{{/each}}
+    },
+    submitLabel: isEditMode() ? 'Update {{pascalCase entityName}}' : 'Create {{pascalCase entityName}}',
+    showCancel: true,
+  }));
+
+  constructor() {
+    effect(() => {
+      const id = this.route.snapshot.paramMap.get('id');
+      if (id) {
+        this.{{camelCase entityName}}Id.set({{idFieldConversion}});
+      }
+    }, { allowSignalWrites: true });
+  }
+
+  onSubmit(data: {{pascalCase entityName}}FormData): void {
+    console.log('Form submitted:', data);
+    // TODO: Implement save logic with mutations
+    this.successMessage.set('{{pascalCase entityName}} saved successfully');
+
+    setTimeout(() => {
+      this.router.navigate(['/{{kebabCase entityPluralName}}']);
+    }, 2000);
+  }
+
+  goBack(): void {
+    this.router.navigate(['/{{kebabCase entityPluralName}}']);
+  }
+}
