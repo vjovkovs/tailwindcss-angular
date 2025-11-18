@@ -19,7 +19,7 @@ export const environment = {
     redirectUri: '/auth', // Must be registered in Azure portal
     postLogoutRedirectUri: '/', // Redirect after logout
 
-    // Scopes for accessing APIs
+    // Scopes for accessing APIs (used for login and SSO)
     scopes: [
       'api://9c097f4f-fe4c-4035-abe9-2b41caaf983c/access_as_user',
       'User.Read',
@@ -28,13 +28,15 @@ export const environment = {
       'openid'
     ],
 
-    // Protected resources (APIs that require authentication)
-    protectedResourceMap: new Map<string, string[]>([
-      // Microsoft Graph API
-      ['https://graph.microsoft.com/v1.0/me', ['User.Read']],
-
-      // NUPIC Document Manager API
-      ['https://localhost:53928/api', ['api://9c097f4f-fe4c-4035-abe9-2b41caaf983c/access_as_user']],
-    ]),
+    // Protected resources configuration (used by MSAL interceptor)
+    protectedResources: {
+      api: {
+        endpoint: 'https://localhost:53928/api',
+        scopes: {
+          read: ['api://9c097f4f-fe4c-4035-abe9-2b41caaf983c/access_as_user'],
+          write: ['api://9c097f4f-fe4c-4035-abe9-2b41caaf983c/access_as_user'],
+        },
+      },
+    },
   },
 };

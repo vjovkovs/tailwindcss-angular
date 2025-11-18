@@ -1,45 +1,50 @@
 import { inject } from '@angular/core';
-import { MsalService } from '@azure/msal-angular';
 import { client } from './generated/client.gen';
-import { environment } from '../../environments/environment';
+import { AuthService } from '../auth/auth.service';
+import { environment } from '../../../environments/environment';
 
 /**
  * Configure the generated API client with MSAL authentication
  *
  * This adds an interceptor that automatically fetches and adds
- * the bearer token to all API requests.
+ * the bearer token to all API requests. It integrates seamlessly
+ * with the SSO Silent authentication flow.
  */
 export function configureApiClient() {
-  const msalService = inject(MsalService);
+  const authService = inject(AuthService);
 
   // Add request interceptor to include bearer token
   client.interceptors.request.use(async (request, options) => {
     try {
-      // Get the active account
-      const account = msalService.instance.getActiveAccount();
+      // Wait for authentication to initialize (SSO Silent may still be in progress)
+      // This prevents race conditions where API calls happen before auth is ready
+      const maxWaitTime = 5000; // 5 seconds max wait
+      const startTime = Date.now();
 
-      if (account) {
-        // Acquire token silently
-        const response = await msalService.instance.acquireTokenSilent({
-          scopes: ['api://9c097f4f-fe4c-4035-abe9-2b41caaf983c/access_as_user'],
-          account: account,
-        });
+      while (!authService.isInitialized() && (Date.now() - startTime) < maxWaitTime) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
 
-        // Add Authorization header
-        request.headers.set('Authorization', `Bearer ${response.accessToken}`);
+      // If user is authenticated, add bearer token
+      if (authService.isAuthenticated()) {
+        const token = await authService.getAccessToken([
+          'api://9c097f4f-fe4c-4035-abe9-2b41caaf983c/access_as_user'
+        ]);
+
+        if (token) {
+          request.headers.set('Authorization', `Bearer ${token}`);
+        } else {
+          console.warn('Could not acquire access token for API request');
+        }
+      } else {
+        // User is not authenticated - request will proceed without token
+        // The backend will return 401 if authentication is required
+        console.debug('API request made without authentication - user not logged in');
       }
     } catch (error) {
-      console.error('Failed to acquire token:', error);
-
-      // If silent token acquisition fails, try interactive
-      try {
-        const response = await msalService.instance.acquireTokenPopup({
-          scopes: ['api://9c097f4f-fe4c-4035-abe9-2b41caaf983c/access_as_user'],
-        });
-        request.headers.set('Authorization', `Bearer ${response.accessToken}`);
-      } catch (interactiveError) {
-        console.error('Interactive token acquisition failed:', interactiveError);
-      }
+      console.error('Error adding bearer token to request:', error);
+      // Continue with request even if token acquisition fails
+      // Backend will handle unauthorized requests appropriately
     }
 
     return request;
