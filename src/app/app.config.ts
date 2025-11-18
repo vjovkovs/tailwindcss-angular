@@ -1,6 +1,6 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withRouterConfig  } from '@angular/router';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
 import {
   provideAngularQuery,
   QueryClient,
@@ -89,7 +89,10 @@ export const appConfig: ApplicationConfig = {
       onSameUrlNavigation: 'reload'
     })),
     provideAnimations(), // Add this line
-    provideHttpClient(withInterceptors([apiInterceptor])),
+    provideHttpClient(
+      withInterceptors([apiInterceptor]),
+      withInterceptorsFromDi() // Enable class-based interceptors (MsalInterceptor)
+    ),
     provideAngularQuery(createQueryClient()),
 
     // MSAL Configuration
