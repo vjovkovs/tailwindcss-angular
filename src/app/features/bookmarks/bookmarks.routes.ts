@@ -2,17 +2,17 @@ import { Routes } from '@angular/router';
 
 export const BookmarksRoutes: Routes = [
   {
-    path: '',
+    path: 'bookmarks',
     loadComponent: () =>
       import('./bookmarks-table-simple.component').then((m) => m.BookmarksTableComponent),
   },
   {
-    path: 'new',
+    path: 'bookmarks/new',
     loadComponent: () =>
       import('./bookmarks-edit.component').then((m) => m.BookmarksEditComponent),
   },
   {
-    path: ':id/edit',
+    path: 'bookmarks/:id/edit',
     loadComponent: () =>
       import('./bookmarks-edit.component').then((m) => m.BookmarksEditComponent),
   },
