@@ -38,9 +38,12 @@ import { {{camelCase apiFunction}}Options } from '@/core/api/generated/@tanstack
         (close)="closePreview()"
       />
 
-      <div *ngIf="error()" class="mt-4 rounded-md bg-red-50 p-4">
+      @if (error()){
+      <!-- Error message -->
+      <div class="mt-4 rounded-md bg-red-50 p-4">
         <p class="text-red-600">\{{ error() }}</p>
       </div>
+      }
     </div>
   `,
 })

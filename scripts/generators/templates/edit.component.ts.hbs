@@ -52,15 +52,16 @@ type {{pascalCase entityName}}FormData = z.infer<typeof {{camelCase entityName}}
           \{{ isEditMode() ? 'Edit {{pascalCase entityName}}' : 'New {{pascalCase entityName}}' }}
         </h1>
       </div>
-
-      <div *ngIf="loading()" class="flex items-center justify-center py-12">
+      @if(loading()){
+      <div class="flex items-center justify-center py-12">
         <span class="loading loading-spinner loading-md"></span>
       </div>
-
-      <div *ngIf="error()" class="alert alert-error mb-6">
+      }
+      @if(!loading() && error()){
+      <div class="alert alert-error mb-6">
         <span>\{{ error() }}</span>
       </div>
-
+      }
       @if(!loading()){
       <div class="card bg-base-100 shadow-xl">
         <div class="card-body">

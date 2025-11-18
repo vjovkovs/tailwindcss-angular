@@ -631,11 +631,7 @@ export type ReferencePersonnelSearchPersonnelResponse = ReferencePersonnelSearch
 export type ReferenceSuppliersGetAllSuppliersData = {
     body?: never;
     path?: never;
-    query?: {
-        pageNumber?: number | null;
-        pageSize?: number | null;
-        search?: string | null;
-    };
+    query?: never;
     url: '/api/ReferenceSuppliers';
 };
 
