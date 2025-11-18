@@ -6,7 +6,7 @@ import {
   QueryClient,
 } from '@tanstack/angular-query-experimental';
 import { IPublicClientApplication, PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel } from '@azure/msal-browser';
-import { MsalInterceptor, MSAL_INSTANCE, MsalInterceptorConfiguration, MsalGuardConfiguration, MSAL_GUARD_CONFIG, MSAL_INTERCEPTOR_CONFIG, MsalService, MsalGuard, MsalBroadcastService } from '@azure/msal-angular';
+import { MsalInterceptor, MSAL_INSTANCE, MsalInterceptorConfiguration, MsalGuardConfiguration, MSAL_GUARD_CONFIG, MSAL_INTERCEPTOR_CONFIG, MsalService, MsalGuard, MsalBroadcastService, ProtectedResourceScopes } from '@azure/msal-angular';
 import { provideAnimations } from '@angular/platform-browser/animations';
 
 import { routes } from './app.routes';
@@ -69,17 +69,45 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
   };
 }
 
-/**
- * Factory function to create MSAL Interceptor configuration
- */
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
-  const protectedResourceMap = environment.msal.protectedResourceMap;
+  const protectedResourceMap = new Map<
+    string,
+    Array<string | ProtectedResourceScopes> | null
+  >();
+  
+
+  protectedResourceMap.set(environment.msal.protectedResources.api.endpoint, [
+    {
+      httpMethod: 'GET',
+      scopes: [...environment.msal.protectedResources.api.scopes.read],
+    },
+    {
+      httpMethod: 'POST',
+      scopes: [...environment.msal.protectedResources.api.scopes.write],
+    },
+  ]);
+
+  protectedResourceMap.set('https://graph.microsoft.com/v1.0/me', [
+    'user.read',
+  ]);
 
   return {
     interactionType: InteractionType.Redirect,
     protectedResourceMap,
   };
 }
+
+/**
+ * Factory function to create MSAL Interceptor configuration
+ */
+// export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
+//   const protectedResourceMap = environment.msal.protectedResourceMap;
+
+//   return {
+//     interactionType: InteractionType.Redirect,
+//     protectedResourceMap,
+//   };
+// }
 
 export const appConfig: ApplicationConfig = {
   providers: [
