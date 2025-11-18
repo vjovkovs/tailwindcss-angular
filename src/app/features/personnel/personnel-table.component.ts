@@ -47,11 +47,9 @@ import { referencePersonnelGetPersonnelOptions } from '@/core/api/generated/@tan
 export class PersonnelTableComponent {
   private readonly router = inject(Router);
 
-  private personnelQuery = injectQuery(() =>
-    referencePersonnelGetPersonnelOptions({ query: { pageNumber: 1, pageSize: 100 } })
-  );
+  private personnelQuery = injectQuery(() => referencePersonnelGetPersonnelOptions());
 
-  personnel = computed(() => this.personnelQuery.data()?.items || []);
+  personnel = computed(() => this.personnelQuery.data()?.data?.items || []);
   loading = computed(() => this.personnelQuery.isLoading());
   error = computed(() => this.personnelQuery.error()?.message || null);
 
