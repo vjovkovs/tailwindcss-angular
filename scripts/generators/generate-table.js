@@ -5,15 +5,19 @@
  *
  * Generates a table component from a template using OpenAPI metadata
  *
+ * Phase 2.1: Auto-configuration from OpenAPI spec
+ *
  * Usage:
- *   node scripts/generators/generate-table.js <EntityName>
+ *   node scripts/generators/generate-table.js <EntityName> [--dry-run] [--manual]
  *   node scripts/generators/generate-table.js Personnel
+ *   node scripts/generators/generate-table.js Personnel --manual  # Use manual config
  */
 
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import Handlebars from 'handlebars';
+import { parseOpenAPISpec } from './openapi-parser.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -177,40 +181,121 @@ function generateComponent(entityName, config, options = {}) {
 }
 
 /**
+ * Load entity configuration
+ */
+function loadEntityConfig(entityName, useManual = false) {
+  const openapiPath = path.join(projectRoot, 'openapi-updated.json');
+
+  // Check if OpenAPI spec exists and manual mode is not forced
+  if (!useManual && fs.existsSync(openapiPath)) {
+    console.log('📖 Reading OpenAPI specification...');
+    try {
+      const entities = parseOpenAPISpec(openapiPath);
+      const entity = entities.find(e =>
+        e.name.toLowerCase() === entityName.toLowerCase() ||
+        e.endpoint.toLowerCase() === entityName.toLowerCase()
+      );
+
+      if (entity) {
+        console.log(`✅ Auto-configured from OpenAPI spec\n`);
+
+        // Convert to legacy config format for template compatibility
+        return {
+          entityName: entity.name,
+          entityPluralName: entity.pluralName,
+          apiFunction: entity.operations.list?.functionName || '',
+          idField: entity.idField,
+          columns: entity.columns,
+          previewFields: entity.previewFields,
+          operations: entity.operations,
+          relationships: entity.relationships,
+          kebabCase: entity.name
+            .replace(/([a-z])([A-Z])/g, '$1-$2')
+            .toLowerCase(),
+        };
+      }
+    } catch (error) {
+      console.warn(`⚠️  Failed to parse OpenAPI spec: ${error.message}`);
+      console.warn('Falling back to manual configuration...\n');
+    }
+  }
+
+  // Fall back to manual configuration
+  const config = ENTITY_CONFIGS[entityName];
+  if (!config) return null;
+
+  console.log('📋 Using manual configuration\n');
+
+  // Add computed kebab-case to config
+  config.kebabCase = entityName
+    .replace(/([a-z])([A-Z])/g, '$1-$2')
+    .toLowerCase();
+
+  return config;
+}
+
+/**
  * Main function
  */
 function main() {
   const args = process.argv.slice(2);
   const entityName = args[0];
   const dryRun = args.includes('--dry-run');
+  const useManual = args.includes('--manual');
 
   if (!entityName) {
     console.error('❌ Error: Entity name required\n');
-    console.log('Usage: node scripts/generators/generate-table.js <EntityName> [--dry-run]\n');
-    console.log('Available entities:');
-    Object.keys(ENTITY_CONFIGS).forEach((key) => {
-      console.log(`  - ${key}`);
-    });
+    console.log('Usage: node scripts/generators/generate-table.js <EntityName> [--dry-run] [--manual]\n');
+
+    // Try to show available entities from OpenAPI
+    const openapiPath = path.join(projectRoot, 'openapi-updated.json');
+    if (fs.existsSync(openapiPath)) {
+      try {
+        const entities = parseOpenAPISpec(openapiPath);
+        console.log('Available entities (from OpenAPI):');
+        entities.forEach(e => console.log(`  - ${e.name} (${e.endpoint})`));
+      } catch (error) {
+        console.log('Available entities (manual):');
+        Object.keys(ENTITY_CONFIGS).forEach((key) => {
+          console.log(`  - ${key}`);
+        });
+      }
+    } else {
+      console.log('Available entities (manual):');
+      Object.keys(ENTITY_CONFIGS).forEach((key) => {
+        console.log(`  - ${key}`);
+      });
+    }
     console.log('');
     process.exit(1);
   }
 
-  const config = ENTITY_CONFIGS[entityName];
+  const config = loadEntityConfig(entityName, useManual);
 
   if (!config) {
     console.error(`❌ Error: No configuration found for entity "${entityName}"\n`);
-    console.log('Available entities:');
-    Object.keys(ENTITY_CONFIGS).forEach((key) => {
-      console.log(`  - ${key}`);
-    });
+
+    const openapiPath = path.join(projectRoot, 'openapi-updated.json');
+    if (fs.existsSync(openapiPath) && !useManual) {
+      try {
+        const entities = parseOpenAPISpec(openapiPath);
+        console.log('Available entities:');
+        entities.forEach(e => console.log(`  - ${e.name} (${e.endpoint})`));
+      } catch (error) {
+        console.log('Available entities:');
+        Object.keys(ENTITY_CONFIGS).forEach((key) => {
+          console.log(`  - ${key}`);
+        });
+      }
+    } else {
+      console.log('Available entities:');
+      Object.keys(ENTITY_CONFIGS).forEach((key) => {
+        console.log(`  - ${key}`);
+      });
+    }
     console.log('');
     process.exit(1);
   }
-
-  // Add computed kebab-case to config
-  config.kebabCase = entityName
-    .replace(/([a-z])([A-Z])/g, '$1-$2')
-    .toLowerCase();
 
   generateComponent(entityName, config, { dryRun });
 
