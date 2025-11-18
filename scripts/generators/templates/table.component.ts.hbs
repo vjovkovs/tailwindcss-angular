@@ -1,0 +1,199 @@
+/**
+ * {{pascalCase entityName}} Table Component (TanStack Query)
+ *
+ * Table view for {{lowerCase entityPluralName}} with sorting, filtering, pagination, and search
+ * Demonstrates:
+ * - TanStack Query for automatic caching and refetching
+ * - New button (redirects to create page)
+ * - Edit action (redirects to edit page)
+ * - Preview action (opens dialog)
+ */
+
+import { Component, signal, inject, computed } from '@angular/core';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { injectQuery } from '@tanstack/angular-query-experimental';
+
+import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
+import { PreviewDialogComponent, PreviewField } from '../../shared/components/preview-dialog/preview-dialog.component';
+import { TableConfig, TableColumn, TableAction } from '../../shared/components/data-table/data-table.types';
+import type { {{pascalCase entityName}}Response } from '@/core/api/generated';
+import { {{camelCase apiFunction}}Options } from '@/core/api/generated/@tanstack/angular-query-experimental.gen';
+
+@Component({
+  selector: 'app-{{kebabCase entityPluralName}}-table',
+  standalone: true,
+  imports: [CommonModule, DataTableComponent, PreviewDialogComponent],
+  template: `
+    <div class="container mx-auto px-4 py-8">
+      <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">{{pascalCase entityPluralName}}</h1>
+        <p class="mt-2 text-gray-600">Manage and view {{lowerCase entityName}} information</p>
+      </div>
+
+      <!-- Data Table -->
+      <app-data-table
+        [data]="{{camelCase entityPluralName}}()"
+        [config]="tableConfig()"
+        [loading]="loading()"
+        (rowClick)="onRowClick($event)"
+      />
+
+      <!-- Preview Dialog -->
+      <app-preview-dialog
+        [isOpen]="previewDialogOpen()"
+        [title]="'{{pascalCase entityName}} Details'"
+        [fields]="previewFields()"
+        (close)="closePreview()"
+      />
+
+      <!-- Error message -->
+      <div
+        *ngIf="error()"
+        class="mt-4 rounded-md bg-red-50 p-4"
+      >
+        <div class="flex">
+          <div class="shrink-0">
+            <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-red-800">Error loading {{lowerCase entityPluralName}}</h3>
+            <div class="mt-2 text-sm text-red-700">
+              \{\{ error() \}\}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `,
+})
+export class {{pascalCase entityPluralName}}TableComponent {
+  private readonly router = inject(Router);
+
+  // TanStack Query for {{lowerCase entityPluralName}} data
+  private {{camelCase entityPluralName}}Query = injectQuery(() => {{camelCase apiFunction}}Options({ query: { pageNumber: 1, pageSize: 100 } }));
+
+  // Computed state from query
+  {{camelCase entityPluralName}} = computed(() => this.{{camelCase entityPluralName}}Query.data()?.items || []);
+  loading = computed(() => this.{{camelCase entityPluralName}}Query.isLoading());
+  error = computed(() => this.{{camelCase entityPluralName}}Query.error()?.message || null);
+
+  // Dialog state
+  previewDialogOpen = signal(false);
+  selected{{pascalCase entityName}} = signal<{{pascalCase entityName}}Response | null>(null);
+
+  // Table configuration
+  tableConfig = signal<TableConfig<{{pascalCase entityName}}Response>>({
+    columns: this.getColumns(),
+    actions: this.getActions(),
+    searchable: true,
+    searchPlaceholder: 'Search {{lowerCase entityPluralName}}...',
+    pageable: true,
+    pageSizeOptions: [10, 25, 50, 100],
+    defaultPageSize: 25,
+    selectable: false,
+    showRowNumbers: true,
+    emptyStateMessage: 'No {{lowerCase entityPluralName}} found',
+    loadingMessage: 'Loading {{lowerCase entityPluralName}}...',
+    onNew: () => this.onNew(),
+    newButtonLabel: 'Add {{pascalCase entityName}}',
+  });
+
+  // Preview fields
+  previewFields = signal<PreviewField[]>([]);
+
+  /**
+   * Get table columns
+   */
+  private getColumns(): TableColumn<{{pascalCase entityName}}Response>[] {
+    return [
+{{#each columns}}
+      {
+        label: '{{this.label}}',
+        field: '{{this.field}}',
+        sortable: {{this.sortable}},
+        {{#if this.width}}width: '{{this.width}}',{{/if}}
+        {{#if this.format}}format: {{this.format}},{{/if}}
+        {{#if this.columnClass}}columnClass: '{{this.columnClass}}',{{/if}}
+      },
+{{/each}}
+    ];
+  }
+
+  /**
+   * Get table actions
+   */
+  private getActions(): TableAction<{{pascalCase entityName}}Response>[] {
+    return [
+      {
+        label: 'Preview',
+        icon: `<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        </svg>`,
+        handler: (row) => this.onPreview(row),
+        buttonClass: 'inline-flex items-center p-1 text-gray-600 hover:text-blue-600 focus:outline-none',
+      },
+      {
+        label: 'Edit',
+        icon: `<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>`,
+        handler: (row) => this.onEdit(row),
+        buttonClass: 'inline-flex items-center p-1 text-gray-600 hover:text-green-600 focus:outline-none',
+      },
+    ];
+  }
+
+  /**
+   * Handle new {{lowerCase entityName}} button click - Redirects
+   */
+  onNew(): void {
+    this.router.navigate(['/{{kebabCase entityPluralName}}/new']);
+  }
+
+  /**
+   * Handle edit action - Redirects
+   */
+  onEdit({{camelCase entityName}}: {{pascalCase entityName}}Response): void {
+    this.router.navigate(['/{{kebabCase entityPluralName}}', {{camelCase entityName}}.{{idField}}, 'edit']);
+  }
+
+  /**
+   * Handle preview action - Opens dialog
+   */
+  onPreview({{camelCase entityName}}: {{pascalCase entityName}}Response): void {
+    this.selected{{pascalCase entityName}}.set({{camelCase entityName}});
+
+    // Update preview fields with current {{lowerCase entityName}} data
+    this.previewFields.set([
+{{#each previewFields}}
+      {
+        label: '{{this.label}}',
+        value: {{camelCase entityName}}.{{this.field}},
+        {{#if this.format}}format: {{this.format}},{{/if}}
+        {{#if this.class}}class: {{this.class}},{{/if}}
+      },
+{{/each}}
+    ]);
+
+    this.previewDialogOpen.set(true);
+  }
+
+  /**
+   * Handle row click
+   */
+  onRowClick({{camelCase entityName}}: {{pascalCase entityName}}Response): void {
+    this.onPreview({{camelCase entityName}});
+  }
+
+  /**
+   * Close preview dialog
+   */
+  closePreview(): void {
+    this.previewDialogOpen.set(false);
+    this.selected{{pascalCase entityName}}.set(null);
+  }
+}
