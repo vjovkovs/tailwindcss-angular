@@ -8,13 +8,13 @@
 import { Component, signal, inject, computed, effect } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { injectQuery } from '@tanstack/angular-query-experimental';
 import { z } from 'zod';
 
 import { DynamicFormComponent, DynamicFormConfig } from '../../shared/components/dynamic-form';
-import { AuditsService } from '../../core/api/services/audits.service';
-import { ReferenceAuditsService } from '../../core/api/services/reference-audits.service';
-import { SuppliersService } from '../../core/api/services/suppliers.service';
+import { auditsGetAuditByIdOptions, referenceAuditsGetReferenceAuditsOptions, referenceSuppliersGetAllSuppliersOptions } from '@/core/api/generated/@tanstack/angular-query-experimental.gen';
 import type { SelectOption } from '../../shared/components/searchable-select';
+import type { AuditResponse, PaginatedResponseOfAuditResponse, PaginatedResponseOfSupplierDetailsResponse } from '@/core/api/generated';
 
 // Audit form schema (for creation)
 const auditSchema = z.object({
@@ -127,21 +127,18 @@ type AuditUpdateFormData = z.infer<typeof auditUpdateSchema>;
 export class AuditEditComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly auditsService = inject(AuditsService);
-  private readonly referenceAuditsService = inject(ReferenceAuditsService);
-  private readonly suppliersService = inject(SuppliersService);
 
   // Get audit ID from route
   private readonly auditId = signal<number | null>(null);
 
   // TanStack Query for audit data
-  private auditQuery = this.auditsService.getAuditByIdQuery(this.auditId());
+  private auditQuery = injectQuery(() => auditsGetAuditByIdOptions({ path: { id: this.auditId() || 0 } }));
 
   // TanStack Query for NUPIC reference audit numbers (for searchable select)
-  private referenceAuditsQuery = this.referenceAuditsService.getReferenceAuditsQuery({ pageSize: 1000 });
+  private referenceAuditsQuery = injectQuery(() => referenceAuditsGetReferenceAuditsOptions({ query: { pageSize: 1000 } }));
 
   // TanStack Query for supplier numbers (for searchable select)
-  private suppliersListQuery = this.suppliersService.getSuppliersQuery({ pageSize: 1000 });
+  private suppliersListQuery = injectQuery(() => referenceSuppliersGetAllSuppliersOptions());
 
   // Computed state from query
   loading = computed(() => this.auditQuery.isLoading());
@@ -149,22 +146,26 @@ export class AuditEditComponent {
 
   // Map NUPIC reference audit data to SelectOption format
   auditNumberOptions = computed((): SelectOption[] => {
-    const audits = this.referenceAuditsQuery.data();
-    if (!audits?.items) return [];
-    return audits.items.map(audit => ({
-      label: `${audit.auditNumber} - ${audit.supplierNumber}`,
-      value: audit.auditNumber
-    }));
+    const audits = this.referenceAuditsQuery.data() as PaginatedResponseOfAuditResponse | undefined;
+    if (!audits || !Array.isArray(audits.items)) return [];
+    return audits.items
+      .filter((audit: AuditResponse) => audit.auditNumber)
+      .map((audit: AuditResponse) => ({
+        label: `${audit.auditNumber} - ${audit.supplierNumber || 'N/A'}`,
+        value: audit.auditNumber!
+      }));
   });
 
   // Map supplier data to SelectOption format
   supplierNumberOptions = computed((): SelectOption[] => {
-    const suppliers = this.suppliersListQuery.data();
-    if (!suppliers?.items) return [];
-    return suppliers.items.map(supplier => ({
-      label: `${supplier.supplierNumber} - ${supplier.supplierName}`,
-      value: supplier.supplierNumber
-    }));
+    const suppliers = this.suppliersListQuery.data() as PaginatedResponseOfSupplierDetailsResponse | undefined;
+    if (!suppliers || !Array.isArray(suppliers.items)) return [];
+    return suppliers.items
+      .filter(supplier => supplier.supplierNumber)
+      .map(supplier => ({
+        label: `${supplier.supplierNumber} - ${supplier.supplierName || 'N/A'}`,
+        value: supplier.supplierNumber!
+      }));
   });
 
   // Form state
@@ -180,9 +181,9 @@ export class AuditEditComponent {
       fkPerNumb: audit.fkPerNumb,
       contactPersonEmail: audit.contactPersonEmail,
       alternateContact: audit.alternateContact,
-      startDate: audit.startDate || undefined,
-      endDate: audit.endDate || undefined,
-      dateNotified: audit.dateNotified || undefined,
+      startDate: audit.startDate ? (audit.startDate instanceof Date ? audit.startDate.toISOString().split('T')[0] : audit.startDate) : undefined,
+      endDate: audit.endDate ? (audit.endDate instanceof Date ? audit.endDate.toISOString().split('T')[0] : audit.endDate) : undefined,
+      dateNotified: audit.dateNotified ? (audit.dateNotified instanceof Date ? audit.dateNotified.toISOString().split('T')[0] : audit.dateNotified) : undefined,
       updatedBy: audit.updatedBy,
     };
   });

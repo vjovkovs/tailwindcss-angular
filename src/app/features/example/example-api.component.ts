@@ -2,18 +2,11 @@ import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import {
-  AuditsService,
-  SuppliersService,
-  NupicAuditsService,
-  AuditFilesService,
-} from '../../core/api/services';
-import {
+import type {
   AuditResponse,
   SupplierDetailsResponse,
-  FileMetadataResponse,
-  PaginatedResponse,
-} from '../../core/api/models';
+  PaginatedResponseOfAuditResponse,
+} from '@/core/api/generated';
 
 /**
  * Example API Component
@@ -89,7 +82,7 @@ import {
             @if (audits()) {
               <div class="space-y-2">
                 <div class="text-sm text-gray-600 mb-2">
-                  Showing {{ audits()!.items.length }} of {{ audits()!.totalCount }} audits
+                  Showing {{ audits()!.items!.length }} of {{ audits()!.totalCount }} audits
                   (Page {{ audits()!.pageNumber }} of {{ audits()!.totalPages }})
                 </div>
 
@@ -142,7 +135,7 @@ import {
                   </table>
                 </div>
 
-                @if (audits()!.totalPages > 1) {
+                @if (audits()!.totalPages! > 1) {
                   <div class="flex justify-between items-center mt-4">
                     <button
                       (click)="previousPage()"
@@ -243,12 +236,10 @@ import {
   `,
 })
 export class ExampleApiComponent implements OnInit {
-  private readonly auditsService = inject(AuditsService);
-  private readonly suppliersService = inject(SuppliersService);
   private readonly router = inject(Router);
 
   // Audits state
-  audits = signal<PaginatedResponse<AuditResponse> | null>(null);
+  audits = signal<PaginatedResponseOfAuditResponse | null>(null);
   loadingAudits = signal(false);
   auditsError = signal<string | null>(null);
   currentPage = signal(1);

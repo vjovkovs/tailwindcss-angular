@@ -4,6 +4,38 @@ export type ClientOptions = {
     baseUrl: 'https://localhost:53928' | (string & {});
 };
 
+export type PaginatedResponseOfAuditResponse = {
+    items?: Array<AuditResponse>;
+    totalCount?: number;
+    pageNumber?: number;
+    pageSize?: number;
+    totalPages?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+};
+
+export type AuditResponse = {
+    id?: number;
+    auditNumber?: string;
+    supplierNumber?: string;
+    leadUtilityCode?: string;
+    auditTypeId?: number;
+    auditTypeName?: string;
+    fkPerNumb?: number | null;
+    contactPersonEmail?: string;
+    alternateContact?: string;
+    startDate?: Date | null;
+    endDate?: Date | null;
+    auditApproved?: boolean;
+    approvedBy?: string;
+    dateNotified?: Date | null;
+    createdDate?: Date;
+    createdBy?: string;
+    updatedDate?: Date;
+    updatedBy?: string;
+    leadAuditorName?: string;
+};
+
 export type ProblemDetails = {
     type?: string | null;
     title?: string | null;
@@ -175,38 +207,6 @@ export type MergeFilesRequest = {
     mergedFileName: string;
 };
 
-export type PaginatedResponseOfAuditResponse = {
-    items?: Array<AuditResponse>;
-    totalCount?: number;
-    pageNumber?: number;
-    pageSize?: number;
-    totalPages?: number;
-    hasPreviousPage?: boolean;
-    hasNextPage?: boolean;
-};
-
-export type AuditResponse = {
-    id?: number;
-    auditNumber?: string;
-    supplierNumber?: string;
-    leadUtilityCode?: string;
-    auditTypeId?: number;
-    auditTypeName?: string;
-    fkPerNumb?: number | null;
-    contactPersonEmail?: string;
-    alternateContact?: string;
-    startDate?: Date | null;
-    endDate?: Date | null;
-    auditApproved?: boolean;
-    approvedBy?: string;
-    dateNotified?: Date | null;
-    createdDate?: Date;
-    createdBy?: string;
-    updatedDate?: Date;
-    updatedBy?: string;
-    leadAuditorName?: string;
-};
-
 export type CreateAuditRequest = {
     auditNumber: string;
     supplierNumber: string;
@@ -295,6 +295,15 @@ export type CompletePhaseRequest = {
     sendNotification?: boolean;
 };
 
+export type PhaseResponse = {
+    id?: number;
+    code?: string;
+    name?: string;
+    category?: string;
+    description?: string;
+    isActive?: boolean;
+};
+
 export type UpdatePhaseAssignmentRequest = {
     status?: string;
     isActive?: boolean | null;
@@ -319,8 +328,10 @@ export type ReferenceAuditsGetReferenceAuditsErrors = {
 export type ReferenceAuditsGetReferenceAuditsError = ReferenceAuditsGetReferenceAuditsErrors[keyof ReferenceAuditsGetReferenceAuditsErrors];
 
 export type ReferenceAuditsGetReferenceAuditsResponses = {
-    200: unknown;
+    200: PaginatedResponseOfAuditResponse;
 };
+
+export type ReferenceAuditsGetReferenceAuditsResponse = ReferenceAuditsGetReferenceAuditsResponses[keyof ReferenceAuditsGetReferenceAuditsResponses];
 
 export type ReferenceAuditsGetAllNupicAuditsData = {
     body?: never;
@@ -341,8 +352,10 @@ export type ReferenceAuditsGetAllNupicAuditsErrors = {
 export type ReferenceAuditsGetAllNupicAuditsError = ReferenceAuditsGetAllNupicAuditsErrors[keyof ReferenceAuditsGetAllNupicAuditsErrors];
 
 export type ReferenceAuditsGetAllNupicAuditsResponses = {
-    200: unknown;
+    200: PaginatedResponseOfAuditResponse;
 };
+
+export type ReferenceAuditsGetAllNupicAuditsResponse = ReferenceAuditsGetAllNupicAuditsResponses[keyof ReferenceAuditsGetAllNupicAuditsResponses];
 
 export type ReferenceAuditsGetNupicAuditByNumberData = {
     body?: never;
@@ -618,11 +631,7 @@ export type ReferencePersonnelSearchPersonnelResponse = ReferencePersonnelSearch
 export type ReferenceSuppliersGetAllSuppliersData = {
     body?: never;
     path?: never;
-    query?: {
-        pageNumber?: number | null;
-        pageSize?: number | null;
-        search?: string | null;
-    };
+    query?: never;
     url: '/api/ReferenceSuppliers';
 };
 
@@ -1499,7 +1508,7 @@ export type PhasesGetAvailablePhasesErrors = {
 export type PhasesGetAvailablePhasesError = PhasesGetAvailablePhasesErrors[keyof PhasesGetAvailablePhasesErrors];
 
 export type PhasesGetAvailablePhasesResponses = {
-    200: Array<unknown>;
+    200: Array<PhaseResponse>;
 };
 
 export type PhasesGetAvailablePhasesResponse = PhasesGetAvailablePhasesResponses[keyof PhasesGetAvailablePhasesResponses];
