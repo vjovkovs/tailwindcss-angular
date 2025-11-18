@@ -658,20 +658,7 @@ export const zReferencePersonnelSearchPersonnelResponse = zResultOfIEnumerableOf
 export const zReferenceSuppliersGetAllSuppliersData = z.object({
     body: z.never().optional(),
     path: z.never().optional(),
-    query: z.object({
-        pageNumber: z.union([
-            z.number().int(),
-            z.null()
-        ]).optional(),
-        pageSize: z.union([
-            z.number().int(),
-            z.null()
-        ]).optional(),
-        search: z.union([
-            z.string(),
-            z.null()
-        ]).optional()
-    }).optional()
+    query: z.never().optional()
 });
 
 export const zReferenceSuppliersGetAllSuppliersResponse = zPaginatedResponseOfSupplierDetailsResponse;

@@ -138,7 +138,7 @@ export class AuditEditComponent {
   private referenceAuditsQuery = injectQuery(() => referenceAuditsGetReferenceAuditsOptions({ query: { pageSize: 1000 } }));
 
   // TanStack Query for supplier numbers (for searchable select)
-  private suppliersListQuery = injectQuery(() => referenceSuppliersGetAllSuppliersOptions({ query: { pageSize: 1000 } }));
+  private suppliersListQuery = injectQuery(() => referenceSuppliersGetAllSuppliersOptions());
 
   // Computed state from query
   loading = computed(() => this.auditQuery.isLoading());

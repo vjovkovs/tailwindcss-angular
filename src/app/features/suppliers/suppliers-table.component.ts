@@ -74,7 +74,7 @@ export class SuppliersTableComponent {
   private readonly router = inject(Router);
 
   // TanStack Query for suppliers data
-  private suppliersQuery = injectQuery(() => referenceSuppliersGetAllSuppliersOptions({ query: { pageNumber: 1, pageSize: 100 } }));
+  private suppliersQuery = injectQuery(() => referenceSuppliersGetAllSuppliersOptions());
 
   // Computed state from query
   suppliers = computed(() => this.suppliersQuery.data()?.items || []);
