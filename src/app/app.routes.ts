@@ -27,7 +27,22 @@ export const routes: Routes = [
       import('./features/example/example-api.component').then((m) => m.ExampleApiComponent),
     canActivate: [authGuard],
   },
-    {
+  {
+    path: 'bookmarks',
+    loadComponent: () =>
+      import('./features/bookmarks/bookmarks-table-simple.component').then((m) => m.BookmarksTableComponent),
+  },
+  {
+    path: 'bookmarks/new',
+    loadComponent: () =>
+      import('./features/bookmarks/bookmarks-edit.component').then((m) => m.BookmarksEditComponent),
+  },
+  {
+    path: 'bookmarks/:id/edit',
+    loadComponent: () =>
+      import('./features/bookmarks/bookmarks-edit.component').then((m) => m.BookmarksEditComponent),
+  },
+  {
     path: 'suppliers',
     loadComponent: () =>
       import('./features/suppliers/suppliers-table.component').then((m) => m.SuppliersTableComponent),
