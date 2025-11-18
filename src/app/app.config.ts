@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
+import { APP_INITIALIZER, ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withRouterConfig  } from '@angular/router';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
 import {
@@ -12,6 +12,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { routes } from './app.routes';
 import { apiInterceptor } from './core/http/api.interceptor';
 import { createQueryClient } from './core/query/query-client.config';
+import { configureApiClient } from './core/api/api-client.config';
 import { environment } from '../environments/environment';
 
 /**
@@ -122,6 +123,13 @@ export const appConfig: ApplicationConfig = {
       withInterceptorsFromDi() // Enable class-based interceptors (MsalInterceptor)
     ),
     provideAngularQuery(createQueryClient()),
+
+    // Configure API client with MSAL authentication
+    {
+      provide: APP_INITIALIZER,
+      useFactory: () => configureApiClient,
+      multi: true,
+    },
 
     // MSAL Configuration
     {
