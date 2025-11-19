@@ -29,6 +29,12 @@ export const referenceAuditsGetReferenceAudits = <ThrowOnError extends boolean =
         responseValidator: async (data) => {
             return await zReferenceAuditsGetReferenceAuditsResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/ReferenceAudits',
         ...options
     });
@@ -46,6 +52,12 @@ export const referenceAuditsGetAllNupicAudits = <ThrowOnError extends boolean = 
         responseValidator: async (data) => {
             return await zReferenceAuditsGetAllNupicAuditsResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/ReferenceAudits/GetAllNupicAudits',
         ...options
     });
@@ -60,6 +72,12 @@ export const referenceAuditsGetNupicAuditByNumber = <ThrowOnError extends boolea
         responseValidator: async (data) => {
             return await zReferenceAuditsGetNupicAuditByNumberResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/ReferenceAudits/{auditNumber}',
         ...options
     });
@@ -70,6 +88,12 @@ export const referenceAuditsNupicAuditExistsHead = <ThrowOnError extends boolean
         requestValidator: async (data) => {
             return await zReferenceAuditsNupicAuditExistsHeadData.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/ReferenceAudits/{auditNumber}',
         ...options
     });
@@ -84,6 +108,12 @@ export const referenceAuditsGetNupicAuditsBySupplier = <ThrowOnError extends boo
         responseValidator: async (data) => {
             return await zReferenceAuditsGetNupicAuditsBySupplierResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/ReferenceAudits/supplier/{supplierNumber}',
         ...options
     });
@@ -94,6 +124,12 @@ export const referenceAuditsNupicAuditExistsGet = <ThrowOnError extends boolean 
         requestValidator: async (data) => {
             return await zReferenceAuditsNupicAuditExistsGetData.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/ReferenceAudits/{auditNumber}/exists',
         ...options
     });
@@ -278,6 +314,12 @@ export const referenceSuppliersGetAllSuppliers = <ThrowOnError extends boolean =
         responseValidator: async (data) => {
             return await zReferenceSuppliersGetAllSuppliersResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/ReferenceSuppliers',
         ...options
     });
@@ -291,6 +333,12 @@ export const referenceSuppliersGetSupplierByNumber = <ThrowOnError extends boole
         responseValidator: async (data) => {
             return await zReferenceSuppliersGetSupplierByNumberResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/ReferenceSuppliers/{supplierNumber}',
         ...options
     });
@@ -301,6 +349,12 @@ export const referenceSuppliersSupplierExistsHead = <ThrowOnError extends boolea
         requestValidator: async (data) => {
             return await zReferenceSuppliersSupplierExistsHeadData.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/ReferenceSuppliers/{supplierNumber}',
         ...options
     });
@@ -314,6 +368,12 @@ export const referenceSuppliersSearchSuppliers = <ThrowOnError extends boolean =
         responseValidator: async (data) => {
             return await zReferenceSuppliersSearchSuppliersResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/ReferenceSuppliers/search',
         ...options
     });
@@ -324,6 +384,12 @@ export const referenceSuppliersSupplierExistsGet = <ThrowOnError extends boolean
         requestValidator: async (data) => {
             return await zReferenceSuppliersSupplierExistsGetData.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/ReferenceSuppliers/{supplierNumber}/exists',
         ...options
     });
@@ -337,6 +403,12 @@ export const auditDocumentMergeMergeAuditDocuments = <ThrowOnError extends boole
         responseValidator: async (data) => {
             return await zAuditDocumentMergeMergeAuditDocumentsResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/AuditDocumentMerge/merge',
         ...options,
         headers: {
@@ -354,6 +426,12 @@ export const auditDocumentMergePreviewMerge = <ThrowOnError extends boolean = fa
         responseValidator: async (data) => {
             return await zAuditDocumentMergePreviewMergeResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/AuditDocumentMerge/preview',
         ...options,
         headers: {
@@ -371,6 +449,12 @@ export const auditDocumentMergeGetMergeTemplates = <ThrowOnError extends boolean
         responseValidator: async (data) => {
             return await zAuditDocumentMergeGetMergeTemplatesResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/AuditDocumentMerge/templates',
         ...options
     });
@@ -381,6 +465,12 @@ export const auditDocumentMergeValidateMergeRequest = <ThrowOnError extends bool
         requestValidator: async (data) => {
             return await zAuditDocumentMergeValidateMergeRequestData.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/AuditDocumentMerge/validate',
         ...options,
         headers: {
@@ -395,6 +485,12 @@ export const auditDocumentMergeRenamePreviousMerges = <ThrowOnError extends bool
         requestValidator: async (data) => {
             return await zAuditDocumentMergeRenamePreviousMergesData.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/AuditDocumentMerge/rename-previous-merges/{auditId}',
         ...options
     });
@@ -409,6 +505,12 @@ export const auditFilesGetAuditFiles = <ThrowOnError extends boolean = false>(op
         responseValidator: async (data) => {
             return await zAuditFilesGetAuditFilesResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/AuditFiles/{auditId}/files',
         ...options
     });
@@ -424,6 +526,12 @@ export const auditFilesUploadFiles = <ThrowOnError extends boolean = false>(opti
         responseValidator: async (data) => {
             return await zAuditFilesUploadFilesResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/AuditFiles/{auditId}/files',
         ...options,
         headers: {
@@ -442,6 +550,12 @@ export const auditFilesGetPhaseFiles = <ThrowOnError extends boolean = false>(op
         responseValidator: async (data) => {
             return await zAuditFilesGetPhaseFilesResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/AuditFiles/{auditId}/phases/{phaseAssignmentId}/files',
         ...options
     });
@@ -455,6 +569,12 @@ export const auditFilesDeleteFile = <ThrowOnError extends boolean = false>(optio
         responseValidator: async (data) => {
             return await zAuditFilesDeleteFileResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/AuditFiles/{auditId}/files/{fileId}',
         ...options
     });
@@ -469,6 +589,12 @@ export const auditFilesGetFileMetadata = <ThrowOnError extends boolean = false>(
         responseValidator: async (data) => {
             return await zAuditFilesGetFileMetadataResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/AuditFiles/{auditId}/files/{fileId}',
         ...options
     });
@@ -483,6 +609,12 @@ export const auditFilesUpdateFileMetadata = <ThrowOnError extends boolean = fals
         responseValidator: async (data) => {
             return await zAuditFilesUpdateFileMetadataResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/AuditFiles/{auditId}/files/{fileId}',
         ...options,
         headers: {
@@ -501,6 +633,12 @@ export const auditFilesDownloadFile = <ThrowOnError extends boolean = false>(opt
         responseValidator: async (data) => {
             return await zAuditFilesDownloadFileResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/AuditFiles/{auditId}/files/{fileId}/download',
         ...options
     });
@@ -515,6 +653,12 @@ export const auditFilesReviewFile = <ThrowOnError extends boolean = false>(optio
         responseValidator: async (data) => {
             return await zAuditFilesReviewFileResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/AuditFiles/{auditId}/files/{fileId}/review',
         ...options,
         headers: {
@@ -533,6 +677,12 @@ export const auditFilesMergeFiles = <ThrowOnError extends boolean = false>(optio
         responseValidator: async (data) => {
             return await zAuditFilesMergeFilesResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/AuditFiles/{auditId}/files/merge',
         ...options,
         headers: {
@@ -547,6 +697,12 @@ export const auditFilesSendApprovalEmail = <ThrowOnError extends boolean = false
         requestValidator: async (data) => {
             return await zAuditFilesSendApprovalEmailData.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/AuditFiles/{auditId}/send-approval-email',
         ...options
     });
@@ -561,6 +717,12 @@ export const auditsGetAllAudits = <ThrowOnError extends boolean = false>(options
         responseValidator: async (data) => {
             return await zAuditsGetAllAuditsResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/Audits/GetAll',
         ...options
     });
@@ -574,6 +736,12 @@ export const auditsDeleteAudit = <ThrowOnError extends boolean = false>(options:
         responseValidator: async (data) => {
             return await zAuditsDeleteAuditResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/Audits/{id}',
         ...options
     });
@@ -588,6 +756,12 @@ export const auditsGetAuditById = <ThrowOnError extends boolean = false>(options
         responseValidator: async (data) => {
             return await zAuditsGetAuditByIdResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/Audits/{id}',
         ...options
     });
@@ -602,6 +776,12 @@ export const auditsUpdateAudit = <ThrowOnError extends boolean = false>(options:
         responseValidator: async (data) => {
             return await zAuditsUpdateAuditResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/Audits/{id}',
         ...options,
         headers: {
@@ -620,6 +800,12 @@ export const auditsCreateAudit = <ThrowOnError extends boolean = false>(options:
         responseValidator: async (data) => {
             return await zAuditsCreateAuditResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/Audits',
         ...options,
         headers: {
@@ -638,6 +824,12 @@ export const auditsSearchAudits = <ThrowOnError extends boolean = false>(options
         responseValidator: async (data) => {
             return await zAuditsSearchAuditsResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/Audits/search',
         ...options
     });
@@ -652,6 +844,12 @@ export const bookmarksGetAuditBookmarks = <ThrowOnError extends boolean = false>
         responseValidator: async (data) => {
             return await zBookmarksGetAuditBookmarksResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/Bookmarks/{auditId}/bookmarks',
         ...options
     });
@@ -666,6 +864,12 @@ export const bookmarksCreateBookmark = <ThrowOnError extends boolean = false>(op
         responseValidator: async (data) => {
             return await zBookmarksCreateBookmarkResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/Bookmarks/{auditId}/bookmarks',
         ...options,
         headers: {
@@ -683,6 +887,12 @@ export const bookmarksDeleteBookmark = <ThrowOnError extends boolean = false>(op
         responseValidator: async (data) => {
             return await zBookmarksDeleteBookmarkResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/Bookmarks/{auditId}/bookmarks/{bookmarkId}',
         ...options
     });
@@ -697,6 +907,12 @@ export const bookmarksGetBookmark = <ThrowOnError extends boolean = false>(optio
         responseValidator: async (data) => {
             return await zBookmarksGetBookmarkResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/Bookmarks/{auditId}/bookmarks/{bookmarkId}',
         ...options
     });
@@ -711,6 +927,12 @@ export const bookmarksUpdateBookmark = <ThrowOnError extends boolean = false>(op
         responseValidator: async (data) => {
             return await zBookmarksUpdateBookmarkResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/Bookmarks/{auditId}/bookmarks/{bookmarkId}',
         ...options,
         headers: {
@@ -729,6 +951,12 @@ export const bookmarksGetPhaseBookmarks = <ThrowOnError extends boolean = false>
         responseValidator: async (data) => {
             return await zBookmarksGetPhaseBookmarksResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/Bookmarks/{auditId}/phases/{phaseAssignmentId}/bookmarks',
         ...options
     });
@@ -743,6 +971,12 @@ export const bookmarksCreateBookmarksBatch = <ThrowOnError extends boolean = fal
         responseValidator: async (data) => {
             return await zBookmarksCreateBookmarksBatchResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/Bookmarks/{auditId}/bookmarks/batch',
         ...options,
         headers: {
@@ -760,6 +994,12 @@ export const bookmarksGetBookmarkTemplate = <ThrowOnError extends boolean = fals
         responseValidator: async (data) => {
             return await zBookmarksGetBookmarkTemplateResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/Bookmarks/types/{auditTypeId}/bookmark-template',
         ...options
     });
@@ -774,6 +1014,12 @@ export const phasesGetAuditPhases = <ThrowOnError extends boolean = false>(optio
         responseValidator: async (data) => {
             return await zPhasesGetAuditPhasesResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/Phases/{auditId}/phases',
         ...options
     });
@@ -788,6 +1034,12 @@ export const phasesGetPhaseAssignment = <ThrowOnError extends boolean = false>(o
         responseValidator: async (data) => {
             return await zPhasesGetPhaseAssignmentResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/Phases/{auditId}/phases/{phaseAssignmentId}',
         ...options
     });
@@ -802,6 +1054,12 @@ export const phasesUpdatePhaseAssignment = <ThrowOnError extends boolean = false
         responseValidator: async (data) => {
             return await zPhasesUpdatePhaseAssignmentResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/Phases/{auditId}/phases/{phaseAssignmentId}',
         ...options,
         headers: {
@@ -820,6 +1078,12 @@ export const phasesGetCurrentPhase = <ThrowOnError extends boolean = false>(opti
         responseValidator: async (data) => {
             return await zPhasesGetCurrentPhaseResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/Phases/{auditId}/phases/current',
         ...options
     });
@@ -834,6 +1098,12 @@ export const phasesStartPhase = <ThrowOnError extends boolean = false>(options: 
         responseValidator: async (data) => {
             return await zPhasesStartPhaseResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/Phases/{auditId}/phases/start',
         ...options
     });
@@ -848,6 +1118,12 @@ export const phasesCompletePhase = <ThrowOnError extends boolean = false>(option
         responseValidator: async (data) => {
             return await zPhasesCompletePhaseResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/Phases/{auditId}/phases/{phaseAssignmentId}/complete',
         ...options,
         headers: {
@@ -866,6 +1142,12 @@ export const phasesReactivatePhase = <ThrowOnError extends boolean = false>(opti
         responseValidator: async (data) => {
             return await zPhasesReactivatePhaseResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/Phases/{auditId}/phases/{phaseAssignmentId}/reactivate',
         ...options
     });
@@ -879,6 +1161,12 @@ export const phasesGetAvailablePhases = <ThrowOnError extends boolean = false>(o
         responseValidator: async (data) => {
             return await zPhasesGetAvailablePhasesResponse.parseAsync(data);
         },
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
         url: '/api/Phases/types/{auditTypeId}/available-phases',
         ...options
     });

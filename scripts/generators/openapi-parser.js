@@ -129,18 +129,28 @@ function groupPathsByEntity(paths) {
       continue;
     }
 
-    let entityName = match[1];
+    let originalEntityName = match[1];
     
-    // Normalize entity name (remove hyphens, consistent casing)
-    entityName = entityName.replace(/-/g, '');
-    
-    debug(`Matched entity: ${entityName} from path: ${path}`);
+    // Normalize entity name for grouping (remove hyphens, consistent casing)
+    // But keep the original for display purposes
 
-    if (!grouped.has(entityName)) {
-      grouped.set(entityName, []);
+    // Convert kebab-case to PascalCase for consistency
+    if (originalEntityName.includes('-')) {
+      originalEntityName = originalEntityName
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join('');
+    }
+        let normalizedEntityName = originalEntityName.replace(/-/g, '');
+    
+    debug(`Matched entity: ${normalizedEntityName} (original: ${originalEntityName}) from path: ${path}`);
+
+    if (!grouped.has(normalizedEntityName)) {
+      grouped.set(normalizedEntityName, []);
     }
 
-    grouped.get(entityName).push({ path, ...pathItem });
+    const pathWithOriginalName = { path, originalEntityName, ...pathItem };
+    grouped.get(normalizedEntityName).push(pathWithOriginalName);
   }
 
   return grouped;
@@ -151,6 +161,9 @@ function groupPathsByEntity(paths) {
  */
 function extractEntityMetadata(entityName, paths, spec) {
   debug(`\n=== Extracting metadata for ${entityName} ===`);
+  
+  // Get the original entity name from the first path (they should all have the same original name)
+  const originalEntityName = paths[0]?.originalEntityName || entityName;
   
   // Find operations
   const operations = extractOperations(entityName, paths, spec);
@@ -203,12 +216,13 @@ function extractEntityMetadata(entityName, paths, spec) {
   const relationships = detectRelationships(schema, spec);
 
   // Clean entity name (remove "Reference" prefix if present)
-  const cleanName = entityName.replace(/^Reference/, '');
+   // Clean entity name (remove "Reference" prefix if present)
+  // const cleanName = entityName.replace(/^Reference/, '');
 
   const result = {
-    name: cleanName,
-    pluralName: pluralize(cleanName),
-    endpoint: entityName,
+    name: entityName,
+    pluralName: pluralize(entityName),
+    endpoint: originalEntityName, // Use original camelCase name here
     schema,
     operations,
     columns,
@@ -217,7 +231,7 @@ function extractEntityMetadata(entityName, paths, spec) {
     relationships,
   };
 
-  debug(`Successfully extracted metadata for ${cleanName}`);
+  debug(`Successfully extracted metadata for ${entityName}`);
   return result;
 }
 

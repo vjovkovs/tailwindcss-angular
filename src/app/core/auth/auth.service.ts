@@ -8,6 +8,8 @@ import {
   EndSessionRequest,
   SsoSilentRequest,
   AccountInfo,
+  InteractionRequiredAuthError,
+  SilentRequest,
 } from '@azure/msal-browser';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -207,7 +209,54 @@ export class AuthService {
       }
     }
   }
+  
+  async getAccessTokenAsync(): Promise<string> {
+    const account = this.getActiveAccount();
+    if (!account) {
+      throw new Error('No active account—user must sign in first.');
+    }
 
+    const silentRequest: SilentRequest = {
+      account,
+      scopes: ['User.Read'],
+      // Optionally, specify extra parameters like forceRefresh: true
+    };
+
+    try {
+      // Convert Observable to Promise with lastValueFrom or firstValueFrom
+      return await new Promise<string>((resolve, reject) => {
+        this.msalService.acquireTokenSilent(silentRequest).subscribe({
+          next: (result: AuthenticationResult) => {
+            resolve(result.accessToken);
+          },
+          error: (error: any) => {
+            if (error instanceof InteractionRequiredAuthError) {
+              // Try interactive login
+              this.msalService.handleRedirectObservable().subscribe({
+                next: (result) => {
+                  if (result) {
+                    this.msalService.instance.setActiveAccount(result.account);
+                  } else {
+                    this.msalService.loginRedirect(result);
+                  }
+                },
+                error: (error) => {
+                  console.error("MSAL redirect error", error);
+                  this.msalService.loginRedirect();
+                }
+              });
+            } else {
+              reject(error);
+            }
+          }
+        });
+      });
+    } catch (err) {
+      // Handle any other errors
+      console.error('Token acquisition failed:', err);
+      throw err;
+    }
+  }
   /**
    * Get the active account
    */

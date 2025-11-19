@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { client } from './generated/client.gen';
 import { AuthService } from '../auth/auth.service';
-import { environment } from '../../../environments/environment';
+import { environment } from 'environments/environment';
 
 /**
  * Configure the generated API client with MSAL authentication
@@ -27,9 +27,7 @@ export function configureApiClient() {
 
       // If user is authenticated, add bearer token
       if (authService.isAuthenticated()) {
-        const token = await authService.getAccessToken([
-          'api://9c097f4f-fe4c-4035-abe9-2b41caaf983c/access_as_user'
-        ]);
+        const token = await authService.getAccessToken();
 
         if (token) {
           request.headers.set('Authorization', `Bearer ${token}`);
@@ -50,3 +48,4 @@ export function configureApiClient() {
     return request;
   });
 }
+

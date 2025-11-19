@@ -2,41 +2,12 @@
 
 import type { AuditFilesDownloadFileResponse, AuditFilesGetAuditFilesResponse, AuditFilesGetFileMetadataResponse, AuditFilesGetPhaseFilesResponse, AuditFilesMergeFilesResponse, AuditFilesReviewFileResponse, AuditFilesUpdateFileMetadataResponse, AuditFilesUploadFilesResponse, AuditsCreateAuditResponse, AuditsGetAllAuditsResponse, AuditsGetAuditByIdResponse, AuditsSearchAuditsResponse, AuditsUpdateAuditResponse, BookmarksCreateBookmarkResponse, BookmarksCreateBookmarksBatchResponse, BookmarksGetAuditBookmarksResponse, BookmarksGetBookmarkResponse, BookmarksGetPhaseBookmarksResponse, BookmarksUpdateBookmarkResponse, PhasesCompletePhaseResponse, PhasesGetAuditPhasesResponse, PhasesGetCurrentPhaseResponse, PhasesGetPhaseAssignmentResponse, PhasesReactivatePhaseResponse, PhasesStartPhaseResponse, PhasesUpdatePhaseAssignmentResponse, ReferenceAuditsGetAllNupicAuditsResponse, ReferenceAuditsGetNupicAuditByNumberResponse, ReferenceAuditsGetNupicAuditsBySupplierResponse, ReferenceAuditsGetReferenceAuditsResponse } from './types.gen';
 
-const paginatedResponseOfAuditResponseSchemaResponseTransformer = (data: any) => {
+const paginatedResponseOfAuditDetailsResponseSchemaResponseTransformer = (data: any) => {
     if (data.items) {
         data.items = data.items.map((item: any) => {
-            return auditResponseSchemaResponseTransformer(item);
+            return auditDetailsResponseSchemaResponseTransformer(item);
         });
     }
-    return data;
-};
-
-const auditResponseSchemaResponseTransformer = (data: any) => {
-    if (data.startDate) {
-        data.startDate = new Date(data.startDate);
-    }
-    if (data.endDate) {
-        data.endDate = new Date(data.endDate);
-    }
-    if (data.dateNotified) {
-        data.dateNotified = new Date(data.dateNotified);
-    }
-    if (data.createdDate) {
-        data.createdDate = new Date(data.createdDate);
-    }
-    if (data.updatedDate) {
-        data.updatedDate = new Date(data.updatedDate);
-    }
-    return data;
-};
-
-export const referenceAuditsGetReferenceAuditsResponseTransformer = async (data: any): Promise<ReferenceAuditsGetReferenceAuditsResponse> => {
-    data = paginatedResponseOfAuditResponseSchemaResponseTransformer(data);
-    return data;
-};
-
-export const referenceAuditsGetAllNupicAuditsResponseTransformer = async (data: any): Promise<ReferenceAuditsGetAllNupicAuditsResponse> => {
-    data = paginatedResponseOfAuditResponseSchemaResponseTransformer(data);
     return data;
 };
 
@@ -50,6 +21,16 @@ const auditDetailsResponseSchemaResponseTransformer = (data: any) => {
     if (data.closeDate) {
         data.closeDate = new Date(data.closeDate);
     }
+    return data;
+};
+
+export const referenceAuditsGetReferenceAuditsResponseTransformer = async (data: any): Promise<ReferenceAuditsGetReferenceAuditsResponse> => {
+    data = paginatedResponseOfAuditDetailsResponseSchemaResponseTransformer(data);
+    return data;
+};
+
+export const referenceAuditsGetAllNupicAuditsResponseTransformer = async (data: any): Promise<ReferenceAuditsGetAllNupicAuditsResponse> => {
+    data = paginatedResponseOfAuditDetailsResponseSchemaResponseTransformer(data);
     return data;
 };
 
@@ -134,6 +115,34 @@ export const auditFilesReviewFileResponseTransformer = async (data: any): Promis
 
 export const auditFilesMergeFilesResponseTransformer = async (data: any): Promise<AuditFilesMergeFilesResponse> => {
     data = fileMetadataResponseSchemaResponseTransformer(data);
+    return data;
+};
+
+const paginatedResponseOfAuditResponseSchemaResponseTransformer = (data: any) => {
+    if (data.items) {
+        data.items = data.items.map((item: any) => {
+            return auditResponseSchemaResponseTransformer(item);
+        });
+    }
+    return data;
+};
+
+const auditResponseSchemaResponseTransformer = (data: any) => {
+    if (data.startDate) {
+        data.startDate = new Date(data.startDate);
+    }
+    if (data.endDate) {
+        data.endDate = new Date(data.endDate);
+    }
+    if (data.dateNotified) {
+        data.dateNotified = new Date(data.dateNotified);
+    }
+    if (data.createdDate) {
+        data.createdDate = new Date(data.createdDate);
+    }
+    if (data.updatedDate) {
+        data.updatedDate = new Date(data.updatedDate);
+    }
     return data;
 };
 

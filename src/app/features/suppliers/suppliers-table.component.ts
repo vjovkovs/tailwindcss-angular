@@ -20,6 +20,7 @@ import { PreviewDialogComponent, PreviewField } from '../../shared/components/pr
 import { TableConfig, TableColumn, TableAction } from '../../shared/components/data-table/data-table.types';
 import type { SupplierDetailsResponse } from '@/core/api/generated';
 import { referenceSuppliersGetAllSuppliersOptions } from '@/core/api/generated/@tanstack/angular-query-experimental.gen';
+import { transformSuppliers } from '@/core/api/transformers/supplier-transformer';
 
 @Component({
   selector: 'app-suppliers-table',
@@ -77,7 +78,11 @@ export class SuppliersTableComponent {
   private suppliersQuery = injectQuery(() => referenceSuppliersGetAllSuppliersOptions());
 
   // Computed state from query
-  suppliers = computed(() => this.suppliersQuery.data()?.items || []);
+  // suppliers = computed(() => this.suppliersQuery.data()?.items || []);
+  suppliers = computed(() => {
+    const data = this.suppliersQuery.data();
+    return data?.items ? transformSuppliers(data.items) : [];
+  });
   loading = computed(() => this.suppliersQuery.isLoading());
   error = computed(() => this.suppliersQuery.error()?.message || null);
 

@@ -4,45 +4,14 @@ export type ClientOptions = {
     baseUrl: 'https://localhost:53928' | (string & {});
 };
 
-export type PaginatedResponseOfAuditResponse = {
-    items?: Array<AuditResponse>;
+export type PaginatedResponseOfAuditDetailsResponse = {
+    items?: Array<AuditDetailsResponse>;
     totalCount?: number;
     pageNumber?: number;
     pageSize?: number;
     totalPages?: number;
     hasPreviousPage?: boolean;
     hasNextPage?: boolean;
-};
-
-export type AuditResponse = {
-    id?: number;
-    auditNumber?: string;
-    supplierNumber?: string;
-    leadUtilityCode?: string;
-    auditTypeId?: number;
-    auditTypeName?: string;
-    fkPerNumb?: number | null;
-    contactPersonEmail?: string;
-    alternateContact?: string;
-    startDate?: Date | null;
-    endDate?: Date | null;
-    auditApproved?: boolean;
-    approvedBy?: string;
-    dateNotified?: Date | null;
-    createdDate?: Date;
-    createdBy?: string;
-    updatedDate?: Date;
-    updatedBy?: string;
-    leadAuditorName?: string;
-};
-
-export type ProblemDetails = {
-    type?: string | null;
-    title?: string | null;
-    status?: number | null;
-    detail?: string | null;
-    instance?: string | null;
-    [key: string]: unknown | string | null | string | null | number | null | string | null | string | null | undefined;
 };
 
 export type AuditDetailsResponse = {
@@ -59,6 +28,15 @@ export type AuditDetailsResponse = {
     scheduledYear?: string | null;
     isClosed?: boolean;
     isScheduled?: boolean;
+};
+
+export type ProblemDetails = {
+    type?: string | null;
+    title?: string | null;
+    status?: number | null;
+    detail?: string | null;
+    instance?: string | null;
+    [key: string]: unknown | string | null | string | null | number | null | string | null | string | null | undefined;
 };
 
 export type ResultOfPaginatedResponseOfPersonnelResponse = Result & {
@@ -207,6 +185,38 @@ export type MergeFilesRequest = {
     mergedFileName: string;
 };
 
+export type PaginatedResponseOfAuditResponse = {
+    items?: Array<AuditResponse>;
+    totalCount?: number;
+    pageNumber?: number;
+    pageSize?: number;
+    totalPages?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+};
+
+export type AuditResponse = {
+    id?: number;
+    auditNumber?: string;
+    supplierNumber?: string;
+    leadUtilityCode?: string;
+    auditTypeId?: number;
+    auditTypeName?: string;
+    fkPerNumb?: number | null;
+    contactPersonEmail?: string;
+    alternateContact?: string;
+    startDate?: Date | null;
+    endDate?: Date | null;
+    auditApproved?: boolean;
+    approvedBy?: string;
+    dateNotified?: Date | null;
+    createdDate?: Date;
+    createdBy?: string;
+    updatedDate?: Date;
+    updatedBy?: string;
+    leadAuditorName?: string;
+};
+
 export type CreateAuditRequest = {
     auditNumber: string;
     supplierNumber: string;
@@ -328,7 +338,7 @@ export type ReferenceAuditsGetReferenceAuditsErrors = {
 export type ReferenceAuditsGetReferenceAuditsError = ReferenceAuditsGetReferenceAuditsErrors[keyof ReferenceAuditsGetReferenceAuditsErrors];
 
 export type ReferenceAuditsGetReferenceAuditsResponses = {
-    200: PaginatedResponseOfAuditResponse;
+    200: PaginatedResponseOfAuditDetailsResponse;
 };
 
 export type ReferenceAuditsGetReferenceAuditsResponse = ReferenceAuditsGetReferenceAuditsResponses[keyof ReferenceAuditsGetReferenceAuditsResponses];
@@ -352,7 +362,7 @@ export type ReferenceAuditsGetAllNupicAuditsErrors = {
 export type ReferenceAuditsGetAllNupicAuditsError = ReferenceAuditsGetAllNupicAuditsErrors[keyof ReferenceAuditsGetAllNupicAuditsErrors];
 
 export type ReferenceAuditsGetAllNupicAuditsResponses = {
-    200: PaginatedResponseOfAuditResponse;
+    200: PaginatedResponseOfAuditDetailsResponse;
 };
 
 export type ReferenceAuditsGetAllNupicAuditsResponse = ReferenceAuditsGetAllNupicAuditsResponses[keyof ReferenceAuditsGetAllNupicAuditsResponses];

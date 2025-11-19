@@ -52,6 +52,12 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'reference-audits',
+    loadComponent: () =>
+      import('./features/reference-audits/reference-audits-table.component').then((m) => m.ReferenceAuditsTableComponent),
+    canActivate: [authGuard],
+  },
+  {
     path: 'audits',
     loadComponent: () =>
       import('./features/audits/audits-table.component').then((m) => m.AuditsTableComponent),
