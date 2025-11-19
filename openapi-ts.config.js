@@ -18,8 +18,15 @@ export default defineConfig({
       name: '@hey-api/typescript',
     },
     {
+      name: '@hey-api/zod',
+      dates: {
+        local: true, // Allow date-only strings without timezone
+        offset: false, // Don't require timezone offset
+      },
+    },
+    {
       name: '@hey-api/sdk',
-      validator: 'zod', 
+      validator: 'zod',
       transformer: true,
     },
     '@tanstack/angular-query-experimental'
